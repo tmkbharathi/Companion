@@ -5,353 +5,445 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:tmkbCompanion.MVVM.View"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="1000">
-    
-    <Grid Margin="32,24,32,24">
-        <Grid.RowDefinitions>
-            <!-- Header Section -->
-            <RowDefinition Height="Auto"/>
-            <!-- Content Grid -->
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+             d:DesignHeight="500" d:DesignWidth="640">
 
-        <!-- Header Section -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,16">
-            <TextBlock Text="{Binding DataContext.UserName, RelativeSource={RelativeSource AncestorType=Window}, StringFormat='{}Good morning, {0}'}" 
-                       Foreground="{StaticResource TextPrimaryBrush}" 
-                       FontSize="32" 
-                       FontWeight="Bold" 
-                       FontFamily="{StaticResource AppFont}"/>
-            <TextBlock Text="{Binding DataContext.CurrentDate, RelativeSource={RelativeSource AncestorType=Window}}" 
-                       Foreground="{StaticResource TextMutedBrush}" 
-                       FontSize="14" 
-                       Opacity="0.8"
-                       Margin="0,4,0,0"
-                       FontFamily="{StaticResource AppFont}"/>
-        </StackPanel>
-
-        <!-- Content Grid -->
-        <Grid Grid.Row="1">
+    <!-- Root ScrollViewer: ensures content never overlaps at any viewport height -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  FocusVisualStyle="{x:Null}">
+        <Grid Margin="12,10,12,10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="16"/>
+                <!-- Header: greeting + date -->
                 <RowDefinition Height="Auto"/>
+                <!-- Spacer -->
+                <RowDefinition Height="8"/>
+                <!-- Main content: timer + notes + links -->
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
 
-            <!-- Focus Timer Card (Column 0, Row 0) -->
-            <Border Grid.Row="0" Grid.Column="0" 
-                    Background="{StaticResource CardBackgroundBrush}" 
-                    BorderBrush="{StaticResource BorderBrush}" 
-                    BorderThickness="1" 
-                    CornerRadius="16" 
-                    Padding="20" 
-                    MinHeight="250">
-                <Grid>
-                    <!-- Background Icon Decoration -->
-                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                               Text="&#xF1C5;" 
-                               FontSize="300" 
-                               Foreground="{StaticResource TextPrimaryBrush}" 
-                               Opacity="0.05" 
-                               HorizontalAlignment="Right" 
-                               VerticalAlignment="Bottom"
-                               Margin="0,0,-30,-60"
-                               IsHitTestVisible="False"/>
+            <!-- ════════════════════════════════ -->
+            <!--  Header: Greeting + Date         -->
+            <!-- ════════════════════════════════ -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,0">
+                <TextBlock Text="{Binding DataContext.UserName,
+                                          RelativeSource={RelativeSource AncestorType=Window},
+                                          StringFormat='{}Good morning, {0}'}"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           FontFamily="{StaticResource AppFont}"/>
+                <TextBlock Text="{Binding DataContext.CurrentDate,
+                                          RelativeSource={RelativeSource AncestorType=Window}}"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           FontSize="12"
+                           Opacity="0.8"
+                           Margin="0,2,0,0"
+                           FontFamily="{StaticResource AppFont}"/>
+            </StackPanel>
 
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <!-- Header / Subtitle -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,12">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                       Text="&#xE916;" 
-                                       FontSize="16" 
-                                       Foreground="{DynamicResource AccentBrush}" 
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,8,0"/>
-                            <TextBlock Text="FOCUS SESSION" 
-                                       Foreground="{DynamicResource AccentBrush}" 
-                                       FontSize="12" 
-                                       FontWeight="Bold" 
-                                       FontFamily="{StaticResource AppFont}"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
+            <!-- ════════════════════════════════════════════ -->
+            <!--  Main Content Grid                          -->
+            <!--  Columns: [2* Timer | 8 gap | 1* Notes]    -->
+            <!--  Rows:    [* Cards  | 8 gap | Auto Links]  -->
+            <!-- ════════════════════════════════════════════ -->
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
 
-                        <!-- Timer Display -->
-                        <TextBlock x:Name="TimerDisplay"
-                                   Text="{Binding TimerText}" 
-                                   Foreground="{DynamicResource AccentBrush}" 
-                                   FontSize="100" 
-                                   FontWeight="Bold" 
-                                   HorizontalAlignment="Center"
-                                   FontFamily="{StaticResource AppFont}">
-                            <TextBlock.Effect>
-                                <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="30" ShadowDepth="0" Opacity="0.5"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
+                <!-- ──────────────────────────── -->
+                <!--  Focus Timer Card (Col 0)    -->
+                <!-- ──────────────────────────── -->
+                <Border Grid.Row="0" Grid.Column="0"
+                        Style="{StaticResource ThreeDCardStyle}"
+                        Padding="14"
+                        MinHeight="180">
+                    <Grid>
+                        <!-- Decorative background hourglass icon -->
+                        <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                   Text="&#xF1C5;"
+                                   FontSize="200"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Opacity="0.04"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+                                   Margin="0,0,-20,-40"
+                                   IsHitTestVisible="False"/>
 
-                        <TextBlock Text="Stay focused on your current task." 
-                                   Foreground="{StaticResource TextMutedBrush}" 
-                                   FontSize="15" 
-                                   HorizontalAlignment="Center" 
-                                   Margin="0,8,0,24"
-                                   FontFamily="{StaticResource AppFont}"/>
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 
-                        <!-- Action Buttons -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <!-- Toggle Button (Play / Pause) -->
-                            <Button Style="{StaticResource FluentButton}" 
-                                    Command="{Binding ToggleTimerCommand}"
-                                    Width="150" Height="40" Margin="0,0,16,0">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Name="TimerButtonIcon" 
-                                                   FontFamily="{StaticResource SegoeMDL2}" 
-                                                   FontSize="16" 
-                                                   VerticalAlignment="Center" 
-                                                   Margin="0,0,8,0">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Text" Value="&#xE768;"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsTimerRunning}" Value="True">
-                                                            <Setter Property="Text" Value="&#xE71A;"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                        <TextBlock x:Name="TimerButtonText" 
-                                                   VerticalAlignment="Center">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Text" Value="Start"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsTimerRunning}" Value="True">
-                                                            <Setter Property="Text" Value="Pause"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            
-                            <!-- Reset Button -->
-                            <Button Style="{StaticResource FluentButtonSecondary}" 
-                                    Command="{Binding ResetTimerCommand}"
-                                    Content="Reset" 
-                                    Width="110" Height="40"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <!-- Quick Notes Card (Column 2, Row 0) -->
-            <Border Grid.Row="0" Grid.Column="2" 
-                    Background="{StaticResource CardBackgroundBrush}" 
-                    BorderBrush="{StaticResource BorderBrush}" 
-                    BorderThickness="1" 
-                    CornerRadius="16" 
-                    Padding="16"
-                    MinHeight="250">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Header -->
-                    <Grid Grid.Row="0" Margin="0,0,0,12">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                       Text="&#xE70F;" 
-                                       FontSize="20" 
-                                       Foreground="{DynamicResource AccentBrush}" 
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,8,0"/>
-                            <TextBlock Text="Quick Notes" 
-                                       Foreground="{StaticResource TextPrimaryBrush}" 
-                                       FontSize="16" 
-                                       FontWeight="Bold" 
-                                       FontFamily="{StaticResource AppFont}"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                   Text="&#xE946;" 
-                                   FontSize="16" 
-                                   Foreground="{StaticResource TextMutedBrush}" 
-                                   Opacity="0.4"
-                                   HorizontalAlignment="Right" 
-                                   VerticalAlignment="Center"
-                                   ToolTip="Saved locally in flowtrack_notes.txt"/>
-                    </Grid>
-
-                    <!-- Input Notes Area -->
-                    <TextBox Grid.Row="1" 
-                             Style="{StaticResource FluentTextBox}" 
-                             Text="{Binding NotesText, UpdateSourceTrigger=PropertyChanged}"
-                             TextWrapping="Wrap" 
-                             AcceptsReturn="True" 
-                             VerticalScrollBarVisibility="Auto"
-                             Margin="0,0,0,12"/>
-
-                    <!-- Save Action Button -->
-                    <Button Grid.Row="2" 
-                            x:Name="SaveNotesBtn"
-                            Command="{Binding SaveNotesCommand}"
-                            Height="40">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource FluentButtonTransparentPrimary}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSavedFeedbackActive}" Value="True">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="#10b981" Opacity="0.15"/>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Foreground" Value="#10b981"/>
-                                        <Setter Property="BorderBrush">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="#10b981" Opacity="0.3"/>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="SaveIcon" 
-                                           FontFamily="{StaticResource SegoeMDL2}" 
-                                           FontSize="16" 
-                                           VerticalAlignment="Center" 
-                                           Margin="0,0,8,0">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Text" Value="&#xE74E;"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsSavedFeedbackActive}" Value="True">
-                                                    <Setter Property="Text" Value="&#xE930;"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                                <TextBlock Text="{Binding SaveButtonText}" 
+                            <!-- FOCUS SESSION label -->
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,0,0,8">
+                                <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                           Text="&#xE916;"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource AccentBrush}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,6,0"/>
+                                <TextBlock Text="FOCUS SESSION"
+                                           Foreground="{DynamicResource AccentBrush}"
+                                           FontSize="11"
+                                           FontWeight="Bold"
+                                           FontFamily="{StaticResource AppFont}"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
-                        </Button.Content>
-                    </Button>
-                </Grid>
-            </Border>
 
-            <!-- Important Links Grid (Row 2, Column Span 3) -->
-            <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                    Background="{StaticResource CardBackgroundBrush}" 
-                    BorderBrush="{StaticResource BorderBrush}" 
-                    BorderThickness="1" 
-                    CornerRadius="16" 
-                    Padding="16">
-                <StackPanel>
-                    <!-- Section Title -->
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                   Text="&#xE71B;" 
-                                   FontSize="20" 
-                                   Foreground="{DynamicResource AccentBrush}" 
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,8,0"/>
-                        <TextBlock Text="Important Links" 
-                                   Foreground="{StaticResource TextPrimaryBrush}" 
-                                   FontSize="16" 
-                                   FontWeight="Bold" 
-                                   FontFamily="{StaticResource AppFont}"
-                                   VerticalAlignment="Center"/>
-                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                   Text="&#xE946;" 
-                                   FontSize="14" 
-                                   Foreground="{StaticResource TextMutedBrush}" 
-                                   Opacity="0.6"
-                                   VerticalAlignment="Center"
-                                   Margin="8,2,0,0"
-                                   Cursor="Help"
-                                   ToolTip="Customize these links under Settings > Important Links Configuration"/>
+                            <!-- Large timer display — 72pt instead of 100pt -->
+                            <TextBlock x:Name="TimerDisplay"
+                                       Text="{Binding TimerText}"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       FontSize="72"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       FontFamily="{StaticResource AppFont}">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="{DynamicResource AccentColor}"
+                                                      BlurRadius="24"
+                                                      ShadowDepth="0"
+                                                      Opacity="0.40"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+
+                            <TextBlock Text="Stay focused on your current task."
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       FontSize="12"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,4,0,16"
+                                       FontFamily="{StaticResource AppFont}"/>
+
+                            <!-- Play / Pause + Reset buttons -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                <Button Style="{StaticResource FluentButton}"
+                                        Command="{Binding ToggleTimerCommand}"
+                                        Width="120" Height="32"
+                                        Margin="0,0,10,0">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                                       FontSize="13"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,6,0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="&#xE768;"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsTimerRunning}" Value="True">
+                                                                <Setter Property="Text" Value="&#xE71A;"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock VerticalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="Start"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsTimerRunning}" Value="True">
+                                                                <Setter Property="Text" Value="Pause"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+
+                                <Button Style="{StaticResource FluentButtonSecondary}"
+                                        Command="{Binding ResetTimerCommand}"
+                                        Content="Reset"
+                                        Width="90" Height="32"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- ──────────────────────────── -->
+                <!--  Quick Notes Card (Col 2)    -->
+                <!-- ──────────────────────────── -->
+                <Border Grid.Row="0" Grid.Column="2"
+                        Style="{StaticResource ThreeDCardStyle}"
+                        Padding="12"
+                        MinHeight="180">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                           Text="&#xE70F;"
+                                           FontSize="16"
+                                           Foreground="{DynamicResource AccentBrush}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,6,0"/>
+                                <TextBlock Text="Quick Notes"
+                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           FontFamily="{StaticResource AppFont}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                       Text="&#xE946;"
+                                       FontSize="13"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       Opacity="0.4"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       ToolTip="Saved locally in flowtrack_notes.txt"/>
+                        </Grid>
+
+                        <!-- Notes textarea -->
+                        <TextBox Grid.Row="1"
+                                 Style="{StaticResource FluentTextBox}"
+                                 Text="{Binding NotesText, UpdateSourceTrigger=PropertyChanged}"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Margin="0,0,0,8"/>
+
+                        <!-- Save button -->
+                        <Button Grid.Row="2"
+                                x:Name="SaveNotesBtn"
+                                Command="{Binding SaveNotesCommand}"
+                                Height="32">
+                            <Button.Style>
+                                <Style TargetType="Button"
+                                       BasedOn="{StaticResource FluentButtonTransparentPrimary}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSavedFeedbackActive}" Value="True">
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="#10b981" Opacity="0.15"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Foreground" Value="#10b981"/>
+                                            <Setter Property="BorderBrush">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="#10b981" Opacity="0.3"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                               FontSize="13"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,6,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="&#xE74E;"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSavedFeedbackActive}" Value="True">
+                                                        <Setter Property="Text" Value="&#xE930;"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding SaveButtonText}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- ─────────────────────────────────────── -->
+                <!--  Important Links (Row 2, full width)   -->
+                <!-- ─────────────────────────────────────── -->
+                <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                        Style="{StaticResource ThreeDCardStyle}"
+                        Padding="10">
+                    <StackPanel>
+                        <!-- Section header -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                       Text="&#xE71B;"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource AccentBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,6,0"/>
+                            <TextBlock Text="Important Links"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       FontFamily="{StaticResource AppFont}"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                       Text="&#xE946;"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       Opacity="0.6"
+                                       VerticalAlignment="Center"
+                                       Margin="6,1,0,0"
+                                       Cursor="Help"
+                                       ToolTip="Customize these links under Settings > Important Links Configuration"/>
+                        </StackPanel>
+
+                        <!-- 4 link tiles, compact height 44 -->
+                        <UniformGrid Columns="4" Rows="1" Height="44">
+
+                            <!-- Link 1 -->
+                            <Border Style="{StaticResource LinkCardBorder}">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick"
+                                                  Command="{Binding OpenLinkCommand}"
+                                                  CommandParameter="{Binding Link1Url}"/>
+                                </Border.InputBindings>
+                                <Grid Margin="6,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="{DynamicResource AccentBrush}"
+                                            Opacity="0.12" CornerRadius="5"
+                                            Width="24" Height="24"
+                                            Grid.Column="0"/>
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                               Text="&#xE80F;" FontSize="13"
+                                               Foreground="{DynamicResource AccentBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Link1Title}"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               FontSize="11"
+                                               FontFamily="{StaticResource AppFont}"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"
+                                               Margin="6,0,0,0"
+                                               Grid.Column="1"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Link 2 -->
+                            <Border Style="{StaticResource LinkCardBorder}">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick"
+                                                  Command="{Binding OpenLinkCommand}"
+                                                  CommandParameter="{Binding Link2Url}"/>
+                                </Border.InputBindings>
+                                <Grid Margin="6,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="{DynamicResource AccentBrush}"
+                                            Opacity="0.12" CornerRadius="5"
+                                            Width="24" Height="24"
+                                            Grid.Column="0"/>
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                               Text="&#xE8C7;" FontSize="13"
+                                               Foreground="{DynamicResource AccentBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Link2Title}"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               FontSize="11"
+                                               FontFamily="{StaticResource AppFont}"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"
+                                               Margin="6,0,0,0"
+                                               Grid.Column="1"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Link 3 -->
+                            <Border Style="{StaticResource LinkCardBorder}">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick"
+                                                  Command="{Binding OpenLinkCommand}"
+                                                  CommandParameter="{Binding Link3Url}"/>
+                                </Border.InputBindings>
+                                <Grid Margin="6,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="{DynamicResource AccentBrush}"
+                                            Opacity="0.12" CornerRadius="5"
+                                            Width="24" Height="24"
+                                            Grid.Column="0"/>
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                               Text="&#xE73A;" FontSize="13"
+                                               Foreground="{DynamicResource AccentBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Link3Title}"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               FontSize="11"
+                                               FontFamily="{StaticResource AppFont}"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"
+                                               Margin="6,0,0,0"
+                                               Grid.Column="1"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Link 4 -->
+                            <Border Style="{StaticResource LinkCardBorder}">
+                                <Border.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick"
+                                                  Command="{Binding OpenLinkCommand}"
+                                                  CommandParameter="{Binding Link4Url}"/>
+                                </Border.InputBindings>
+                                <Grid Margin="6,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Background="{DynamicResource AccentBrush}"
+                                            Opacity="0.12" CornerRadius="5"
+                                            Width="24" Height="24"
+                                            Grid.Column="0"/>
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                               Text="&#xE787;" FontSize="13"
+                                               Foreground="{DynamicResource AccentBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Link4Title}"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               FontSize="11"
+                                               FontFamily="{StaticResource AppFont}"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"
+                                               Margin="6,0,0,0"
+                                               Grid.Column="1"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </Grid>
+                            </Border>
+
+                        </UniformGrid>
                     </StackPanel>
+                </Border>
 
-                    <!-- Links Grid -->
-                    <UniformGrid Columns="4" Rows="1" Height="72">
-                        <!-- Link 1 -->
-                        <Border Style="{StaticResource LinkCardBorder}">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Link1Url}"/>
-                            </Border.InputBindings>
-                            <Grid Margin="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="6" Width="36" Height="36" Grid.Column="0"/>
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE80F;" FontSize="18" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0"/>
-                                <TextBlock Text="{Binding Link1Title}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontFamily="{StaticResource AppFont}" FontWeight="Medium" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="1" TextTrimming="CharacterEllipsis"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Link 2 -->
-                        <Border Style="{StaticResource LinkCardBorder}">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Link2Url}"/>
-                            </Border.InputBindings>
-                            <Grid Margin="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="6" Width="36" Height="36" Grid.Column="0"/>
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE8C7;" FontSize="18" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0"/>
-                                <TextBlock Text="{Binding Link2Title}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontFamily="{StaticResource AppFont}" FontWeight="Medium" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="1" TextTrimming="CharacterEllipsis"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Link 3 -->
-                        <Border Style="{StaticResource LinkCardBorder}">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Link3Url}"/>
-                            </Border.InputBindings>
-                            <Grid Margin="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="6" Width="36" Height="36" Grid.Column="0"/>
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE73A;" FontSize="18" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0"/>
-                                <TextBlock Text="{Binding Link3Title}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontFamily="{StaticResource AppFont}" FontWeight="Medium" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="1" TextTrimming="CharacterEllipsis"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Link 4 -->
-                        <Border Style="{StaticResource LinkCardBorder}">
-                            <Border.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Link4Url}"/>
-                            </Border.InputBindings>
-                            <Grid Margin="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="6" Width="36" Height="36" Grid.Column="0"/>
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE787;" FontSize="18" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0"/>
-                                <TextBlock Text="{Binding Link4Title}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontFamily="{StaticResource AppFont}" FontWeight="Medium" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Column="1" TextTrimming="CharacterEllipsis"/>
-                            </Grid>
-                        </Border>
-                    </UniformGrid>
-                </StackPanel>
-            </Border>
+            </Grid>
         </Grid>
-    </Grid>
+    </ScrollViewer>
 </UserControl>

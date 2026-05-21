@@ -7,9 +7,10 @@
         xmlns:vm="clr-namespace:tmkbCompanion.MVVM.ViewModel"
         xmlns:view="clr-namespace:tmkbCompanion.MVVM.View"
         mc:Ignorable="d"
-        Title="FlowTrack" 
-        Height="800" 
-        Width="1280"
+        Title="FlowTrack"
+        Height="500"
+        Width="800"
+        ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -18,7 +19,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-        <!-- View Model to View mappings -->
+        <!-- View Model → View mappings -->
         <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
             <view:DashboardView/>
         </DataTemplate>
@@ -34,11 +35,11 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
             <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Height" Value="48"/>
-            <Setter Property="Margin" Value="12,4"/>
-            <Setter Property="Padding" Value="16,0,0,0"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="8,4"/>
+            <Setter Property="Padding" Value="12,0,0,0"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -49,25 +50,23 @@
                                 BorderThickness="0"
                                 SnapsToDevicePixels="true">
                             <Grid>
-                                <!-- Left Active Highlight Indicator -->
+                                <!-- Left active indicator pill -->
                                 <Border x:Name="ActiveIndicator"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Height="24"
-                                        Width="4"
+                                        Height="24" Width="4"
                                         Background="{DynamicResource AccentBrush}"
                                         CornerRadius="2"
                                         Visibility="Collapsed"/>
 
-                                <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
-                                    <!-- Icon -->
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="{TemplateBinding Padding}">
                                     <TextBlock x:Name="IconBlock"
                                                FontFamily="{StaticResource SegoeMDL2}"
                                                Text="{TemplateBinding Tag}"
-                                               FontSize="18"
+                                               FontSize="16"
                                                VerticalAlignment="Center"
-                                               Margin="0,0,16,0"/>
-                                    <!-- Content -->
+                                               Margin="0,0,10,0"/>
                                     <ContentPresenter VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Grid>
@@ -89,204 +88,237 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Hamburger button style (three-line menu) -->
+        <Style x:Key="HamburgerButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bg"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="7"
+                                SnapsToDevicePixels="True">
+                            <!-- Draw 3 lines manually so they never depend on fonts -->
+                            <StackPanel VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Width="16">
+                                <Border Height="2" CornerRadius="1"
+                                        Background="{StaticResource TextPrimaryBrush}"
+                                        Margin="0,0,0,3"/>
+                                <Border Height="2" CornerRadius="1"
+                                        Background="{StaticResource TextPrimaryBrush}"
+                                        Margin="0,0,0,3"/>
+                                <Border Height="2" CornerRadius="1"
+                                        Background="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#2a303f"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#363d50"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
-    <!-- Main Window Outer Border -->
+    <!-- Outer rounded border -->
     <Border Background="{StaticResource BaseBackgroundBrush}"
             BorderBrush="{StaticResource BorderBrush}"
             BorderThickness="1"
             CornerRadius="12"
             ClipToBounds="True">
-        
+
         <Grid>
             <Grid.RowDefinitions>
-                <!-- Titlebar Row -->
+                <!-- Title bar -->
                 <RowDefinition Height="32"/>
-                <!-- Main App Area -->
+                <!-- App body -->
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <!-- Sidebar Column -->
-                <ColumnDefinition Width="280"/>
-                <!-- Content Column -->
+                <!-- Sidebar — width animated in code-behind via x:Name SidebarColumn -->
+                <ColumnDefinition x:Name="SidebarColumn" Width="160"/>
+                <!-- Content — * always fills remaining space automatically -->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- 1. CUSTOM TITLE BAR (Across both columns) -->
-            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
-                    Background="#191b22" 
-                    BorderBrush="{StaticResource BorderBrush}" 
+            <!-- ══════════════════════════════════════════
+                 1. TITLE BAR  (spans both columns)
+                 ══════════════════════════════════════════ -->
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    Background="#191b22"
+                    BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0,0,0,1"
                     MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid>
-                    <!-- Window Icon & Title -->
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
-                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                   Text="&#xE916;" 
-                                   FontSize="12" 
-                                   Foreground="{DynamicResource AccentBrush}" 
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,8,0"/>
-                        <TextBlock Text="FlowTrack" 
-                                   Foreground="{StaticResource TextPrimaryBrush}" 
-                                   FontSize="12" 
-                                   FontWeight="SemiBold"
-                                   FontFamily="{StaticResource AppFont}"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
 
-                    <!-- Title Bar Actions -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <!-- Minimize Button -->
+                    <!-- Left: hamburger button (no app name / logo) -->
+                    <Button x:Name="HamburgerBtn"
+                            Style="{StaticResource HamburgerButton}"
+                            Command="{Binding ToggleSidebarCommand}"
+                            HorizontalAlignment="Left"
+                            Margin="8,0,0,0"
+                            ToolTip="Toggle sidebar"/>
+
+                    <!-- Right: profile + window controls -->
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+
+                        <!-- Profile strip (hidden on Profile Setup page) -->
+                        <Border Background="Transparent"
+                                Margin="0,0,12,0"
+                                Cursor="Hand"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding IsProfileTitleBarVisible,
+                                                     Converter={StaticResource BoolToVis}}">
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding ShowProfileSetupCommand}"/>
+                            </Border.InputBindings>
+                            <StackPanel Orientation="Horizontal">
+                                <!-- Avatar circle -->
+                                <Border Width="20" Height="20"
+                                        CornerRadius="10"
+                                        ClipToBounds="True"
+                                        VerticalAlignment="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ProfileSetupVM.HasProfilePicture}" Value="True">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <ImageBrush ImageSource="{Binding ProfileSetupVM.ProfilePicturePath,
+                                                                                      UpdateSourceTrigger=PropertyChanged}"
+                                                                        Stretch="UniformToFill"/>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                                   Text="&#xE77B;" FontSize="11"
+                                                   Foreground="#001847"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ProfileSetupVM.HasProfilePicture}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+
+                                <!-- User name -->
+                                <TextBlock Text="{Binding UserName}"
+                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                           FontSize="11"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0,0,0"
+                                           FontFamily="{StaticResource AppFont}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Minimize -->
                         <Button Style="{StaticResource TitleBarButton}" Click="MinimizeBtn_Click">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE921;" FontSize="10"/>
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                       Text="&#xE921;" FontSize="10"/>
                         </Button>
-                        <!-- Close Button -->
+                        <!-- Close (minimizes to tray) -->
                         <Button Style="{StaticResource TitleBarCloseButton}" Click="CloseBtn_Click">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE8BB;" FontSize="10"/>
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                       Text="&#xE8BB;" FontSize="10"/>
                         </Button>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- 2. SIDEBAR NAVIGATION -->
-            <Border Grid.Row="1" Grid.Column="0" 
+            <!-- ══════════════════════════════════════════
+                 2. SIDEBAR NAVIGATION
+                 ══════════════════════════════════════════ -->
+            <Border Grid.Row="1" Grid.Column="0"
                     Background="{StaticResource SidebarBackgroundBrush}"
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0,0,1,0"
-                    Padding="0,24,0,24">
-                
+                    Padding="0,16,0,16"
+                    ClipToBounds="True">
+
                 <Grid>
                     <Grid.RowDefinitions>
-                        <!-- Logo / Header -->
                         <RowDefinition Height="Auto"/>
-                        <!-- Navigation Items -->
                         <RowDefinition Height="*"/>
-                        <!-- Profile Footer -->
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Sidebar Header -->
-                    <StackPanel Grid.Row="0" Margin="24,0,24,32">
-                        <TextBlock Text="FlowTrack" 
-                                   Foreground="{StaticResource TextPrimaryBrush}" 
-                                   FontSize="24" 
-                                   FontWeight="Bold" 
+                    <!-- App name block in sidebar header -->
+                    <StackPanel Grid.Row="0" Margin="16,0,16,20">
+                        <TextBlock Text="FlowTrack"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontSize="20"
+                                   FontWeight="Bold"
                                    FontFamily="{StaticResource AppFont}"/>
-                        <TextBlock Text="Utility v1.0" 
-                                   Foreground="{StaticResource TextMutedBrush}" 
-                                   FontSize="12" 
-                                   Opacity="0.6" 
+                        <TextBlock Text="Utility v1.0"
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   FontSize="11"
+                                   Opacity="0.6"
                                    FontFamily="{StaticResource AppFont}"/>
                     </StackPanel>
 
-                    <!-- Sidebar Nav Items (RadioButtons) -->
+                    <!-- Nav items -->
                     <StackPanel Grid.Row="1">
-                        <!-- Dashboard Item -->
                         <RadioButton Style="{StaticResource SidebarMenuItem}"
                                      IsChecked="True"
                                      Tag="&#xE785;"
                                      Command="{Binding ShowDashboardCommand}"
                                      Content="Dashboard"/>
-
-                        <!-- Settings Item -->
                         <RadioButton Style="{StaticResource SidebarMenuItem}"
                                      Tag="&#xE713;"
                                      Command="{Binding ShowSettingsCommand}"
                                      Content="Settings"/>
                     </StackPanel>
-
-                    <!-- User Profile Footer -->
-                    <Border Grid.Row="2" 
-                            Background="#1c2230"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12"
-                            Margin="16,0"
-                            Padding="12"
-                            Cursor="Hand">
-                        <Border.InputBindings>
-                            <MouseBinding MouseAction="LeftClick" Command="{Binding ShowProfileSetupCommand}"/>
-                        </Border.InputBindings>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Profile Avatar Icon -->
-                            <Border Width="36" Height="36" 
-                                    Background="{DynamicResource AccentBrush}" 
-                                    CornerRadius="18" 
-                                    Grid.Column="0"
-                                    ClipToBounds="True">
-                                <Grid>
-                                    <!-- Default Glyph -->
-                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                               Text="&#xE77B;" 
-                                               FontSize="16" 
-                                               Foreground="#001847" 
-                                               HorizontalAlignment="Center" 
-                                               VerticalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ProfileSetupVM.HasProfilePicture}" Value="True">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                    <!-- Uploaded Photo -->
-                                    <Image Source="{Binding ProfileSetupVM.ProfilePicturePath, UpdateSourceTrigger=PropertyChanged}" 
-                                           Stretch="UniformToFill" 
-                                           Width="36" Height="36">
-                                        <Image.Style>
-                                            <Style TargetType="Image">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ProfileSetupVM.HasProfilePicture}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Image.Style>
-                                    </Image>
-                                </Grid>
-                            </Border>
-
-                            <!-- Name Info -->
-                            <TextBlock Grid.Column="1" 
-                                       Text="{Binding UserName}" 
-                                       Foreground="{StaticResource TextPrimaryBrush}" 
-                                       FontSize="14" 
-                                       FontWeight="SemiBold" 
-                                       VerticalAlignment="Center" 
-                                       Margin="12,0,0,0"
-                                       FontFamily="{StaticResource AppFont}"
-                                       TextTrimming="CharacterEllipsis"/>
-                        </Grid>
-                    </Border>
                 </Grid>
             </Border>
 
-            <!-- 3. VIEWPORT CONTENT -->
-            <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentView}"/>
+            <!-- ══════════════════════════════════════════
+                 3. MAIN CONTENT — fills remaining column
+                 ══════════════════════════════════════════ -->
+            <ContentControl Grid.Row="1" Grid.Column="1"
+                            Content="{Binding CurrentView}"/>
 
-            <!-- 4. SLIDE-IN TOAST OVERLAY -->
-            <Border Grid.Row="1" Grid.Column="1" 
-                    Background="#1c2230" 
-                    BorderBrush="{StaticResource BorderBrush}" 
-                    BorderThickness="1" 
-                    CornerRadius="10" 
-                    Width="320" 
-                    Height="80" 
-                    HorizontalAlignment="Right" 
-                    VerticalAlignment="Bottom" 
-                    Margin="0,0,24,24" 
-                    Padding="16" 
+            <!-- ══════════════════════════════════════════
+                 4. SLIDE-IN TOAST OVERLAY
+                 ══════════════════════════════════════════ -->
+            <Border Grid.Row="1" Grid.Column="1"
+                    Background="#1c2230"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Width="320" Height="80"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,24,24"
+                    Padding="16"
                     Visibility="{Binding IsToastVisible, Converter={StaticResource BoolToVis}}"
                     Panel.ZIndex="1000">
                 <Border.Effect>
@@ -297,15 +329,25 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
-                    <!-- Checkmark Icon -->
-                    <Border Background="#10b981" Opacity="0.1" CornerRadius="16" Width="32" Height="32" Grid.Column="0" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xE930;" FontSize="16" Foreground="#10b981" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                    <!-- Message Details -->
+                    <Border Background="#10b981" Opacity="0.1" CornerRadius="16"
+                            Width="32" Height="32" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0"
+                               FontFamily="{StaticResource SegoeMDL2}"
+                               Text="&#xE930;" FontSize="16"
+                               Foreground="#10b981"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
                     <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding ToastTitle}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
-                        <TextBlock Text="{Binding ToastMessage}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}"/>
+                        <TextBlock Text="{Binding ToastTitle}"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontSize="13" FontWeight="Bold"
+                                   FontFamily="{StaticResource AppFont}"/>
+                        <TextBlock Text="{Binding ToastMessage}"
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   FontSize="11" Margin="0,2,0,0"
+                                   FontFamily="{StaticResource AppFont}"/>
                     </StackPanel>
                 </Grid>
             </Border>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -11,6 +12,7 @@ namespace tmkbCompanion.MVVM.Core
     {
         private readonly NotifyIcon _notifyIcon;
         private readonly ToolStripMenuItem _toggleTimerMenuItem;
+        private readonly ToolStripMenuItem _linksMenuItem;
         private IntPtr _currentIconHandle = IntPtr.Zero;
         private readonly Window _mainWindow;
 
@@ -34,6 +36,9 @@ namespace tmkbCompanion.MVVM.Core
             _toggleTimerMenuItem = new ToolStripMenuItem("Start Focus Timer");
             _toggleTimerMenuItem.Click += (s, e) => ToggleTimerRequested?.Invoke();
             contextMenuStrip.Items.Add(_toggleTimerMenuItem);
+
+            _linksMenuItem = new ToolStripMenuItem("Important Links");
+            contextMenuStrip.Items.Add(_linksMenuItem);
 
             contextMenuStrip.Items.Add(new ToolStripSeparator());
 
@@ -114,6 +119,55 @@ namespace tmkbCompanion.MVVM.Core
         public void UpdateTimerState(bool isRunning)
         {
             _toggleTimerMenuItem.Text = isRunning ? "Pause Focus Timer" : "Start Focus Timer";
+        }
+
+        public void UpdateImportantLinks(List<(string Title, string Url)> links)
+        {
+            _linksMenuItem.DropDownItems.Clear();
+
+            if (links == null || links.Count == 0)
+            {
+                var noLinksItem = new ToolStripMenuItem("No links configured") { Enabled = false };
+                _linksMenuItem.DropDownItems.Add(noLinksItem);
+                return;
+            }
+
+            foreach (var link in links)
+            {
+                if (string.IsNullOrWhiteSpace(link.Title) && string.IsNullOrWhiteSpace(link.Url))
+                    continue;
+
+                string displayTitle = string.IsNullOrWhiteSpace(link.Title) ? link.Url : link.Title;
+                var menuItem = new ToolStripMenuItem(displayTitle);
+
+                if (!string.IsNullOrWhiteSpace(link.Url))
+                {
+                    string targetUrl = link.Url;
+                    menuItem.Click += (s, e) =>
+                    {
+                        try
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(targetUrl) { UseShellExecute = true });
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Failed to open tray link: {ex.Message}");
+                        }
+                    };
+                }
+                else
+                {
+                    menuItem.Enabled = false;
+                }
+
+                _linksMenuItem.DropDownItems.Add(menuItem);
+            }
+
+            if (_linksMenuItem.DropDownItems.Count == 0)
+            {
+                var noLinksItem = new ToolStripMenuItem("No links configured") { Enabled = false };
+                _linksMenuItem.DropDownItems.Add(noLinksItem);
+            }
         }
 
         private void OnOpenRequested()

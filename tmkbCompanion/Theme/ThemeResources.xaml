@@ -309,9 +309,23 @@
 
     <!-- Custom TextBox Style (Quick Notes Area) -->
     <Style x:Key="FluentTextBox" TargetType="TextBox">
-        <Setter Property="Background" Value="#151925"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#0d0f16" Offset="0"/>
+                    <GradientStop Color="#151823" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#090a0f" Offset="0"/>
+                    <GradientStop Color="#2c354c" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
         <Setter Property="FontSize" Value="14"/>
@@ -362,18 +376,26 @@
     <Style x:Key="FluentProgressBar" TargetType="ProgressBar">
         <Setter Property="Background" Value="#2a3142"/>
         <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-        <Setter Property="Height" Value="6"/>
+        <Setter Property="Height" Value="8"/>
+        <Setter Property="Maximum" Value="100"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ProgressBar">
+                    <!-- TemplateRoot is required for WPF ProgressBar internals -->
                     <Grid x:Name="TemplateRoot" SnapsToDevicePixels="true">
-                        <!-- Track Background -->
-                        <Border Background="{TemplateBinding Background}" CornerRadius="3"/>
-                        <!-- Indicator -->
-                        <Grid x:Name="Indicator" HorizontalAlignment="Left">
-                            <Border x:Name="Animation" Background="{TemplateBinding Foreground}" CornerRadius="3">
+                        <!-- PART_Track: full-width track background -->
+                        <Border x:Name="PART_Track"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="4"/>
+                        <!-- PART_Indicator: filled portion — WPF auto-sets its Width -->
+                        <Grid x:Name="PART_Indicator" HorizontalAlignment="Left">
+                            <Border Background="{TemplateBinding Foreground}"
+                                    CornerRadius="4">
                                 <Border.Effect>
-                                    <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="10" ShadowDepth="0" Opacity="0.5"/>
+                                    <DropShadowEffect Color="{DynamicResource AccentColor}"
+                                                      BlurRadius="12"
+                                                      ShadowDepth="0"
+                                                      Opacity="0.55"/>
                                 </Border.Effect>
                             </Border>
                         </Grid>
@@ -385,17 +407,64 @@
 
     <!-- Custom Link Card Border Style -->
     <Style x:Key="LinkCardBorder" TargetType="Border">
-        <Setter Property="Background" Value="#151925"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#1e2434" Offset="0"/>
+                    <GradientStop Color="#141822" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#2c354c" Offset="0"/>
+                    <GradientStop Color="#0d0f16" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="10"/>
         <Setter Property="Margin" Value="6"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" BlurRadius="6" Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="0" Y="0"/>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#1d2232"/>
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             To="-2" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)"
+                                             To="4" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                             To="10" Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             To="0" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)"
+                                             To="2" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                             To="6" Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -483,7 +552,7 @@
         <Setter Property="Background" Value="#1c2230"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Padding" Value="16,8"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -631,6 +700,64 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- Minimalist 3D Card Style —
+         Hover: shadow deepens for depth feel. No Y-translation so cards never
+         shift/shake neighbours in a tight grid layout. -->
+    <Style x:Key="ThreeDCardStyle" TargetType="Border">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#222837" Offset="0"/>
+                    <GradientStop Color="#151925" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#363f56" Offset="0"/>
+                    <GradientStop Color="#0e1118" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="4" BlurRadius="12" Opacity="0.5"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <!-- Only deepen the shadow — no position change -->
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)"
+                                             To="8" Duration="0:0:0.18"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                             To="22" Duration="0:0:0.18"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+                                             To="0.65" Duration="0:0:0.18"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)"
+                                             To="4" Duration="0:0:0.18"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                                             To="12" Duration="0:0:0.18"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+                                             To="0.5" Duration="0:0:0.18"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

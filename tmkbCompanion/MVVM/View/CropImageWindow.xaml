@@ -1,0 +1,167 @@
+<Window x:Class="tmkbCompanion.MVVM.View.CropImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Adjust Profile Picture" 
+        Height="460" Width="360"
+        MinHeight="380"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded"
+        MouseDown="Window_MouseDown">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Theme/ThemeResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- Drop shadow outer wrapper -->
+    <Border Background="#151925" 
+            BorderBrush="{StaticResource BorderBrush}" 
+            BorderThickness="1.5" 
+            CornerRadius="16">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" BlurRadius="30" ShadowDepth="6" Opacity="0.55"/>
+        </Border.Effect>
+
+        <!-- Scroll so content never clips even at unusual DPI / font sizes -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="24,20,24,20">
+                <Grid.RowDefinitions>
+                    <!-- Title + close button -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Spacer -->
+                    <RowDefinition Height="16"/>
+                    <!-- Circular preview area -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Spacer -->
+                    <RowDefinition Height="20"/>
+                    <!-- Action buttons -->
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- ── Row 0: Title & Close ── -->
+                <Grid Grid.Row="0">
+                    <StackPanel>
+                        <TextBlock Text="Adjust Profile Picture" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   FontFamily="{StaticResource AppFont}"/>
+                        <TextBlock Text="Preview how the image fits inside a circle" 
+                                   Foreground="{StaticResource TextMutedBrush}" 
+                                   FontSize="12" 
+                                   Margin="0,4,0,0"
+                                   FontFamily="{StaticResource AppFont}"/>
+                    </StackPanel>
+
+                    <!-- X close button (top-right) -->
+                    <Button FontFamily="{StaticResource SegoeMDL2}"
+                            Content="&#xE711;"
+                            FontSize="14"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Top" 
+                            Click="Cancel_Click"
+                            Width="28" Height="28"
+                            Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="btnBg"
+                                                    Background="{TemplateBinding Background}"
+                                                    CornerRadius="6"
+                                                    SnapsToDevicePixels="True">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="btnBg" Property="Background" Value="#2a303f"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+
+                <!-- ── Row 2: Circular Preview ── -->
+                <StackPanel Grid.Row="2" HorizontalAlignment="Center">
+                    <Border Width="150" Height="150" 
+                            BorderBrush="{DynamicResource AccentBrush}" 
+                            BorderThickness="3" 
+                            CornerRadius="75"
+                            Background="#0c0e15"
+                            HorizontalAlignment="Center">
+                        <Border.Effect>
+                            <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="20" ShadowDepth="0" Opacity="0.35"/>
+                        </Border.Effect>
+                        <Border CornerRadius="72" Margin="3" ClipToBounds="True">
+                            <Border.Background>
+                                <ImageBrush x:Name="PreviewBrush" Stretch="UniformToFill"/>
+                            </Border.Background>
+                        </Border>
+                    </Border>
+
+                    <TextBlock Text="Circular Preview" 
+                               Foreground="{StaticResource TextMutedBrush}" 
+                               FontSize="11" 
+                               HorizontalAlignment="Center" 
+                               Margin="0,10,0,0"
+                               FontFamily="{StaticResource AppFont}"/>
+                </StackPanel>
+
+                <!-- ── Row 4: Action Buttons ── -->
+                <StackPanel Grid.Row="4" Margin="0,0,0,4">
+
+                    <!-- Primary: Crop & Center -->
+                    <Button Style="{StaticResource FluentButton}"
+                            Content="Crop &amp; Center"
+                            Click="Crop_Click"
+                            Height="40"
+                            Margin="0,0,0,10"/>
+
+                    <!-- Secondary: Place Exact -->
+                    <Button Style="{StaticResource FluentButtonSecondary}"
+                            Content="Place Exact"
+                            Click="PlaceExact_Click"
+                            Height="40"
+                            Margin="0,0,0,10"/>
+
+                    <!-- Separator line -->
+                    <Border Height="1" 
+                            Background="{StaticResource BorderBrush}" 
+                            Margin="0,0,0,10" 
+                            Opacity="0.5"/>
+
+                    <!-- Cancel — always fully visible, clearly separated -->
+                    <Button Style="{StaticResource FluentButtonSecondary}"
+                            BorderBrush="Transparent"
+                            Foreground="{StaticResource TextMutedBrush}"
+                            Content="Cancel"
+                            Click="Cancel_Click"
+                            Height="34"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</Window>

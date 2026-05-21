@@ -21,7 +21,14 @@ namespace tmkbCompanion.MVVM.ViewModel
         public string DisplayName
         {
             get => _displayName;
-            set => SetProperty(ref _displayName, value);
+            set
+            {
+                if (value != null && value.Length > 20)
+                {
+                    value = value.Substring(0, 20);
+                }
+                SetProperty(ref _displayName, value);
+            }
         }
 
         public string Bio
@@ -95,22 +102,23 @@ namespace tmkbCompanion.MVVM.ViewModel
             {
                 try
                 {
-                    // Copy to local app directory under a subfolder
-                    string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfileData");
-                    if (!Directory.Exists(appDataPath))
+                    var cropWindow = new tmkbCompanion.MVVM.View.CropImageWindow(openFileDialog.FileName)
                     {
-                        Directory.CreateDirectory(appDataPath);
-                    }
+                        Owner = System.Windows.Application.Current.MainWindow
+                    };
 
-                    string extension = Path.GetExtension(openFileDialog.FileName);
-                    string destFile = Path.Combine(appDataPath, $"profile_pic{extension}");
-                    
-                    File.Copy(openFileDialog.FileName, destFile, true);
-                    ProfilePicturePath = destFile;
+                    if (cropWindow.ShowDialog() == true)
+                    {
+                        string finalImagePath = cropWindow.FinalImagePath;
+                        if (!string.IsNullOrEmpty(finalImagePath) && File.Exists(finalImagePath))
+                        {
+                            ProfilePicturePath = finalImagePath;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _mainVM.ShowInAppToast("Error", $"Failed to copy image: {ex.Message}");
+                    _mainVM.ShowInAppToast("Error", $"Failed to process image: {ex.Message}");
                 }
             }
         }
