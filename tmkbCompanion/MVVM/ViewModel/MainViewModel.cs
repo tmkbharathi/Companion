@@ -13,6 +13,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         private string _toastTitle = string.Empty;
         private string _toastMessage = string.Empty;
         private bool _isToastVisible;
+        private bool _isSidebarOpen = true;
 
         public DashboardViewModel DashboardVM { get; }
         public SettingsViewModel SettingsVM { get; }
@@ -21,8 +22,16 @@ namespace tmkbCompanion.MVVM.ViewModel
         public object CurrentView
         {
             get => _currentView;
-            set => SetProperty(ref _currentView, value);
+            set
+            {
+                if (SetProperty(ref _currentView, value))
+                {
+                    OnPropertyChanged(nameof(IsProfileTitleBarVisible));
+                }
+            }
         }
+
+        public bool IsProfileTitleBarVisible => CurrentView != ProfileSetupVM;
 
         public string CurrentDate
         {
@@ -33,7 +42,14 @@ namespace tmkbCompanion.MVVM.ViewModel
         public string UserName
         {
             get => _userName;
-            set => SetProperty(ref _userName, value);
+            set
+            {
+                if (value != null && value.Length > 20)
+                {
+                    value = value.Substring(0, 20);
+                }
+                SetProperty(ref _userName, value);
+            }
         }
 
         public string ToastTitle
@@ -57,6 +73,13 @@ namespace tmkbCompanion.MVVM.ViewModel
         public ICommand ShowDashboardCommand { get; }
         public ICommand ShowSettingsCommand { get; }
         public ICommand ShowProfileSetupCommand { get; }
+        public ICommand ToggleSidebarCommand { get; }
+
+        public bool IsSidebarOpen
+        {
+            get => _isSidebarOpen;
+            set => SetProperty(ref _isSidebarOpen, value);
+        }
 
         public MainViewModel()
         {
@@ -72,6 +95,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             ShowDashboardCommand = new RelayCommand(ShowDashboard);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowProfileSetupCommand = new RelayCommand(ShowProfileSetup);
+            ToggleSidebarCommand = new RelayCommand(() => IsSidebarOpen = !IsSidebarOpen);
 
             // Set current date string
             UpdateCurrentDate();

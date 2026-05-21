@@ -8,7 +8,7 @@
              d:DesignHeight="800" d:DesignWidth="1000">
     
     <ScrollViewer VerticalScrollBarVisibility="Auto" FocusVisualStyle="{x:Null}">
-        <StackPanel Margin="40,40,40,60" MaxWidth="800" HorizontalAlignment="Left">
+        <StackPanel Margin="20,20,20,30" MaxWidth="800" HorizontalAlignment="Left">
             
             <!-- SECTION: General Settings -->
             <StackPanel Margin="0,0,0,32">
@@ -39,12 +39,9 @@
                 </Grid>
 
                 <!-- Card 1: Launch on Startup -->
-                <Border Background="{StaticResource CardBackgroundBrush}" 
-                        BorderBrush="{StaticResource BorderBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="12" 
-                        Padding="24"
-                        Margin="0,0,0,16">
+                <Border Style="{StaticResource ThreeDCardStyle}" 
+                        Padding="10"
+                        Margin="0,0,0,12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -68,11 +65,8 @@
                 </Border>
 
                 <!-- Card 2: Show Notifications -->
-                <Border Background="{StaticResource CardBackgroundBrush}" 
-                        BorderBrush="{StaticResource BorderBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="12" 
-                        Padding="24">
+                <Border Style="{StaticResource ThreeDCardStyle}" 
+                        Padding="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -113,13 +107,12 @@
                                VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- Card 1: Dark Mode -->
-                <Border Background="{StaticResource CardBackgroundBrush}" 
-                        BorderBrush="{StaticResource BorderBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="12" 
-                        Padding="24"
-                        Margin="0,0,0,16">
+                <!-- Card 1: Dark Mode (Disabled) -->
+                <Border Style="{StaticResource ThreeDCardStyle}" 
+                        Padding="10"
+                        Margin="0,0,0,12"
+                        IsEnabled="False"
+                        Opacity="0.5">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -133,7 +126,19 @@
 
                         <!-- Details -->
                         <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Dark Mode" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Dark Mode" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
+                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
+                                           Text="&#xE946;" 
+                                           FontSize="14" 
+                                           Foreground="{StaticResource TextMutedBrush}" 
+                                           Opacity="0.8"
+                                           VerticalAlignment="Center"
+                                           Margin="8,2,0,0"
+                                           Cursor="Help"
+                                           ToolTipService.ShowOnDisabled="True"
+                                           ToolTip="Later this feature will be enabled"/>
+                            </StackPanel>
                             <TextBlock Text="Switch between light and dark visual themes" Foreground="{StaticResource TextMutedBrush}" FontSize="13" Opacity="0.8" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}"/>
                         </StackPanel>
 
@@ -143,11 +148,8 @@
                 </Border>
 
                 <!-- Card 2: Accent Color -->
-                <Border Background="{StaticResource CardBackgroundBrush}" 
-                        BorderBrush="{StaticResource BorderBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="12" 
-                        Padding="24">
+                <Border Style="{StaticResource ThreeDCardStyle}" 
+                        Padding="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -165,33 +167,42 @@
                             <TextBlock Text="Customize the primary highlights of the interface" Foreground="{StaticResource TextMutedBrush}" FontSize="13" Opacity="0.8" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}"/>
                         </StackPanel>
 
-                        <!-- Colors Picker -->
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                            <!-- Blue Accent -->
-                            <Border Background="#5b8cff" CornerRadius="16" Width="32" Height="32" Margin="0,0,10,0" Cursor="Hand" ToolTip="Accent Blue">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#5b8cff"/>
-                                </Border.InputBindings>
-                            </Border>
-                            <!-- Red Accent -->
-                            <Border Background="#ff5252" CornerRadius="16" Width="32" Height="32" Margin="0,0,10,0" Cursor="Hand" ToolTip="Accent Red">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#ff5252"/>
-                                </Border.InputBindings>
-                            </Border>
-                            <!-- Orange/Yellow Accent -->
-                            <Border Background="#ffb874" CornerRadius="16" Width="32" Height="32" Margin="0,0,10,0" Cursor="Hand" ToolTip="Accent Yellow">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#ffb874"/>
-                                </Border.InputBindings>
-                            </Border>
-                            <!-- Green Accent -->
-                            <Border Background="#10b981" CornerRadius="16" Width="32" Height="32" Cursor="Hand" ToolTip="Accent Green">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#10b981"/>
-                                </Border.InputBindings>
-                            </Border>
-                        </StackPanel>
+                        <!-- Colors Picker (4-Segment Capsule) -->
+                        <Border Grid.Column="2" 
+                                CornerRadius="16" 
+                                ClipToBounds="True" 
+                                Height="32" 
+                                Width="140" 
+                                BorderThickness="1" 
+                                BorderBrush="{StaticResource BorderBrush}"
+                                VerticalAlignment="Center">
+                            <UniformGrid Columns="4">
+                                <!-- Blue Accent -->
+                                <Border Background="#5b8cff" Cursor="Hand" ToolTip="Accent Blue">
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#5b8cff"/>
+                                    </Border.InputBindings>
+                                </Border>
+                                <!-- Red Accent -->
+                                <Border Background="#ff5252" Cursor="Hand" ToolTip="Accent Red">
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#ff5252"/>
+                                    </Border.InputBindings>
+                                </Border>
+                                <!-- Orange/Yellow Accent -->
+                                <Border Background="#ffb874" Cursor="Hand" ToolTip="Accent Yellow">
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#ffb874"/>
+                                    </Border.InputBindings>
+                                </Border>
+                                <!-- Green Accent -->
+                                <Border Background="#10b981" Cursor="Hand" ToolTip="Accent Green">
+                                    <Border.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding SetAccentColorCommand}" CommandParameter="#10b981"/>
+                                    </Border.InputBindings>
+                                </Border>
+                            </UniformGrid>
+                        </Border>
                     </Grid>
                 </Border>
             </StackPanel>
@@ -214,19 +225,16 @@
                 </StackPanel>
 
                 <!-- Input cards container -->
-                <Border Background="{StaticResource CardBackgroundBrush}" 
-                        BorderBrush="{StaticResource BorderBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="16" 
-                        Padding="24">
+                <Border Style="{StaticResource ThreeDCardStyle}" 
+                        Padding="10">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="6"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="6"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="6"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -237,97 +245,90 @@
 
                         <!-- Row 0: Link 1 -->
                         <StackPanel Grid.Row="0" Grid.Column="0">
-                            <TextBlock Text="Link 1 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 1 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Grid.Row="0" Grid.Column="2">
-                            <TextBlock Text="Link 1 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 1 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
 
                         <!-- Row 2: Link 2 -->
                         <StackPanel Grid.Row="2" Grid.Column="0">
-                            <TextBlock Text="Link 2 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 2 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Grid.Row="2" Grid.Column="2">
-                            <TextBlock Text="Link 2 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 2 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
 
                         <!-- Row 4: Link 3 -->
                         <StackPanel Grid.Row="4" Grid.Column="0">
-                            <TextBlock Text="Link 3 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 3 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Grid.Row="4" Grid.Column="2">
-                            <TextBlock Text="Link 3 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 3 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
 
                         <!-- Row 6: Link 4 -->
                         <StackPanel Grid.Row="6" Grid.Column="0">
-                            <TextBlock Text="Link 4 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 4 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Grid.Row="6" Grid.Column="2">
-                            <TextBlock Text="Link 4 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                            <TextBlock Text="Link 4 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </Border>
             </StackPanel>
 
             <!-- SECTION: Storage Card -->
-            <Border Background="{StaticResource CardBackgroundBrush}" 
-                    BorderBrush="{StaticResource BorderBrush}" 
-                    BorderThickness="1" 
-                    CornerRadius="16" 
-                    Padding="32"
+            <Border Style="{StaticResource ThreeDCardStyle}"
+                    Padding="12,10"
                     Margin="0,8,0,0">
                 <Grid>
-                    <!-- Background Icon Pattern -->
-                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                               Text="&#xEC27;" 
-                               FontSize="140" 
-                               Foreground="{StaticResource TextPrimaryBrush}" 
-                               Opacity="0.03" 
-                               HorizontalAlignment="Right" 
-                               VerticalAlignment="Top"
-                               Margin="0,-20,-10,0"
-                               IsHitTestVisible="False"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                    <StackPanel>
-                        <!-- Labels & Button -->
-                        <Grid Margin="0,0,0,24">
-                            <StackPanel HorizontalAlignment="Left">
-                                <TextBlock Text="LOCAL CACHE STORAGE" 
-                                           Foreground="{DynamicResource AccentBrush}" 
-                                           FontSize="12" 
-                                           FontWeight="Bold" 
-                                           FontFamily="{StaticResource AppFont}"/>
-                                <TextBlock Text="{Binding CacheUsedText}" 
-                                           Foreground="{StaticResource TextPrimaryBrush}" 
-                                           FontSize="26" 
-                                           FontWeight="Bold" 
-                                           Margin="0,6,0,0"
-                                           FontFamily="{StaticResource AppFont}"/>
-                            </StackPanel>
-                            
-                            <!-- Clean Logs Button -->
-                            <Button Style="{StaticResource FluentButton}" 
-                                    Command="{Binding CleanLogsCommand}"
-                                    Content="Clean Logs" 
-                                    HorizontalAlignment="Right" 
-                                    VerticalAlignment="Bottom"
-                                    Width="120" Height="42"/>
-                        </Grid>
-
-                        <!-- Progress Bar -->
-                        <ProgressBar Style="{StaticResource FluentProgressBar}" 
-                                     Value="{Binding CacheProgress}" 
-                                     Maximum="100"/>
+                    <!-- Label row -->
+                    <StackPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Center">
+                        <TextBlock Text="LOCAL CACHE STORAGE"
+                                   Foreground="{DynamicResource AccentBrush}"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   FontFamily="{StaticResource AppFont}"/>
+                        <TextBlock Text="{Binding CacheUsedText}"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Margin="0,3,0,0"
+                                   FontFamily="{StaticResource AppFont}"/>
                     </StackPanel>
+
+                    <!-- Clean button -->
+                    <Button Grid.Column="1" Grid.Row="0"
+                            Style="{StaticResource FluentButton}"
+                            Command="{Binding CleanLogsCommand}"
+                            Content="Clean"
+                            VerticalAlignment="Center"
+                            Width="80" Height="30"/>
+
+                    <!-- Progress bar spanning full width -->
+                    <ProgressBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2"
+                                 Style="{StaticResource FluentProgressBar}"
+                                 Value="{Binding CacheProgress}"
+                                 Maximum="100"/>
                 </Grid>
             </Border>
             

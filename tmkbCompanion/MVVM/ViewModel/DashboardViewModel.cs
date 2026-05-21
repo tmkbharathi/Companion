@@ -32,6 +32,12 @@ namespace tmkbCompanion.MVVM.ViewModel
 
         public event Action<bool>? TimerStateChanged;
         public event Action? TimerFinished;
+        public event Action? LinksChanged;
+
+        private void OnLinksChanged()
+        {
+            LinksChanged?.Invoke();
+        }
 
         public string TimerText
         {
@@ -69,14 +75,14 @@ namespace tmkbCompanion.MVVM.ViewModel
             set => SetProperty(ref _isSavedFeedbackActive, value);
         }
 
-        public string Link1Title { get => _link1Title; set { if (SetProperty(ref _link1Title, value)) SaveLinks(); } }
-        public string Link1Url { get => _link1Url; set { if (SetProperty(ref _link1Url, value)) SaveLinks(); } }
-        public string Link2Title { get => _link2Title; set { if (SetProperty(ref _link2Title, value)) SaveLinks(); } }
-        public string Link2Url { get => _link2Url; set { if (SetProperty(ref _link2Url, value)) SaveLinks(); } }
-        public string Link3Title { get => _link3Title; set { if (SetProperty(ref _link3Title, value)) SaveLinks(); } }
-        public string Link3Url { get => _link3Url; set { if (SetProperty(ref _link3Url, value)) SaveLinks(); } }
-        public string Link4Title { get => _link4Title; set { if (SetProperty(ref _link4Title, value)) SaveLinks(); } }
-        public string Link4Url { get => _link4Url; set { if (SetProperty(ref _link4Url, value)) SaveLinks(); } }
+        public string Link1Title { get => _link1Title; set { if (SetProperty(ref _link1Title, value)) { SaveLinks(); OnLinksChanged(); } } }
+        public string Link1Url { get => _link1Url; set { if (SetProperty(ref _link1Url, value)) { SaveLinks(); OnLinksChanged(); } } }
+        public string Link2Title { get => _link2Title; set { if (SetProperty(ref _link2Title, value)) { SaveLinks(); OnLinksChanged(); } } }
+        public string Link2Url { get => _link2Url; set { if (SetProperty(ref _link2Url, value)) { SaveLinks(); OnLinksChanged(); } } }
+        public string Link3Title { get => _link3Title; set { if (SetProperty(ref _link3Title, value)) { SaveLinks(); OnLinksChanged(); } } }
+        public string Link3Url { get => _link3Url; set { if (SetProperty(ref _link3Url, value)) { SaveLinks(); OnLinksChanged(); } } }
+        public string Link4Title { get => _link4Title; set { if (SetProperty(ref _link4Title, value)) { SaveLinks(); OnLinksChanged(); } } }
+        public string Link4Url { get => _link4Url; set { if (SetProperty(ref _link4Url, value)) { SaveLinks(); OnLinksChanged(); } } }
 
         public ICommand ToggleTimerCommand { get; }
         public ICommand ResetTimerCommand { get; }
@@ -248,6 +254,20 @@ namespace tmkbCompanion.MVVM.ViewModel
             {
                 Debug.WriteLine($"Failed to save links: {ex.Message}");
             }
+        }
+
+        public System.Collections.Generic.List<(string Title, string Url)> GetImportantLinks()
+        {
+            var list = new System.Collections.Generic.List<(string Title, string Url)>();
+            if (!string.IsNullOrWhiteSpace(Link1Title) || !string.IsNullOrWhiteSpace(Link1Url))
+                list.Add((Link1Title, Link1Url));
+            if (!string.IsNullOrWhiteSpace(Link2Title) || !string.IsNullOrWhiteSpace(Link2Url))
+                list.Add((Link2Title, Link2Url));
+            if (!string.IsNullOrWhiteSpace(Link3Title) || !string.IsNullOrWhiteSpace(Link3Url))
+                list.Add((Link3Title, Link3Url));
+            if (!string.IsNullOrWhiteSpace(Link4Title) || !string.IsNullOrWhiteSpace(Link4Url))
+                list.Add((Link4Title, Link4Url));
+            return list;
         }
     }
 
