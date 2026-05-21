@@ -10,6 +10,11 @@
 # Stitch Reference files (if we want to keep them local but not committed)
 stitch_reference/
 
+# Executable files
+*.exe
+*.dll
+*.pdb
+
 # OS files
 Thumbs.db
 ehthumbs.db
