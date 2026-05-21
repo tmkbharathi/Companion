@@ -1,0 +1,315 @@
+<Window x:Class="tmkbCompanion.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:tmkbCompanion"
+        xmlns:vm="clr-namespace:tmkbCompanion.MVVM.ViewModel"
+        xmlns:view="clr-namespace:tmkbCompanion.MVVM.View"
+        mc:Ignorable="d"
+        Title="FlowTrack" 
+        Height="800" 
+        Width="1280"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- View Model to View mappings -->
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <view:DashboardView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <view:SettingsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProfileSetupViewModel}">
+            <view:ProfileSetupView/>
+        </DataTemplate>
+
+        <!-- Sidebar Navigation RadioButton Style -->
+        <Style x:Key="SidebarMenuItem" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Margin" Value="12,4"/>
+            <Setter Property="Padding" Value="16,0,0,0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                BorderThickness="0"
+                                SnapsToDevicePixels="true">
+                            <Grid>
+                                <!-- Left Active Highlight Indicator -->
+                                <Border x:Name="ActiveIndicator"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Height="24"
+                                        Width="4"
+                                        Background="{DynamicResource AccentBrush}"
+                                        CornerRadius="2"
+                                        Visibility="Collapsed"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
+                                    <!-- Icon -->
+                                    <TextBlock x:Name="IconBlock"
+                                               FontFamily="{StaticResource SegoeMDL2}"
+                                               Text="{TemplateBinding Tag}"
+                                               FontSize="18"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,16,0"/>
+                                    <!-- Content -->
+                                    <ContentPresenter VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="#2a303f"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="#33343c"/>
+                                <Setter TargetName="ActiveIndicator" Property="Visibility" Value="Visible"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                <Setter TargetName="IconBlock" Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Main Window Outer Border -->
+    <Border Background="{StaticResource BaseBackgroundBrush}"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="12"
+            ClipToBounds="True">
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- Titlebar Row -->
+                <RowDefinition Height="32"/>
+                <!-- Main App Area -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <!-- Sidebar Column -->
+                <ColumnDefinition Width="280"/>
+                <!-- Content Column -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 1. CUSTOM TITLE BAR (Across both columns) -->
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                    Background="#191b22" 
+                    BorderBrush="{StaticResource BorderBrush}" 
+                    BorderThickness="0,0,0,1"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <!-- Window Icon & Title -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
+                                   Text="&#xE916;" 
+                                   FontSize="12" 
+                                   Foreground="{DynamicResource AccentBrush}" 
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+                        <TextBlock Text="FlowTrack" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontSize="12" 
+                                   FontWeight="SemiBold"
+                                   FontFamily="{StaticResource AppFont}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Title Bar Actions -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <!-- Minimize Button -->
+                        <Button Style="{StaticResource TitleBarButton}" Click="MinimizeBtn_Click">
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE921;" FontSize="10"/>
+                        </Button>
+                        <!-- Close Button -->
+                        <Button Style="{StaticResource TitleBarCloseButton}" Click="CloseBtn_Click">
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE8BB;" FontSize="10"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 2. SIDEBAR NAVIGATION -->
+            <Border Grid.Row="1" Grid.Column="0" 
+                    Background="{StaticResource SidebarBackgroundBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,1,0"
+                    Padding="0,24,0,24">
+                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!-- Logo / Header -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Navigation Items -->
+                        <RowDefinition Height="*"/>
+                        <!-- Profile Footer -->
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Sidebar Header -->
+                    <StackPanel Grid.Row="0" Margin="24,0,24,32">
+                        <TextBlock Text="FlowTrack" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   FontFamily="{StaticResource AppFont}"/>
+                        <TextBlock Text="Utility v1.0" 
+                                   Foreground="{StaticResource TextMutedBrush}" 
+                                   FontSize="12" 
+                                   Opacity="0.6" 
+                                   FontFamily="{StaticResource AppFont}"/>
+                    </StackPanel>
+
+                    <!-- Sidebar Nav Items (RadioButtons) -->
+                    <StackPanel Grid.Row="1">
+                        <!-- Dashboard Item -->
+                        <RadioButton Style="{StaticResource SidebarMenuItem}"
+                                     IsChecked="True"
+                                     Tag="&#xE785;"
+                                     Command="{Binding ShowDashboardCommand}"
+                                     Content="Dashboard"/>
+
+                        <!-- Settings Item -->
+                        <RadioButton Style="{StaticResource SidebarMenuItem}"
+                                     Tag="&#xE713;"
+                                     Command="{Binding ShowSettingsCommand}"
+                                     Content="Settings"/>
+                    </StackPanel>
+
+                    <!-- User Profile Footer -->
+                    <Border Grid.Row="2" 
+                            Background="#1c2230"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Margin="16,0"
+                            Padding="12"
+                            Cursor="Hand">
+                        <Border.InputBindings>
+                            <MouseBinding MouseAction="LeftClick" Command="{Binding ShowProfileSetupCommand}"/>
+                        </Border.InputBindings>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Profile Avatar Icon -->
+                            <Border Width="36" Height="36" 
+                                    Background="{DynamicResource AccentBrush}" 
+                                    CornerRadius="18" 
+                                    Grid.Column="0"
+                                    ClipToBounds="True">
+                                <Grid>
+                                    <!-- Default Glyph -->
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
+                                               Text="&#xE77B;" 
+                                               FontSize="16" 
+                                               Foreground="#001847" 
+                                               HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ProfileSetupVM.HasProfilePicture}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <!-- Uploaded Photo -->
+                                    <Image Source="{Binding ProfileSetupVM.ProfilePicturePath, UpdateSourceTrigger=PropertyChanged}" 
+                                           Stretch="UniformToFill" 
+                                           Width="36" Height="36">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ProfileSetupVM.HasProfilePicture}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </Grid>
+                            </Border>
+
+                            <!-- Name Info -->
+                            <TextBlock Grid.Column="1" 
+                                       Text="{Binding UserName}" 
+                                       Foreground="{StaticResource TextPrimaryBrush}" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold" 
+                                       VerticalAlignment="Center" 
+                                       Margin="12,0,0,0"
+                                       FontFamily="{StaticResource AppFont}"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- 3. VIEWPORT CONTENT -->
+            <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentView}"/>
+
+            <!-- 4. SLIDE-IN TOAST OVERLAY -->
+            <Border Grid.Row="1" Grid.Column="1" 
+                    Background="#1c2230" 
+                    BorderBrush="{StaticResource BorderBrush}" 
+                    BorderThickness="1" 
+                    CornerRadius="10" 
+                    Width="320" 
+                    Height="80" 
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Bottom" 
+                    Margin="0,0,24,24" 
+                    Padding="16" 
+                    Visibility="{Binding IsToastVisible, Converter={StaticResource BoolToVis}}"
+                    Panel.ZIndex="1000">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="15" ShadowDepth="2" Opacity="0.5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Checkmark Icon -->
+                    <Border Background="#10b981" Opacity="0.1" CornerRadius="16" Width="32" Height="32" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xE930;" FontSize="16" Foreground="#10b981" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <!-- Message Details -->
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ToastTitle}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
+                        <TextBlock Text="{Binding ToastMessage}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Border>
+</Window>
