@@ -196,6 +196,88 @@
                 </Border>
             </StackPanel>
 
+            <!-- SECTION: Customize Important Links -->
+            <StackPanel Margin="0,0,0,32">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
+                               Text="&#xE71B;" 
+                               FontSize="24" 
+                               Foreground="{DynamicResource AccentBrush}" 
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                    <TextBlock Text="Important Links Configuration" 
+                               Foreground="{StaticResource TextPrimaryBrush}" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               FontFamily="{StaticResource AppFont}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Input cards container -->
+                <Border Background="{StaticResource CardBackgroundBrush}" 
+                        BorderBrush="{StaticResource BorderBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="16" 
+                        Padding="24">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Row 0: Link 1 -->
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Text="Link 1 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Text="Link 1 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Row 2: Link 2 -->
+                        <StackPanel Grid.Row="2" Grid.Column="0">
+                            <TextBlock Text="Link 2 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="2">
+                            <TextBlock Text="Link 2 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Row 4: Link 3 -->
+                        <StackPanel Grid.Row="4" Grid.Column="0">
+                            <TextBlock Text="Link 3 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="2">
+                            <TextBlock Text="Link 3 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Row 6: Link 4 -->
+                        <StackPanel Grid.Row="6" Grid.Column="0">
+                            <TextBlock Text="Link 4 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Title, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="6" Grid.Column="2">
+                            <TextBlock Text="Link 4 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,6" FontFamily="{StaticResource AppFont}"/>
+                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Url, UpdateSourceTrigger=PropertyChanged}" Height="36" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
             <!-- SECTION: Storage Card -->
             <Border Background="{StaticResource CardBackgroundBrush}" 
                     BorderBrush="{StaticResource BorderBrush}" 

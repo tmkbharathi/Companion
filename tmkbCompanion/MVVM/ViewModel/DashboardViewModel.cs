@@ -18,7 +18,17 @@ namespace tmkbCompanion.MVVM.ViewModel
         private string _saveButtonText = "Save Note";
         private bool _isSavedFeedbackActive;
 
+        private string _link1Title = "Company Portal";
+        private string _link1Url = "https://portal.company.com";
+        private string _link2Title = "Documentation";
+        private string _link2Url = "https://docs.company.com";
+        private string _link3Title = "Task Tracker";
+        private string _link3Url = "https://tasks.company.com";
+        private string _link4Title = "Team Calendar";
+        private string _link4Url = "https://calendar.company.com";
+
         private const string NotesFileName = "flowtrack_notes.txt";
+        private const string LinksFileName = "link_settings.json";
 
         public event Action<bool>? TimerStateChanged;
         public event Action? TimerFinished;
@@ -59,6 +69,15 @@ namespace tmkbCompanion.MVVM.ViewModel
             set => SetProperty(ref _isSavedFeedbackActive, value);
         }
 
+        public string Link1Title { get => _link1Title; set { if (SetProperty(ref _link1Title, value)) SaveLinks(); } }
+        public string Link1Url { get => _link1Url; set { if (SetProperty(ref _link1Url, value)) SaveLinks(); } }
+        public string Link2Title { get => _link2Title; set { if (SetProperty(ref _link2Title, value)) SaveLinks(); } }
+        public string Link2Url { get => _link2Url; set { if (SetProperty(ref _link2Url, value)) SaveLinks(); } }
+        public string Link3Title { get => _link3Title; set { if (SetProperty(ref _link3Title, value)) SaveLinks(); } }
+        public string Link3Url { get => _link3Url; set { if (SetProperty(ref _link3Url, value)) SaveLinks(); } }
+        public string Link4Title { get => _link4Title; set { if (SetProperty(ref _link4Title, value)) SaveLinks(); } }
+        public string Link4Url { get => _link4Url; set { if (SetProperty(ref _link4Url, value)) SaveLinks(); } }
+
         public ICommand ToggleTimerCommand { get; }
         public ICommand ResetTimerCommand { get; }
         public ICommand SaveNotesCommand { get; }
@@ -78,6 +97,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             OpenLinkCommand = new RelayCommand(OpenLink);
 
             LoadNotes();
+            LoadLinks();
         }
 
         public void ToggleTimer()
@@ -176,5 +196,70 @@ namespace tmkbCompanion.MVVM.ViewModel
                 }
             }
         }
+
+        private void LoadLinks()
+        {
+            try
+            {
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LinksFileName);
+                if (File.Exists(path))
+                {
+                    string json = File.ReadAllText(path);
+                    var data = System.Text.Json.JsonSerializer.Deserialize<LinkSettingsData>(json);
+                    if (data != null)
+                    {
+                        _link1Title = data.Link1Title;
+                        _link1Url = data.Link1Url;
+                        _link2Title = data.Link2Title;
+                        _link2Url = data.Link2Url;
+                        _link3Title = data.Link3Title;
+                        _link3Url = data.Link3Url;
+                        _link4Title = data.Link4Title;
+                        _link4Url = data.Link4Url;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to load links: {ex.Message}");
+            }
+        }
+
+        private void SaveLinks()
+        {
+            try
+            {
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LinksFileName);
+                var data = new LinkSettingsData
+                {
+                    Link1Title = Link1Title,
+                    Link1Url = Link1Url,
+                    Link2Title = Link2Title,
+                    Link2Url = Link2Url,
+                    Link3Title = Link3Title,
+                    Link3Url = Link3Url,
+                    Link4Title = Link4Title,
+                    Link4Url = Link4Url
+                };
+                string json = System.Text.Json.JsonSerializer.Serialize(data, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(path, json);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to save links: {ex.Message}");
+            }
+        }
+    }
+
+    public class LinkSettingsData
+    {
+        public string Link1Title { get; set; } = "Company Portal";
+        public string Link1Url { get; set; } = "https://portal.company.com";
+        public string Link2Title { get; set; } = "Documentation";
+        public string Link2Url { get; set; } = "https://docs.company.com";
+        public string Link3Title { get; set; } = "Task Tracker";
+        public string Link3Url { get; set; } = "https://tasks.company.com";
+        public string Link4Title { get; set; } = "Team Calendar";
+        public string Link4Url { get; set; } = "https://calendar.company.com";
     }
 }
