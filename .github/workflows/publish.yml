@@ -3,6 +3,10 @@ name: Build and Release
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+permissions:
+  contents: write
+  packages: write
+
 on:
   push:
     branches:
