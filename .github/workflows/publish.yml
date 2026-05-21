@@ -1,0 +1,87 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore tmkbCompanion/tmkbCompanion.csproj
+
+      - name: Build Release
+        run: dotnet build tmkbCompanion/tmkbCompanion.csproj -c Release
+
+      - name: Publish self-contained single-file app
+        run: |
+          dotnet publish tmkbCompanion/tmkbCompanion.csproj \
+            -c Release \
+            -r win-x64 \
+            --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:PublishTrimmed=false
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress --yes
+
+      - name: Build installer
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" installer.iss
+
+      - name: Archive published output and installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmkbCompanion-windows-x64
+          path: |
+            tmkbCompanion/bin/Release/net8.0-windows/win-x64/publish/
+            tmkbCompanion-setup.exe
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tmkbCompanion-windows-x64
+          path: release-artifact
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload installer release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: tmkbCompanion-setup.exe
+          asset_path: release-artifact/tmkbCompanion-setup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
