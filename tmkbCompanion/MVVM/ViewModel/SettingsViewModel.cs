@@ -10,11 +10,14 @@ namespace tmkbCompanion.MVVM.ViewModel
 {
     public class SettingsViewModel : ViewModelBase
     {
+        private readonly DashboardViewModel _dashboard;
         private bool _launchOnStartup;
         private bool _showNotifications = true;
         private bool _darkMode = true;
         private double _cacheProgress = 24.0; // 1.2 GB of 5.0 GB (24%)
         private string _cacheUsedText = "1.2 GB of 5.0 GB used";
+
+        public DashboardViewModel Dashboard => _dashboard;
 
         public event Action<System.Windows.Media.Color>? AccentColorChanged;
 
@@ -57,8 +60,9 @@ namespace tmkbCompanion.MVVM.ViewModel
         public ICommand SetAccentColorCommand { get; }
         public ICommand CleanLogsCommand { get; }
 
-        public SettingsViewModel()
+        public SettingsViewModel(DashboardViewModel dashboard)
         {
+            _dashboard = dashboard;
             SetAccentColorCommand = new RelayCommand(SetAccentColor);
             CleanLogsCommand = new RelayCommand(CleanLogs);
             _launchOnStartup = GetStartupRegistryState();

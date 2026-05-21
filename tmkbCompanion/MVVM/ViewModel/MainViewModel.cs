@@ -62,7 +62,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             // Initialize sub-view models
             DashboardVM = new DashboardViewModel();
-            SettingsVM = new SettingsViewModel();
+            SettingsVM = new SettingsViewModel(DashboardVM);
             ProfileSetupVM = new ProfileSetupViewModel(this);
 
             // Set default view
