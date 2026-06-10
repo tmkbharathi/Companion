@@ -15,9 +15,12 @@ namespace tmkbCompanion.MVVM.ViewModel
         private bool _isToastVisible;
         private bool _isSidebarOpen = true;
 
+        private readonly WaterReminderService _waterService;
+
         public DashboardViewModel DashboardVM { get; }
         public SettingsViewModel SettingsVM { get; }
         public ProfileSetupViewModel ProfileSetupVM { get; }
+        public WaterReminderViewModel WaterReminderVM { get; }
 
         public object CurrentView
         {
@@ -33,6 +36,8 @@ namespace tmkbCompanion.MVVM.ViewModel
 
         public bool IsProfileTitleBarVisible => CurrentView != ProfileSetupVM;
 
+        public string AppVersion => $"Utility v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.1.2"}";
+
         public string CurrentDate
         {
             get => _currentDate;
@@ -44,11 +49,12 @@ namespace tmkbCompanion.MVVM.ViewModel
             get => _userName;
             set
             {
-                if (value != null && value.Length > 20)
+                string safeValue = value ?? string.Empty;
+                if (safeValue.Length > 20)
                 {
-                    value = value.Substring(0, 20);
+                    safeValue = safeValue.Substring(0, 20);
                 }
-                SetProperty(ref _userName, value);
+                SetProperty(ref _userName, safeValue);
             }
         }
 
@@ -73,6 +79,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         public ICommand ShowDashboardCommand { get; }
         public ICommand ShowSettingsCommand { get; }
         public ICommand ShowProfileSetupCommand { get; }
+        public ICommand ShowWaterReminderCommand { get; }
         public ICommand ToggleSidebarCommand { get; }
 
         public bool IsSidebarOpen
@@ -84,9 +91,11 @@ namespace tmkbCompanion.MVVM.ViewModel
         public MainViewModel()
         {
             // Initialize sub-view models
+            _waterService = new WaterReminderService();
             DashboardVM = new DashboardViewModel();
             SettingsVM = new SettingsViewModel(DashboardVM);
             ProfileSetupVM = new ProfileSetupViewModel(this);
+            WaterReminderVM = new WaterReminderViewModel(_waterService);
 
             // Set default view
             _currentView = DashboardVM;
@@ -95,6 +104,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             ShowDashboardCommand = new RelayCommand(ShowDashboard);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowProfileSetupCommand = new RelayCommand(ShowProfileSetup);
+            ShowWaterReminderCommand = new RelayCommand(ShowWaterReminder);
             ToggleSidebarCommand = new RelayCommand(() => IsSidebarOpen = !IsSidebarOpen);
 
             // Set current date string
@@ -109,6 +119,11 @@ namespace tmkbCompanion.MVVM.ViewModel
         public void ShowSettings()
         {
             CurrentView = SettingsVM;
+        }
+
+        public void ShowWaterReminder()
+        {
+            CurrentView = WaterReminderVM;
         }
 
         public void ShowProfileSetup()

@@ -15,29 +15,24 @@ namespace tmkbCompanion.MVVM.Core
     /// </summary>
     public static class PopupManager
     {
-        private static readonly Stack<Window> _stack = new Stack<Window>();
+        private static readonly List<Window> _openWindows = new List<Window>();
 
         /// <summary>Returns true when at least one popup is registered.</summary>
-        public static bool HasOpenPopups => _stack.Count > 0;
+        public static bool HasOpenPopups => _openWindows.Count > 0;
 
         /// <summary>
-        /// Push a window onto the stack. Automatically pops it when it closes.
+        /// Push a window onto the collection. Automatically removes it when it closes.
         /// Must be called from the UI thread (e.g. inside a Loaded event handler).
         /// </summary>
         public static void Push(Window window)
         {
             if (window == null) return;
 
-            _stack.Push(window);
+            _openWindows.Add(window);
 
             window.Closed += (sender, args) =>
             {
-                // Pop until the closed window is removed (handles cases where
-                // the stack got out of sync, e.g. programmatic close without ESC).
-                while (_stack.Count > 0 && _stack.Peek() == window)
-                {
-                    _stack.Pop();
-                }
+                _openWindows.Remove(window);
             };
         }
 
@@ -47,9 +42,9 @@ namespace tmkbCompanion.MVVM.Core
         /// </summary>
         public static void CloseTop()
         {
-            if (_stack.Count == 0) return;
+            if (_openWindows.Count == 0) return;
 
-            var top = _stack.Peek();
+            var top = _openWindows[_openWindows.Count - 1];
 
             // Use dispatcher to ensure we're on the right thread.
             top.Dispatcher.Invoke(() => top.Close(), DispatcherPriority.Normal);

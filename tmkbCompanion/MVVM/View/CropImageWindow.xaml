@@ -157,6 +157,7 @@
                     <Button Style="{StaticResource FluentButtonSecondary}"
                             BorderBrush="Transparent"
                             Foreground="{StaticResource TextMutedBrush}"
+                            IsCancel="True"
                             Content="Cancel"
                             Click="Cancel_Click"
                             Height="34"/>

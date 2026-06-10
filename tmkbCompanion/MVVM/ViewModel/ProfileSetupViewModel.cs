@@ -23,11 +23,12 @@ namespace tmkbCompanion.MVVM.ViewModel
             get => _displayName;
             set
             {
-                if (value != null && value.Length > 20)
+                string safeValue = value ?? string.Empty;
+                if (safeValue.Length > 20)
                 {
-                    value = value.Substring(0, 20);
+                    safeValue = safeValue.Substring(0, 20);
                 }
-                SetProperty(ref _displayName, value);
+                SetProperty(ref _displayName, safeValue);
             }
         }
 
@@ -127,6 +128,25 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
+                string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profile_settings.json");
+                string oldProfilePic = string.Empty;
+                if (File.Exists(settingsPath))
+                {
+                    try
+                    {
+                        string jsonString = File.ReadAllText(settingsPath);
+                        var oldSettings = JsonSerializer.Deserialize<ProfileSettingsModel>(jsonString);
+                        if (oldSettings != null)
+                        {
+                            oldProfilePic = oldSettings.ProfilePicturePath;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to load old profile settings: {ex.Message}");
+                    }
+                }
+
                 var settings = new ProfileSettingsModel
                 {
                     DisplayName = DisplayName,
@@ -138,9 +158,24 @@ namespace tmkbCompanion.MVVM.ViewModel
                     ProfilePicturePath = ProfilePicturePath
                 };
 
-                string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profile_settings.json");
-                string jsonString = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(settingsPath, jsonString);
+                string jsonStringNew = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(settingsPath, jsonStringNew);
+
+                // If the profile picture has changed and the old one was in ProfileData, delete the old one
+                if (!string.Equals(oldProfilePic, ProfilePicturePath, StringComparison.OrdinalIgnoreCase) &&
+                    !string.IsNullOrEmpty(oldProfilePic) &&
+                    oldProfilePic.Contains("ProfileData", StringComparison.OrdinalIgnoreCase) &&
+                    File.Exists(oldProfilePic))
+                {
+                    try
+                    {
+                        File.Delete(oldProfilePic);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to delete replaced profile picture: {ex.Message}");
+                    }
+                }
 
                 // Update main view model username
                 if (!string.IsNullOrWhiteSpace(DisplayName))

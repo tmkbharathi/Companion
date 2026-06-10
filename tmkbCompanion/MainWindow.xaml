@@ -29,6 +29,9 @@
         <DataTemplate DataType="{x:Type vm:ProfileSetupViewModel}">
             <view:ProfileSetupView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:WaterReminderViewModel}">
+            <view:WaterReminderView/>
+        </DataTemplate>
 
         <!-- Sidebar Navigation RadioButton Style -->
         <Style x:Key="SidebarMenuItem" TargetType="RadioButton">
@@ -278,7 +281,7 @@
                                    FontSize="20"
                                    FontWeight="Bold"
                                    FontFamily="{StaticResource AppFont}"/>
-                        <TextBlock Text="Utility v1.0"
+                        <TextBlock Text="{Binding AppVersion}"
                                    Foreground="{StaticResource TextMutedBrush}"
                                    FontSize="11"
                                    Opacity="0.6"
@@ -296,6 +299,10 @@
                                      Tag="&#xE713;"
                                      Command="{Binding ShowSettingsCommand}"
                                      Content="Settings"/>
+                        <RadioButton Style="{StaticResource SidebarMenuItem}"
+                                     Tag="&#xE934;"
+                                     Command="{Binding ShowWaterReminderCommand}"
+                                     Content="Water Reminder"/>
                     </StackPanel>
                 </Grid>
             </Border>

@@ -152,13 +152,16 @@ namespace tmkbCompanion.MVVM.ViewModel
             TimerText = $"{mins:D2}:{secs:D2}";
         }
 
+        private string NotesFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, NotesFileName);
+
         private void LoadNotes()
         {
             try
             {
-                if (File.Exists(NotesFileName))
+                string path = NotesFilePath;
+                if (File.Exists(path))
                 {
-                    NotesText = File.ReadAllText(NotesFileName);
+                    NotesText = File.ReadAllText(path);
                 }
             }
             catch (Exception ex)
@@ -171,7 +174,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                await File.WriteAllTextAsync(NotesFileName, NotesText);
+                await File.WriteAllTextAsync(NotesFilePath, NotesText);
                 
                 // Show success feedback
                 SaveButtonText = "Saved";

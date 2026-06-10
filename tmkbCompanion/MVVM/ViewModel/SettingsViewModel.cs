@@ -231,6 +231,46 @@ namespace tmkbCompanion.MVVM.ViewModel
 
                 // Also clear the dashboard notes text if it's still loaded
                 _dashboard.NotesText = string.Empty;
+
+                // Delete unused profile picture files under ProfileData/
+                string profileDataDir = Path.Combine(baseDir, "ProfileData");
+                if (Directory.Exists(profileDataDir))
+                {
+                    string activeProfilePic = string.Empty;
+                    string settingsPath = Path.Combine(baseDir, "profile_settings.json");
+                    if (File.Exists(settingsPath))
+                    {
+                        try
+                        {
+                            string json = File.ReadAllText(settingsPath);
+                            var settings = JsonSerializer.Deserialize<ProfileSettingsModel>(json);
+                            if (settings != null)
+                            {
+                                activeProfilePic = settings.ProfilePicturePath;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Failed to read active profile picture path for cleaning: {ex.Message}");
+                        }
+                    }
+
+                    foreach (var file in Directory.GetFiles(profileDataDir))
+                    {
+                        // Delete the file if it's not the active profile picture
+                        if (!string.Equals(file, activeProfilePic, StringComparison.OrdinalIgnoreCase))
+                        {
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Failed to delete orphaned profile picture {file}: {ex.Message}");
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

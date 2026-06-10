@@ -35,6 +35,10 @@ namespace tmkbCompanion
             _viewModel.DashboardVM.TimerFinished += DashboardVM_TimerFinished;
             _viewModel.SettingsVM.AccentColorChanged += SettingsVM_AccentColorChanged;
             _viewModel.DashboardVM.LinksChanged += DashboardVM_LinksChanged;
+            _viewModel.WaterReminderVM.Service.FallbackNotificationRequested += (title, msg) =>
+            {
+                _trayIconManager.ShowNotification(title, msg);
+            };
 
             // Set initial states
             _trayIconManager.UpdateTimerState(_viewModel.DashboardVM.IsTimerRunning);
@@ -60,9 +64,11 @@ namespace tmkbCompanion
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MainViewModel.IsSidebarOpen))
-                AnimateSidebarWidth(_viewModel.IsSidebarOpen ? 0.0 : 160.0,
-                                    _viewModel.IsSidebarOpen ? 160.0 : 0.0,
-                                    milliseconds: 200);
+            {
+                double currentWidth = SidebarColumn.Width.Value;
+                double targetWidth = _viewModel.IsSidebarOpen ? 160.0 : 0.0;
+                AnimateSidebarWidth(currentWidth, targetWidth, milliseconds: 200);
+            }
         }
 
         private System.Windows.Threading.DispatcherTimer? _sidebarTimer;
@@ -170,6 +176,7 @@ namespace tmkbCompanion
             else
             {
                 _trayIconManager.Dispose();
+                _viewModel.WaterReminderVM.Service.Dispose();
                 base.OnClosing(e);
             }
         }

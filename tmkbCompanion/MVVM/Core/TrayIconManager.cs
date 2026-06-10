@@ -100,6 +100,7 @@ namespace tmkbCompanion.MVVM.Core
                     IntPtr hIcon = bitmap.GetHicon();
                     var newIcon = Icon.FromHandle(hIcon);
 
+                    var oldIcon = _notifyIcon.Icon;
                     _notifyIcon.Icon = newIcon;
 
                     // Clean up the previous icon handle to avoid memory leaks
@@ -108,6 +109,8 @@ namespace tmkbCompanion.MVVM.Core
                         DestroyIcon(_currentIconHandle);
                     }
                     _currentIconHandle = hIcon;
+
+                    oldIcon?.Dispose();
                 }
             }
             catch (Exception ex)
