@@ -16,7 +16,7 @@ AppCopyright=Copyright (c) 2026
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "tmkbCompanion\\bin\\Release\\net8.0-windows\\win-x64\\publish\\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "tmkbCompanion\\bin\\Release\\net8.0-windows10.0.19041.0\\win-x64\\publish\\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\\tmkbCompanion"; Filename: "{app}\\tmkbCompanion.exe"
