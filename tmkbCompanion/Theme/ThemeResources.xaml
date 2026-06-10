@@ -24,6 +24,9 @@
     <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
     <FontFamily x:Key="AppFont">Segoe UI</FontFamily>
 
+    <!-- Converters -->
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
     <!-- Custom Button Style -->
     <Style x:Key="FluentButton" TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>

@@ -17,8 +17,6 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-
         <!-- View Model → View mappings -->
         <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
             <view:DashboardView/>
