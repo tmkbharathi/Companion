@@ -12,12 +12,14 @@ namespace tmkbCompanion.MVVM.Core
     {
         private readonly NotifyIcon _notifyIcon;
         private readonly ToolStripMenuItem _toggleTimerMenuItem;
+        private readonly ToolStripMenuItem _togglePetMenuItem;
         private readonly ToolStripMenuItem _linksMenuItem;
         private IntPtr _currentIconHandle = IntPtr.Zero;
         private readonly Window _mainWindow;
 
         public event Action? ToggleTimerRequested;
         public event Action? OpenRequested;
+        public event Action<bool>? TogglePetRequested;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern bool DestroyIcon(IntPtr handle);
@@ -36,6 +38,14 @@ namespace tmkbCompanion.MVVM.Core
             _toggleTimerMenuItem = new ToolStripMenuItem("Start Focus Timer");
             _toggleTimerMenuItem.Click += (s, e) => ToggleTimerRequested?.Invoke();
             contextMenuStrip.Items.Add(_toggleTimerMenuItem);
+
+            _togglePetMenuItem = new ToolStripMenuItem("Pet Companion")
+            {
+                CheckOnClick = true,
+                Checked = false
+            };
+            _togglePetMenuItem.Click += (s, e) => TogglePetRequested?.Invoke(_togglePetMenuItem.Checked);
+            contextMenuStrip.Items.Add(_togglePetMenuItem);
 
             _linksMenuItem = new ToolStripMenuItem("Important Links");
             contextMenuStrip.Items.Add(_linksMenuItem);
@@ -124,6 +134,11 @@ namespace tmkbCompanion.MVVM.Core
             _toggleTimerMenuItem.Text = isRunning ? "Pause Focus Timer" : "Start Focus Timer";
         }
 
+        public void UpdatePetState(bool isEnabled)
+        {
+            _togglePetMenuItem.Checked = isEnabled;
+        }
+
         public void UpdateImportantLinks(List<(string Title, string Url)> links)
         {
             _linksMenuItem.DropDownItems.Clear();
@@ -184,6 +199,19 @@ namespace tmkbCompanion.MVVM.Core
                 _mainWindow.WindowState = WindowState.Normal;
             }
             _mainWindow.Activate();
+        }
+
+        public void ShowContextMenu()
+        {
+            try
+            {
+                var screenPos = System.Windows.Forms.Cursor.Position;
+                _notifyIcon.ContextMenuStrip?.Show(screenPos);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to show context menu: {ex.Message}");
+            }
         }
 
         public void ShowNotification(string title, string message)

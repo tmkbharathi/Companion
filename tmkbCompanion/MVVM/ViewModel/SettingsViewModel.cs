@@ -13,15 +13,18 @@ namespace tmkbCompanion.MVVM.ViewModel
     public class SettingsViewModel : ViewModelBase
     {
         private readonly DashboardViewModel _dashboard;
+        private readonly WaterReminderService _waterService;
+        private readonly ClipboardHistoryViewModel _clipboardHistoryVM;
         private bool _launchOnStartup;
         private bool _showNotifications = true;
         private bool _darkMode = true;
+        private bool _isPetEnabled;
         private double _cacheProgress = 0.5;
         private string _cacheUsedText = "Calculating...";
         private string _accentColorHex = "#5b8cff";
 
         // Max capacity shown in the progress bar (MB)
-        private const double MaxCacheMB = 100.0;
+        private const double MaxCacheMB = 1024.0;
 
         private const string SettingsFileName = "app_settings.json";
 
@@ -65,6 +68,18 @@ namespace tmkbCompanion.MVVM.ViewModel
             }
         }
 
+        public bool IsPetEnabled
+        {
+            get => _isPetEnabled;
+            set
+            {
+                if (SetProperty(ref _isPetEnabled, value))
+                {
+                    SaveSettings();
+                }
+            }
+        }
+
         public double CacheProgress
         {
             get => _cacheProgress;
@@ -80,9 +95,11 @@ namespace tmkbCompanion.MVVM.ViewModel
         public ICommand SetAccentColorCommand { get; }
         public ICommand CleanLogsCommand { get; }
 
-        public SettingsViewModel(DashboardViewModel dashboard)
+        public SettingsViewModel(DashboardViewModel dashboard, WaterReminderService waterService, ClipboardHistoryViewModel clipboardHistoryVM)
         {
             _dashboard = dashboard;
+            _waterService = waterService;
+            _clipboardHistoryVM = clipboardHistoryVM;
             SetAccentColorCommand = new RelayCommand(SetAccentColor);
             CleanLogsCommand = new RelayCommand(CleanLogs);
             _launchOnStartup = GetStartupRegistryState();
@@ -183,6 +200,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                     {
                         _showNotifications = data.ShowNotifications;
                         _darkMode = data.DarkMode;
+                        _isPetEnabled = data.IsPetEnabled;
                         ApplyAccentColor(data.AccentColorHex);
                     }
                 }
@@ -207,7 +225,8 @@ namespace tmkbCompanion.MVVM.ViewModel
                 {
                     AccentColorHex = _accentColorHex,
                     ShowNotifications = ShowNotifications,
-                    DarkMode = DarkMode
+                    DarkMode = DarkMode,
+                    IsPetEnabled = IsPetEnabled
                 };
                 string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
@@ -223,6 +242,12 @@ namespace tmkbCompanion.MVVM.ViewModel
             try
             {
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+
+                // Clean clipboard history
+                _clipboardHistoryVM.ClearHistory();
+
+                // Clean water reminder history
+                _waterService.ClearHistory();
 
                 // Delete the notes file (user-generated cache)
                 string notesPath = Path.Combine(baseDir, "flowtrack_notes.txt");
@@ -256,7 +281,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                     }
 
                     foreach (var file in Directory.GetFiles(profileDataDir))
-                    {
+                     {
                         // Delete the file if it's not the active profile picture
                         if (!string.Equals(file, activeProfilePic, StringComparison.OrdinalIgnoreCase))
                         {
@@ -298,7 +323,10 @@ namespace tmkbCompanion.MVVM.ViewModel
                     "profile_settings.json",
                     "app_settings.json",
                     "link_settings.json",
-                    "flowtrack_notes.txt"
+                    "flowtrack_notes.txt",
+                    "clipboard_history.json",
+                    "water_settings.json",
+                    "water_history.json"
                 };
 
                 foreach (var file in dataFiles)
@@ -346,5 +374,6 @@ namespace tmkbCompanion.MVVM.ViewModel
         public string AccentColorHex { get; set; } = "#5b8cff";
         public bool ShowNotifications { get; set; } = true;
         public bool DarkMode { get; set; } = true;
+        public bool IsPetEnabled { get; set; } = false;
     }
 }

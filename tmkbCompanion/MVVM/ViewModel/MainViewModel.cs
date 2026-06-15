@@ -21,6 +21,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         public SettingsViewModel SettingsVM { get; }
         public ProfileSetupViewModel ProfileSetupVM { get; }
         public WaterReminderViewModel WaterReminderVM { get; }
+        public ClipboardHistoryViewModel ClipboardHistoryVM { get; }
 
         public object CurrentView
         {
@@ -80,6 +81,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         public ICommand ShowSettingsCommand { get; }
         public ICommand ShowProfileSetupCommand { get; }
         public ICommand ShowWaterReminderCommand { get; }
+        public ICommand ShowClipboardCommand { get; }
         public ICommand ToggleSidebarCommand { get; }
 
         public bool IsSidebarOpen
@@ -93,7 +95,8 @@ namespace tmkbCompanion.MVVM.ViewModel
             // Initialize sub-view models
             _waterService = new WaterReminderService();
             DashboardVM = new DashboardViewModel();
-            SettingsVM = new SettingsViewModel(DashboardVM);
+            ClipboardHistoryVM = new ClipboardHistoryViewModel();
+            SettingsVM = new SettingsViewModel(DashboardVM, _waterService, ClipboardHistoryVM);
             ProfileSetupVM = new ProfileSetupViewModel(this);
             WaterReminderVM = new WaterReminderViewModel(_waterService);
 
@@ -105,6 +108,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowProfileSetupCommand = new RelayCommand(ShowProfileSetup);
             ShowWaterReminderCommand = new RelayCommand(ShowWaterReminder);
+            ShowClipboardCommand = new RelayCommand(ShowClipboard);
             ToggleSidebarCommand = new RelayCommand(() => IsSidebarOpen = !IsSidebarOpen);
 
             // Set current date string
@@ -129,6 +133,11 @@ namespace tmkbCompanion.MVVM.ViewModel
         public void ShowProfileSetup()
         {
             CurrentView = ProfileSetupVM;
+        }
+
+        public void ShowClipboard()
+        {
+            CurrentView = ClipboardHistoryVM;
         }
 
         private void UpdateCurrentDate()

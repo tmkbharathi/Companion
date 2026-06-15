@@ -30,6 +30,9 @@
         <DataTemplate DataType="{x:Type vm:WaterReminderViewModel}">
             <view:WaterReminderView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ClipboardHistoryViewModel}">
+            <view:ClipboardHistoryView/>
+        </DataTemplate>
 
         <!-- Sidebar Navigation RadioButton Style -->
         <Style x:Key="SidebarMenuItem" TargetType="RadioButton">
@@ -301,6 +304,10 @@
                                      Tag="&#xE934;"
                                      Command="{Binding ShowWaterReminderCommand}"
                                      Content="Water Reminder"/>
+                        <RadioButton Style="{StaticResource SidebarMenuItem}"
+                                     Tag="&#xE168;"
+                                     Command="{Binding ShowClipboardCommand}"
+                                     Content="Clipboard History"/>
                     </StackPanel>
                 </Grid>
             </Border>

@@ -422,6 +422,12 @@ namespace tmkbCompanion.MVVM.Core
             }
         }
 
+        public void ClearHistory()
+        {
+            _history.Clear();
+            SaveHistory();
+        }
+
         public void Dispose()
         {
             _reminderTimer.Stop();

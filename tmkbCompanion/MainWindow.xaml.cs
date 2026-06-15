@@ -1,10 +1,13 @@
 using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using tmkbCompanion.MVVM.Core;
 using tmkbCompanion.MVVM.ViewModel;
+using tmkbCompanion.MVVM.View;
 
 namespace tmkbCompanion
 {
@@ -29,6 +32,10 @@ namespace tmkbCompanion
             // Wire tray events
             _trayIconManager.ToggleTimerRequested += TrayIconManager_ToggleTimerRequested;
             _trayIconManager.OpenRequested += TrayIconManager_OpenRequested;
+            _trayIconManager.TogglePetRequested += (isEnabled) =>
+            {
+                _viewModel.SettingsVM.IsPetEnabled = isEnabled;
+            };
 
             // Wire view model events
             _viewModel.DashboardVM.TimerStateChanged += DashboardVM_TimerStateChanged;
@@ -42,6 +49,7 @@ namespace tmkbCompanion
 
             // Set initial states
             _trayIconManager.UpdateTimerState(_viewModel.DashboardVM.IsTimerRunning);
+            _trayIconManager.UpdatePetState(_viewModel.SettingsVM.IsPetEnabled);
             UpdateTrayLinks();
             
             if (System.Windows.Application.Current.Resources["AccentColor"] is System.Windows.Media.Color accentColor)
@@ -57,6 +65,12 @@ namespace tmkbCompanion
 
             // Watch sidebar toggle → animate column width
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            // Watch settings toggle to manage pet window
+            _viewModel.SettingsVM.PropertyChanged += SettingsVM_PropertyChanged;
+            
+            // Defer initial visibility check until the window is loaded to prevent setting Owner before showing
+            this.Loaded += (s, e) => UpdatePetWindowVisibility();
         }
 
         // ── Sidebar animation ──────────────────────────────────────────────
@@ -125,6 +139,10 @@ namespace tmkbCompanion
             // Restoring window visual state is done inside TrayIconManager.OnOpenRequested(),
             // but we can ensure the window gets brought to front and show Dashboard.
             _viewModel.ShowDashboard();
+            if (_viewModel.SettingsVM.IsPetEnabled)
+            {
+                _petWindow?.Show();
+            }
         }
 
         private void DashboardVM_TimerStateChanged(bool isRunning)
@@ -175,10 +193,134 @@ namespace tmkbCompanion
             }
             else
             {
+                StopGlobalKeyboardHook();
+
+                // Remove clipboard format listener
+                var windowClipboardSource = PresentationSource.FromVisual(this) as HwndSource;
+                if (windowClipboardSource != null)
+                {
+                    RemoveClipboardFormatListener(windowClipboardSource.Handle);
+                    windowClipboardSource.RemoveHook(ClipboardWndProc);
+                }
+
+                _petWindow?.Close();
                 _trayIconManager.Dispose();
                 _viewModel.WaterReminderVM.Service.Dispose();
                 base.OnClosing(e);
             }
+        }
+
+        private void SettingsVM_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SettingsViewModel.IsPetEnabled))
+            {
+                UpdatePetWindowVisibility();
+                _trayIconManager.UpdatePetState(_viewModel.SettingsVM.IsPetEnabled);
+            }
+        }
+
+        private void UpdatePetWindowVisibility()
+        {
+            if (_viewModel.SettingsVM.IsPetEnabled)
+            {
+                if (_petWindow == null)
+                {
+                    _petWindow = new PetCompanionWindow(() => _trayIconManager.ShowContextMenu());
+                    _petWindow.Show();
+                }
+                StartGlobalKeyboardHook();
+            }
+            else
+            {
+                StopGlobalKeyboardHook();
+                if (_petWindow != null)
+                {
+                    _petWindow.Close();
+                    _petWindow = null;
+                }
+            }
+        }
+
+        private PetCompanionWindow? _petWindow;
+        private GlobalKeyboardHook? _globalHook;
+        private bool _lastPressedWasLeft = false;
+        private System.Windows.Threading.DispatcherTimer? _pawReleaseTimer;
+
+        private void StartGlobalKeyboardHook()
+        {
+            if (_globalHook == null)
+            {
+                try
+                {
+                    _globalHook = new GlobalKeyboardHook();
+                    _globalHook.KeyDown += GlobalHook_KeyDown;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to start global keyboard hook: {ex.Message}");
+                }
+            }
+        }
+
+        private void StopGlobalKeyboardHook()
+        {
+            if (_globalHook != null)
+            {
+                _globalHook.KeyDown -= GlobalHook_KeyDown;
+                _globalHook.Dispose();
+                _globalHook = null;
+            }
+        }
+
+        private void GlobalHook_KeyDown()
+        {
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_viewModel.SettingsVM.IsPetEnabled && _petWindow != null)
+                {
+                    TriggerPawPress();
+                }
+            }));
+        }
+
+        private void TriggerPawPress()
+        {
+            if (_petWindow == null) return;
+
+            if (_lastPressedWasLeft)
+            {
+                _petWindow.IsRightPawPressed = true;
+                _petWindow.IsLeftPawPressed = false;
+                _lastPressedWasLeft = false;
+            }
+            else
+            {
+                _petWindow.IsLeftPawPressed = true;
+                _petWindow.IsRightPawPressed = false;
+                _lastPressedWasLeft = true;
+            }
+
+            if (_pawReleaseTimer == null)
+            {
+                _pawReleaseTimer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(120)
+                };
+                _pawReleaseTimer.Tick += (s, ev) =>
+                {
+                    if (_petWindow != null)
+                    {
+                        _petWindow.IsLeftPawPressed = false;
+                        _petWindow.IsRightPawPressed = false;
+                    }
+                    _pawReleaseTimer.Stop();
+                };
+            }
+            else
+            {
+                _pawReleaseTimer.Stop();
+            }
+            _pawReleaseTimer.Start();
         }
 
         /// <summary>
@@ -214,5 +356,121 @@ namespace tmkbCompanion
             // Minimize to tray on close button click
             this.Hide();
         }
+
+        // ── Win32 Clipboard Listener ────────────────────────────────────────
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool AddClipboardFormatListener(IntPtr hwnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
+
+        private const int WM_CLIPBOARDUPDATE = 0x031D;
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            var windowClipboardSource = PresentationSource.FromVisual(this) as HwndSource;
+            if (windowClipboardSource != null)
+            {
+                windowClipboardSource.AddHook(ClipboardWndProc);
+                AddClipboardFormatListener(windowClipboardSource.Handle);
+            }
+        }
+
+        private IntPtr ClipboardWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WM_CLIPBOARDUPDATE)
+            {
+                try
+                {
+                    if (System.Windows.Clipboard.ContainsText())
+                    {
+                        string text = System.Windows.Clipboard.GetText();
+                        _viewModel.ClipboardHistoryVM.AddClipboardItem(text);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to retrieve clipboard text: {ex.Message}");
+                }
+            }
+            return IntPtr.Zero;
+        }
+    }
+
+    internal class GlobalKeyboardHook : IDisposable
+    {
+        private const int WH_KEYBOARD_LL = 13;
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_SYSKEYDOWN = 0x0104;
+
+        private readonly LowLevelKeyboardProc _proc;
+        private IntPtr _hookId = IntPtr.Zero;
+
+        public event Action? KeyDown;
+
+        public GlobalKeyboardHook()
+        {
+            _proc = HookCallback;
+            _hookId = SetHook(_proc);
+        }
+
+        private IntPtr SetHook(LowLevelKeyboardProc proc)
+        {
+            using (var curProcess = System.Diagnostics.Process.GetCurrentProcess())
+            using (var curModule = curProcess.MainModule)
+            {
+                string? moduleName = curModule?.ModuleName;
+                IntPtr hModule = IntPtr.Zero;
+                if (!string.IsNullOrEmpty(moduleName))
+                {
+                    hModule = GetModuleHandle(moduleName);
+                }
+                
+                if (hModule == IntPtr.Zero)
+                {
+                    hModule = GetModuleHandle(null);
+                }
+
+                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, hModule, 0);
+            }
+        }
+
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
+            {
+                KeyDown?.Invoke();
+            }
+            return CallNextHookEx(_hookId, nCode, wParam, lParam);
+        }
+
+        public void Dispose()
+        {
+            if (_hookId != IntPtr.Zero)
+            {
+                UnhookWindowsHookEx(_hookId);
+                _hookId = IntPtr.Zero;
+            }
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr GetModuleHandle(string? lpModuleName);
     }
 }
