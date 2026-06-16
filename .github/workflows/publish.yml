@@ -48,9 +48,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: tmkbCompanion-windows-x64
-          path: |
-            tmkbCompanion/bin/Release/net8.0-windows10.0.19041.0/win-x64/publish/
-            tmkbCompanion-setup.exe
+          path: tmkbCompanion-setup.exe
 
   release:
     needs: build
