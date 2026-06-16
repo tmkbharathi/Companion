@@ -39,7 +39,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
             <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="Margin" Value="8,4"/>
@@ -63,16 +63,24 @@
                                         CornerRadius="2"
                                         Visibility="Collapsed"/>
 
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="{TemplateBinding Padding}">
+                                <Grid Margin="{TemplateBinding Padding}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
                                     <TextBlock x:Name="IconBlock"
+                                               Grid.Column="0"
                                                FontFamily="{StaticResource SegoeMDL2}"
                                                Text="{TemplateBinding Tag}"
-                                               FontSize="16"
+                                               FontSize="13"
                                                VerticalAlignment="Center"
-                                               Margin="0,0,10,0"/>
-                                    <ContentPresenter VerticalAlignment="Center"/>
-                                </StackPanel>
+                                               Margin="0,0,12,0"/>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{TemplateBinding Content}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center"
+                                               ToolTip="{TemplateBinding Content}"/>
+                                </Grid>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -216,7 +224,7 @@
                                     </Border.Style>
                                     <Grid>
                                         <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                                   Text="&#xE77B;" FontSize="11"
+                                                   Text="&#xF007;" FontSize="11"
                                                    Foreground="#001847"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center">
@@ -240,7 +248,7 @@
                                            FontSize="11"
                                            FontWeight="SemiBold"
                                            VerticalAlignment="Center"
-                                           Margin="8,0,0,0"
+                                           Margin="12,0,0,0"
                                            FontFamily="{StaticResource AppFont}"/>
                             </StackPanel>
                         </Border>
@@ -248,12 +256,12 @@
                         <!-- Minimize -->
                         <Button Style="{StaticResource TitleBarButton}" Click="MinimizeBtn_Click">
                             <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                       Text="&#xE921;" FontSize="10"/>
+                                       Text="&#xF068;" FontSize="10"/>
                         </Button>
                         <!-- Close (minimizes to tray) -->
                         <Button Style="{StaticResource TitleBarCloseButton}" Click="CloseBtn_Click">
                             <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                       Text="&#xE8BB;" FontSize="10"/>
+                                       Text="&#xF00D;" FontSize="10"/>
                         </Button>
                     </StackPanel>
                 </Grid>
@@ -279,35 +287,34 @@
                     <StackPanel Grid.Row="0" Margin="16,0,16,20">
                         <TextBlock Text="FlowTrack"
                                    Foreground="{StaticResource TextPrimaryBrush}"
-                                   FontSize="20"
+                                   FontSize="16"
                                    FontWeight="Bold"
                                    FontFamily="{StaticResource AppFont}"/>
                         <TextBlock Text="{Binding AppVersion}"
                                    Foreground="{StaticResource TextMutedBrush}"
-                                   FontSize="11"
+                                   FontSize="9"
                                    Opacity="0.6"
                                    FontFamily="{StaticResource AppFont}"/>
                     </StackPanel>
 
-                    <!-- Nav items -->
                     <StackPanel Grid.Row="1">
                         <RadioButton Style="{StaticResource SidebarMenuItem}"
                                      IsChecked="True"
-                                     Tag="&#xE785;"
+                                     Tag="&#xF015;"
                                      Command="{Binding ShowDashboardCommand}"
                                      Content="Dashboard"/>
                         <RadioButton Style="{StaticResource SidebarMenuItem}"
-                                     Tag="&#xE713;"
-                                     Command="{Binding ShowSettingsCommand}"
-                                     Content="Settings"/>
-                        <RadioButton Style="{StaticResource SidebarMenuItem}"
-                                     Tag="&#xE934;"
+                                     Tag="&#xF043;"
                                      Command="{Binding ShowWaterReminderCommand}"
                                      Content="Water Reminder"/>
                         <RadioButton Style="{StaticResource SidebarMenuItem}"
-                                     Tag="&#xE168;"
+                                     Tag="&#xF0EA;"
                                      Command="{Binding ShowClipboardCommand}"
                                      Content="Clipboard History"/>
+                        <RadioButton Style="{StaticResource SidebarMenuItem}"
+                                     Tag="&#xF013;"
+                                     Command="{Binding ShowSettingsCommand}"
+                                     Content="Settings"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -326,7 +333,7 @@
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="1"
                     CornerRadius="10"
-                    Width="320" Height="80"
+                    Width="320" MinHeight="80" Height="Auto"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Margin="0,0,24,24"
@@ -346,7 +353,7 @@
                             Width="32" Height="32" Grid.Column="0" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="0"
                                FontFamily="{StaticResource SegoeMDL2}"
-                               Text="&#xE930;" FontSize="16"
+                               Text="&#xF058;" FontSize="16"
                                Foreground="#10b981"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"/>
@@ -359,7 +366,8 @@
                         <TextBlock Text="{Binding ToastMessage}"
                                    Foreground="{StaticResource TextMutedBrush}"
                                    FontSize="11" Margin="0,2,0,0"
-                                   FontFamily="{StaticResource AppFont}"/>
+                                   FontFamily="{StaticResource AppFont}"
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
                 </Grid>
             </Border>

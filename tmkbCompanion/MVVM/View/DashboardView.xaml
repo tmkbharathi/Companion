@@ -68,7 +68,7 @@
                     <Grid>
                         <!-- Decorative background hourglass icon -->
                         <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                   Text="&#xF1C5;"
+                                   Text="&#xF250;"
                                    FontSize="200"
                                    Foreground="{StaticResource TextPrimaryBrush}"
                                    Opacity="0.04"
@@ -84,11 +84,11 @@
                                         HorizontalAlignment="Center"
                                         Margin="0,0,0,8">
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                           Text="&#xE916;"
+                                           Text="&#xF017;"
                                            FontSize="14"
                                            Foreground="{DynamicResource AccentBrush}"
                                            VerticalAlignment="Center"
-                                           Margin="0,0,6,0"/>
+                                           Margin="0,0,12,0"/>
                                 <TextBlock Text="FOCUS SESSION"
                                            Foreground="{DynamicResource AccentBrush}"
                                            FontSize="11"
@@ -125,7 +125,8 @@
 
                                 <Button Style="{StaticResource FluentButton}"
                                         Command="{Binding ToggleTimerCommand}"
-                                        Width="120" Height="32"
+                                        Width="120" Height="36"
+                                        Padding="0"
                                         Margin="0,0,10,0">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
@@ -135,10 +136,10 @@
                                                        Margin="0,0,6,0">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Text" Value="&#xE768;"/>
+                                                        <Setter Property="Text" Value="&#xF04B;"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsTimerRunning}" Value="True">
-                                                                <Setter Property="Text" Value="&#xE71A;"/>
+                                                                <Setter Property="Text" Value="&#xF04C;"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -163,7 +164,8 @@
                                 <Button Style="{StaticResource FluentButtonSecondary}"
                                         Command="{Binding ResetTimerCommand}"
                                         Content="Reset"
-                                        Width="90" Height="32"/>
+                                        Padding="0"
+                                        Width="90" Height="36"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -187,11 +189,11 @@
                         <Grid Grid.Row="0" Margin="0,0,0,8">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                           Text="&#xE70F;"
+                                           Text="&#xF040;"
                                            FontSize="16"
                                            Foreground="{DynamicResource AccentBrush}"
                                            VerticalAlignment="Center"
-                                           Margin="0,0,6,0"/>
+                                           Margin="0,0,12,0"/>
                                 <TextBlock Text="Quick Notes"
                                            Foreground="{StaticResource TextPrimaryBrush}"
                                            FontSize="14"
@@ -200,13 +202,14 @@
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                       Text="&#xE946;"
+                                       Text="&#xF05A;"
                                        FontSize="13"
                                        Foreground="{StaticResource TextMutedBrush}"
-                                       Opacity="0.4"
+                                       Opacity="0.5"
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center"
-                                       ToolTip="Saved locally in flowtrack_notes.txt"/>
+                                       Cursor="Help"
+                                       ToolTip="Quick Notes: Captures your thoughts. Automatically saved to 'flowtrack_notes.txt' in the application directory."/>
                         </Grid>
 
                         <!-- Notes textarea -->
@@ -222,10 +225,11 @@
                         <Button Grid.Row="2"
                                 x:Name="SaveNotesBtn"
                                 Command="{Binding SaveNotesCommand}"
-                                Height="32">
+                                Height="36">
                             <Button.Style>
                                 <Style TargetType="Button"
                                        BasedOn="{StaticResource FluentButtonTransparentPrimary}">
+                                    <Setter Property="Padding" Value="8,0"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsSavedFeedbackActive}" Value="True">
                                             <Setter Property="Background">
@@ -248,13 +252,14 @@
                                     <TextBlock FontFamily="{StaticResource SegoeMDL2}"
                                                FontSize="13"
                                                VerticalAlignment="Center"
-                                               Margin="0,0,6,0">
+                                               Padding="0,0,3,0"
+                                               Margin="0,0,3,0">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="&#xE74E;"/>
+                                                <Setter Property="Text" Value="&#xF0C7;"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsSavedFeedbackActive}" Value="True">
-                                                        <Setter Property="Text" Value="&#xE930;"/>
+                                                        <Setter Property="Text" Value="&#xF058;"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -278,11 +283,11 @@
                         <!-- Section header -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                       Text="&#xE71B;"
+                                       Text="&#xF0C1;"
                                        FontSize="16"
                                        Foreground="{DynamicResource AccentBrush}"
                                        VerticalAlignment="Center"
-                                       Margin="0,0,6,0"/>
+                                       Margin="0,0,12,0"/>
                             <TextBlock Text="Important Links"
                                        Foreground="{StaticResource TextPrimaryBrush}"
                                        FontSize="14"
@@ -290,14 +295,14 @@
                                        FontFamily="{StaticResource AppFont}"
                                        VerticalAlignment="Center"/>
                             <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                       Text="&#xE946;"
+                                       Text="&#xF05A;"
                                        FontSize="12"
                                        Foreground="{StaticResource TextMutedBrush}"
                                        Opacity="0.6"
                                        VerticalAlignment="Center"
                                        Margin="6,1,0,0"
                                        Cursor="Help"
-                                       ToolTip="Customize these links under Settings > Important Links Configuration"/>
+                                       ToolTip="Important Links: Quick access to your frequently used URLs. Customize these in Settings > Important Links Configuration."/>
                         </StackPanel>
 
                         <!-- 4 link tiles, compact height 44 -->
@@ -312,7 +317,7 @@
                                 </Border.InputBindings>
                                 <Grid Margin="6,4">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="24"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Background="{DynamicResource AccentBrush}"
@@ -320,7 +325,7 @@
                                             Width="24" Height="24"
                                             Grid.Column="0"/>
                                     <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xE80F;" FontSize="13"
+                                               Text="&#xF015;" FontSize="11"
                                                Foreground="{DynamicResource AccentBrush}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
@@ -331,7 +336,7 @@
                                                FontFamily="{StaticResource AppFont}"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
-                                               Margin="6,0,0,0"
+                                               Margin="12,0,0,0"
                                                Grid.Column="1"
                                                TextTrimming="CharacterEllipsis"/>
                                 </Grid>
@@ -346,7 +351,7 @@
                                 </Border.InputBindings>
                                 <Grid Margin="6,4">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="24"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Background="{DynamicResource AccentBrush}"
@@ -354,7 +359,7 @@
                                             Width="24" Height="24"
                                             Grid.Column="0"/>
                                     <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xE8C7;" FontSize="13"
+                                               Text="&#xF0AC;" FontSize="11"
                                                Foreground="{DynamicResource AccentBrush}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
@@ -365,7 +370,7 @@
                                                FontFamily="{StaticResource AppFont}"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
-                                               Margin="6,0,0,0"
+                                               Margin="12,0,0,0"
                                                Grid.Column="1"
                                                TextTrimming="CharacterEllipsis"/>
                                 </Grid>
@@ -380,7 +385,7 @@
                                 </Border.InputBindings>
                                 <Grid Margin="6,4">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="24"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Background="{DynamicResource AccentBrush}"
@@ -388,7 +393,7 @@
                                             Width="24" Height="24"
                                             Grid.Column="0"/>
                                     <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xE73A;" FontSize="13"
+                                               Text="&#xF00C;" FontSize="11"
                                                Foreground="{DynamicResource AccentBrush}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
@@ -399,7 +404,7 @@
                                                FontFamily="{StaticResource AppFont}"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
-                                               Margin="6,0,0,0"
+                                               Margin="12,0,0,0"
                                                Grid.Column="1"
                                                TextTrimming="CharacterEllipsis"/>
                                 </Grid>
@@ -414,7 +419,7 @@
                                 </Border.InputBindings>
                                 <Grid Margin="6,4">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="24"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Background="{DynamicResource AccentBrush}"
@@ -422,7 +427,7 @@
                                             Width="24" Height="24"
                                             Grid.Column="0"/>
                                     <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xE787;" FontSize="13"
+                                               Text="&#xF0E4;" FontSize="11"
                                                Foreground="{DynamicResource AccentBrush}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
@@ -433,7 +438,7 @@
                                                FontFamily="{StaticResource AppFont}"
                                                FontWeight="Medium"
                                                VerticalAlignment="Center"
-                                               Margin="6,0,0,0"
+                                               Margin="12,0,0,0"
                                                Grid.Column="1"
                                                TextTrimming="CharacterEllipsis"/>
                                 </Grid>

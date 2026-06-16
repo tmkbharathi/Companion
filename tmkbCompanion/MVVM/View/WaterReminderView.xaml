@@ -61,7 +61,7 @@
                     <!-- Section Title & Info -->
                     <StackPanel Grid.Row="0" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE934;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF043;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <TextBlock Text="Daily Intake Progress" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
                         </StackPanel>
                         <Grid>
@@ -89,12 +89,12 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE785;" FontSize="11" Foreground="#ffb874" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF06D;" FontSize="11" Foreground="#ffb874" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="Streak: " FontSize="10" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
                                 <TextBlock Text="{Binding CurrentStreak, StringFormat='{}{0} Days'}" Foreground="#ffb874" FontSize="11" FontWeight="Bold" VerticalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xEC92;" FontSize="11" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF017;" FontSize="11" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="Last: " FontSize="10" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
                                 <TextBlock Text="{Binding LastDrinkTime}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             </StackPanel>
@@ -147,7 +147,7 @@
                     <!-- Section Title -->
                     <StackPanel Grid.Row="0" Margin="0,0,0,8">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE916;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF017;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <TextBlock Text="Reminder Controls" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
                         </StackPanel>
                     </StackPanel>
@@ -238,7 +238,7 @@
             <StackPanel>
                 <Grid Margin="0,0,0,6">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE81C;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF1DA;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                         <TextBlock Text="Hydration History Logs" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
                     </StackPanel>
                     <Button Style="{StaticResource FluentButtonSecondary}" 
@@ -248,7 +248,7 @@
                             Padding="8,0" 
                             FontSize="11">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xE896;" FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF019;" FontSize="10" Margin="0,0,6,0" VerticalAlignment="Center"/>
                             <TextBlock Text="Export CSV" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>

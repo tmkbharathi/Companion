@@ -99,7 +99,7 @@
                                 </Style>
                             </Border.Style>
                             <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                       Text="&#xE77B;"
+                                       Text="&#xF007;"
                                        FontSize="44"
                                        Foreground="#8d909f"
                                        HorizontalAlignment="Center"
@@ -130,7 +130,7 @@
                                             CornerRadius="15"
                                             SnapsToDevicePixels="True">
                                         <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                                   Text="&#xE722;"
+                                                   Text="&#xF030;"
                                                    FontSize="12"
                                                    Foreground="#001847"
                                                    HorizontalAlignment="Center"
@@ -219,7 +219,7 @@
                                       Margin="0,0,6,0">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                           Text="&#xE945;" FontSize="16"
+                                           Text="&#xF0EB;" FontSize="16"
                                            Foreground="{DynamicResource AccentBrush}"
                                            HorizontalAlignment="Center"
                                            Margin="0,0,0,3"/>
@@ -236,7 +236,7 @@
                                       Margin="0,0,6,0">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                           Text="&#xE73A;" FontSize="16"
+                                           Text="&#xF0AE;" FontSize="16"
                                            Foreground="{DynamicResource AccentBrush}"
                                            HorizontalAlignment="Center"
                                            Margin="0,0,0,3"/>
@@ -252,7 +252,7 @@
                                       IsChecked="{Binding IsMeetingsSelected}">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                           Text="&#xE716;" FontSize="16"
+                                           Text="&#xF0C0;" FontSize="16"
                                            Foreground="{DynamicResource AccentBrush}"
                                            HorizontalAlignment="Center"
                                            Margin="0,0,0,3"/>
@@ -282,9 +282,9 @@
                             <Border Grid.Column="0"
                                     Background="{StaticResource SidebarBackgroundBrush}"
                                     CornerRadius="6" Width="28" Height="28"
-                                    Margin="0,0,10,0">
+                                    Margin="0,0,12,0">
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                           Text="&#xEA8F;" FontSize="14"
+                                           Text="&#xF0F3;" FontSize="14"
                                            Foreground="{StaticResource TextMutedBrush}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"/>
@@ -321,18 +321,18 @@
                     <Button Content="Skip for Now"
                             Command="{Binding SkipCommand}"
                             Style="{StaticResource FluentButtonSecondary}"
-                            Width="120" Height="34"
+                            Width="150" Height="34"
                             Margin="0,0,10,0"/>
                     <Button Command="{Binding SaveProfileCommand}"
                             Style="{StaticResource FluentButton}"
-                            Width="150" Height="34">
+                            Width="180" Height="34">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Save Profile" VerticalAlignment="Center"/>
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                           Text="&#xE72A;" FontSize="13"
+                                           Text="&#xF061;" FontSize="13"
                                            VerticalAlignment="Center"
-                                           Margin="8,0,0,0"/>
+                                           Margin="12,0,0,0"/>
                             </StackPanel>
                         </Button.Content>
                     </Button>

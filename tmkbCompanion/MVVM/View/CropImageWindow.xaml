@@ -67,7 +67,7 @@
 
                     <!-- X close button (top-right) -->
                     <Button FontFamily="{StaticResource SegoeMDL2}"
-                            Content="&#xE711;"
+                            Content="&#xF00D;"
                             FontSize="14"
                             Foreground="{StaticResource TextMutedBrush}"
                             Background="Transparent"

@@ -9,7 +9,7 @@ namespace tmkbCompanion.MVVM.ViewModel
     {
         private object _currentView;
         private string _currentDate = string.Empty;
-        private string _userName = "Alex Rivera";
+        private string _userName = string.Empty;
         private string _toastTitle = string.Empty;
         private string _toastMessage = string.Empty;
         private bool _isToastVisible;
@@ -101,7 +101,15 @@ namespace tmkbCompanion.MVVM.ViewModel
             WaterReminderVM = new WaterReminderViewModel(_waterService);
 
             // Set default view
-            _currentView = DashboardVM;
+            string settingsPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profile_settings.json");
+            if (System.IO.File.Exists(settingsPath))
+            {
+                _currentView = DashboardVM;
+            }
+            else
+            {
+                _currentView = ProfileSetupVM;
+            }
 
             // Commands
             ShowDashboardCommand = new RelayCommand(ShowDashboard);

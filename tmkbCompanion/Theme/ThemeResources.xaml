@@ -21,8 +21,8 @@
     <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}"/>
     
     <!-- Typography Font -->
-    <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
-    <FontFamily x:Key="AppFont">Segoe UI</FontFamily>
+    <FontFamily x:Key="SegoeMDL2">pack://application:,,,/tmkbCompanion;component/Resources/Fonts/#FiraCode Nerd Font</FontFamily>
+    <FontFamily x:Key="AppFont">pack://application:,,,/tmkbCompanion;component/Resources/Fonts/#FiraCode Nerd Font</FontFamily>
 
     <!-- Converters -->
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>

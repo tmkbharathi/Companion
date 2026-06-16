@@ -15,11 +15,11 @@
                 <Grid Margin="0,0,0,20">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                   Text="&#xE9E9;" 
+                                   Text="&#xF085;" 
                                    FontSize="24" 
                                    Foreground="{DynamicResource AccentBrush}" 
                                    VerticalAlignment="Center"
-                                   Margin="0,0,8,0"/>
+                                   Margin="0,0,12,0"/>
                         <TextBlock Text="General Settings" 
                                    Foreground="{StaticResource TextPrimaryBrush}" 
                                    FontSize="20" 
@@ -51,7 +51,7 @@
 
                         <!-- Icon -->
                         <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
-                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF133;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF135;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <!-- Details -->
                         <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
@@ -77,7 +77,7 @@
 
                         <!-- Icon -->
                         <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
-                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xEA8F;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF0F3;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <!-- Details -->
                         <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
@@ -102,7 +102,7 @@
 
                         <!-- Icon -->
                         <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
-                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xE11D;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF1B0;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <!-- Details -->
                         <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
@@ -120,11 +120,11 @@
             <StackPanel Margin="0,0,0,32">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                     <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                               Text="&#xE771;" 
+                               Text="&#xF1FC;" 
                                FontSize="24" 
                                Foreground="{DynamicResource AccentBrush}" 
                                VerticalAlignment="Center"
-                               Margin="0,0,8,0"/>
+                               Margin="0,0,12,0"/>
                     <TextBlock Text="Appearance" 
                                Foreground="{StaticResource TextPrimaryBrush}" 
                                FontSize="20" 
@@ -148,14 +148,14 @@
 
                         <!-- Icon -->
                         <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
-                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xE708;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF186;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <!-- Details -->
                         <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Dark Mode" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
                                 <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                           Text="&#xE946;" 
+                                           Text="&#xF05A;" 
                                            FontSize="14" 
                                            Foreground="{StaticResource TextMutedBrush}" 
                                            Opacity="0.8"
@@ -185,7 +185,7 @@
 
                         <!-- Icon -->
                         <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
-                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xE790;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF53F;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <!-- Details -->
                         <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
@@ -193,16 +193,16 @@
                             <TextBlock Text="Customize the primary highlights of the interface" Foreground="{StaticResource TextMutedBrush}" FontSize="13" Opacity="0.8" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}"/>
                         </StackPanel>
 
-                        <!-- Colors Picker (4-Segment Capsule) -->
+                        <!-- Colors Picker (2x2 Grid) -->
                         <Border Grid.Column="2" 
-                                CornerRadius="16" 
+                                CornerRadius="8" 
                                 ClipToBounds="True" 
-                                Height="32" 
-                                Width="140" 
+                                Height="44" 
+                                Width="44" 
                                 BorderThickness="1" 
                                 BorderBrush="{StaticResource BorderBrush}"
                                 VerticalAlignment="Center">
-                            <UniformGrid Columns="4">
+                            <UniformGrid Columns="2" Rows="2">
                                 <!-- Blue Accent -->
                                 <Border Background="#5b8cff" Cursor="Hand" ToolTip="Accent Blue">
                                     <Border.InputBindings>
@@ -237,11 +237,11 @@
             <StackPanel Margin="0,0,0,32">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                     <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                               Text="&#xE71B;" 
+                               Text="&#xF0C1;" 
                                FontSize="24" 
                                Foreground="{DynamicResource AccentBrush}" 
                                VerticalAlignment="Center"
-                               Margin="0,0,8,0"/>
+                               Margin="0,0,12,0"/>
                     <TextBlock Text="Important Links Configuration" 
                                Foreground="{StaticResource TextPrimaryBrush}" 
                                FontSize="20" 
