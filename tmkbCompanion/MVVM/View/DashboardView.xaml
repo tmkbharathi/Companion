@@ -305,146 +305,131 @@
                                        ToolTip="Important Links: Quick access to your frequently used URLs. Customize these in Settings > Important Links Configuration."/>
                         </StackPanel>
 
-                        <!-- 4 link tiles, compact height 44 -->
-                        <UniformGrid Columns="4" Rows="1" Height="44">
+                        <!-- Dynamic links list with pagination arrows on the right -->
+                        <Grid Height="44">
+                            <Grid.Resources>
+                                <Style x:Key="LinkNavigationButtonStyle" TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Width" Value="24"/>
+                                    <Setter Property="Height" Value="18"/>
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border"
+                                                        Background="{TemplateBinding Background}"
+                                                        CornerRadius="4"
+                                                        SnapsToDevicePixels="True">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#2d3139"/>
+                                                        <Setter Property="Foreground" Value="#ffffff"/>
+                                                        <Setter Property="Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#3c424e"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.2"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Grid.Resources>
+                            
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                            <!-- Link 1 -->
-                            <Border Style="{StaticResource LinkCardBorder}">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding OpenLinkCommand}"
-                                                  CommandParameter="{Binding Link1Url}"/>
-                                </Border.InputBindings>
-                                <Grid Margin="6,4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="24"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="{DynamicResource AccentBrush}"
-                                            Opacity="0.12" CornerRadius="5"
-                                            Width="24" Height="24"
-                                            Grid.Column="0"/>
-                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xF015;" FontSize="11"
-                                               Foreground="{DynamicResource AccentBrush}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Grid.Column="0"/>
-                                    <TextBlock Text="{Binding Link1Title}"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               FontSize="11"
-                                               FontFamily="{StaticResource AppFont}"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="12,0,0,0"
-                                               Grid.Column="1"
-                                               TextTrimming="CharacterEllipsis"/>
-                                </Grid>
-                            </Border>
+                            <!-- Links List -->
+                            <ItemsControl ItemsSource="{Binding PagedLinks}" Grid.Column="0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4" Rows="1"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource LinkCardBorder}">
+                                            <Border.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick"
+                                                              Command="{Binding DataContext.OpenLinkCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                              CommandParameter="{Binding Url}"/>
+                                            </Border.InputBindings>
+                                            <Grid Margin="6,4">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="24"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Background="{DynamicResource AccentBrush}"
+                                                        Opacity="0.12" CornerRadius="5"
+                                                        Width="24" Height="24"
+                                                        Grid.Column="0"/>
+                                                <TextBlock FontFamily="{StaticResource SegoeMDL2}"
+                                                           Text="&#xF0C1;" FontSize="11"
+                                                           Foreground="{DynamicResource AccentBrush}"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Grid.Column="0"/>
+                                                <TextBlock Text="{Binding Title}"
+                                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                                           FontSize="11"
+                                                           FontFamily="{StaticResource AppFont}"
+                                                           FontWeight="Medium"
+                                                           VerticalAlignment="Center"
+                                                           Margin="12,0,0,0"
+                                                           Grid.Column="1"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
-                            <!-- Link 2 -->
-                            <Border Style="{StaticResource LinkCardBorder}">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding OpenLinkCommand}"
-                                                  CommandParameter="{Binding Link2Url}"/>
-                                </Border.InputBindings>
-                                <Grid Margin="6,4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="24"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="{DynamicResource AccentBrush}"
-                                            Opacity="0.12" CornerRadius="5"
-                                            Width="24" Height="24"
-                                            Grid.Column="0"/>
-                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xF0AC;" FontSize="11"
-                                               Foreground="{DynamicResource AccentBrush}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Grid.Column="0"/>
-                                    <TextBlock Text="{Binding Link2Title}"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               FontSize="11"
-                                               FontFamily="{StaticResource AppFont}"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="12,0,0,0"
-                                               Grid.Column="1"
-                                               TextTrimming="CharacterEllipsis"/>
-                                </Grid>
-                            </Border>
+                            <!-- Placeholder when there are no links -->
+                            <TextBlock Text="No links configured. Go to Settings to add your favorite URLs."
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       FontSize="11"
+                                       FontStyle="Italic"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Grid.Column="0"
+                                       Margin="12,0,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImportantLinks.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
 
-                            <!-- Link 3 -->
-                            <Border Style="{StaticResource LinkCardBorder}">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding OpenLinkCommand}"
-                                                  CommandParameter="{Binding Link3Url}"/>
-                                </Border.InputBindings>
-                                <Grid Margin="6,4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="24"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="{DynamicResource AccentBrush}"
-                                            Opacity="0.12" CornerRadius="5"
-                                            Width="24" Height="24"
-                                            Grid.Column="0"/>
-                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xF00C;" FontSize="11"
-                                               Foreground="{DynamicResource AccentBrush}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Grid.Column="0"/>
-                                    <TextBlock Text="{Binding Link3Title}"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               FontSize="11"
-                                               FontFamily="{StaticResource AppFont}"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="12,0,0,0"
-                                               Grid.Column="1"
-                                               TextTrimming="CharacterEllipsis"/>
-                                </Grid>
-                            </Border>
-
-                            <!-- Link 4 -->
-                            <Border Style="{StaticResource LinkCardBorder}">
-                                <Border.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick"
-                                                  Command="{Binding OpenLinkCommand}"
-                                                  CommandParameter="{Binding Link4Url}"/>
-                                </Border.InputBindings>
-                                <Grid Margin="6,4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="24"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Background="{DynamicResource AccentBrush}"
-                                            Opacity="0.12" CornerRadius="5"
-                                            Width="24" Height="24"
-                                            Grid.Column="0"/>
-                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                               Text="&#xF0E4;" FontSize="11"
-                                               Foreground="{DynamicResource AccentBrush}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               Grid.Column="0"/>
-                                    <TextBlock Text="{Binding Link4Title}"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               FontSize="11"
-                                               FontFamily="{StaticResource AppFont}"
-                                               FontWeight="Medium"
-                                               VerticalAlignment="Center"
-                                               Margin="12,0,0,0"
-                                               Grid.Column="1"
-                                               TextTrimming="CharacterEllipsis"/>
-                                </Grid>
-                            </Border>
-
-                        </UniformGrid>
+                            <!-- Navigation Arrows (Shown only if HasMultipleLinkPages is True) -->
+                            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="4,0,0,0"
+                                        Visibility="{Binding HasMultipleLinkPages, Converter={StaticResource BoolToVis}}">
+                                <Button Command="{Binding PrevLinkPageCommand}"
+                                        Style="{StaticResource LinkNavigationButtonStyle}"
+                                        Margin="0,0,0,2"
+                                        ToolTip="Previous Links">
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF106;" FontSize="11" FontWeight="Bold"/>
+                                </Button>
+                                <Button Command="{Binding NextLinkPageCommand}"
+                                        Style="{StaticResource LinkNavigationButtonStyle}"
+                                        ToolTip="Next Links">
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF107;" FontSize="11" FontWeight="Bold"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Border>
 

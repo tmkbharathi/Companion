@@ -36,5 +36,10 @@ namespace tmkbCompanion.MVVM.Core
         {
             _execute(parameter);
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,15 +19,8 @@ namespace tmkbCompanion.MVVM.ViewModel
         private string _notesText = string.Empty;
         private string _saveButtonText = "Save Note";
         private bool _isSavedFeedbackActive;
-
-        private string _link1Title = "Company Portal";
-        private string _link1Url = "https://portal.company.com";
-        private string _link2Title = "Documentation";
-        private string _link2Url = "https://docs.company.com";
-        private string _link3Title = "Task Tracker";
-        private string _link3Url = "https://tasks.company.com";
-        private string _link4Title = "Team Calendar";
-        private string _link4Url = "https://calendar.company.com";
+        private int _currentLinkPage = 0;
+        private const int LinksPerPage = 4;
 
         private const string NotesFileName = "flowtrack_notes.txt";
         private const string LinksFileName = "link_settings.json";
@@ -75,19 +70,33 @@ namespace tmkbCompanion.MVVM.ViewModel
             set => SetProperty(ref _isSavedFeedbackActive, value);
         }
 
-        public string Link1Title { get => _link1Title; set { if (SetProperty(ref _link1Title, value)) { SaveLinks(); OnLinksChanged(); } } }
-        public string Link1Url { get => _link1Url; set { if (SetProperty(ref _link1Url, value)) { SaveLinks(); OnLinksChanged(); } } }
-        public string Link2Title { get => _link2Title; set { if (SetProperty(ref _link2Title, value)) { SaveLinks(); OnLinksChanged(); } } }
-        public string Link2Url { get => _link2Url; set { if (SetProperty(ref _link2Url, value)) { SaveLinks(); OnLinksChanged(); } } }
-        public string Link3Title { get => _link3Title; set { if (SetProperty(ref _link3Title, value)) { SaveLinks(); OnLinksChanged(); } } }
-        public string Link3Url { get => _link3Url; set { if (SetProperty(ref _link3Url, value)) { SaveLinks(); OnLinksChanged(); } } }
-        public string Link4Title { get => _link4Title; set { if (SetProperty(ref _link4Title, value)) { SaveLinks(); OnLinksChanged(); } } }
-        public string Link4Url { get => _link4Url; set { if (SetProperty(ref _link4Url, value)) { SaveLinks(); OnLinksChanged(); } } }
+        // Dynamic Important Links Collections & Properties
+        public ObservableCollection<ImportantLinkModel> ImportantLinks { get; } = new();
+        public ObservableCollection<ImportantLinkModel> PagedLinks { get; } = new();
 
+        public int CurrentLinkPage
+        {
+            get => _currentLinkPage;
+            set
+            {
+                if (SetProperty(ref _currentLinkPage, value))
+                {
+                    UpdatePagedLinks();
+                }
+            }
+        }
+
+        public bool HasMultipleLinkPages => ImportantLinks.Count > LinksPerPage;
+
+        // Commands
         public ICommand ToggleTimerCommand { get; }
         public ICommand ResetTimerCommand { get; }
         public ICommand SaveNotesCommand { get; }
         public ICommand OpenLinkCommand { get; }
+        public ICommand AddLinkCommand { get; }
+        public ICommand RemoveLinkCommand { get; }
+        public ICommand PrevLinkPageCommand { get; }
+        public ICommand NextLinkPageCommand { get; }
 
         public DashboardViewModel()
         {
@@ -101,11 +110,122 @@ namespace tmkbCompanion.MVVM.ViewModel
             ResetTimerCommand = new RelayCommand(ResetTimer);
             SaveNotesCommand = new RelayCommand(SaveNotes);
             OpenLinkCommand = new RelayCommand(OpenLink);
+            AddLinkCommand = new RelayCommand(AddLink);
+            RemoveLinkCommand = new RelayCommand(RemoveLink);
+            PrevLinkPageCommand = new RelayCommand(PrevLinkPage, CanPrevLinkPage);
+            NextLinkPageCommand = new RelayCommand(NextLinkPage, CanNextLinkPage);
+
+            // Set up collections change listeners
+            ImportantLinks.CollectionChanged += ImportantLinks_CollectionChanged;
 
             LoadNotes();
             LoadLinks();
         }
 
+        private void ImportantLinks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (ImportantLinkModel item in e.NewItems)
+                {
+                    item.PropertyChanged += Item_PropertyChanged;
+                }
+            }
+            if (e.OldItems != null)
+            {
+                foreach (ImportantLinkModel item in e.OldItems)
+                {
+                    item.PropertyChanged -= Item_PropertyChanged;
+                }
+            }
+
+            SaveLinks();
+            UpdatePagedLinks();
+            OnPropertyChanged(nameof(HasMultipleLinkPages));
+            OnLinksChanged();
+        }
+
+        private void Item_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SaveLinks();
+            UpdatePagedLinks();
+            OnLinksChanged();
+        }
+
+        public void UpdatePagedLinks()
+        {
+            PagedLinks.Clear();
+            int start = CurrentLinkPage * LinksPerPage;
+            for (int i = start; i < start + LinksPerPage && i < ImportantLinks.Count; i++)
+            {
+                PagedLinks.Add(ImportantLinks[i]);
+            }
+
+            (PrevLinkPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (NextLinkPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+        }
+
+        private void AddLink()
+        {
+            ImportantLinks.Add(new ImportantLinkModel
+            {
+                Title = "New Link",
+                Url = "https://example.com"
+            });
+            // Auto scroll to the new page if needed
+            int maxPage = (ImportantLinks.Count - 1) / LinksPerPage;
+            if (CurrentLinkPage < maxPage)
+            {
+                CurrentLinkPage = maxPage;
+            }
+        }
+
+        private void RemoveLink(object? parameter)
+        {
+            if (parameter is ImportantLinkModel link)
+            {
+                ImportantLinks.Remove(link);
+                int maxPage = (ImportantLinks.Count - 1) / LinksPerPage;
+                if (CurrentLinkPage > maxPage && maxPage >= 0)
+                {
+                    CurrentLinkPage = maxPage;
+                }
+                else
+                {
+                    UpdatePagedLinks();
+                }
+            }
+        }
+
+        private void PrevLinkPage()
+        {
+            if (CurrentLinkPage > 0)
+            {
+                CurrentLinkPage--;
+            }
+        }
+
+        private bool CanPrevLinkPage()
+        {
+            return CurrentLinkPage > 0;
+        }
+
+        private void NextLinkPage()
+        {
+            int maxPage = (ImportantLinks.Count - 1) / LinksPerPage;
+            if (CurrentLinkPage < maxPage)
+            {
+                CurrentLinkPage++;
+            }
+        }
+
+        private bool CanNextLinkPage()
+        {
+            int maxPage = (ImportantLinks.Count - 1) / LinksPerPage;
+            return CurrentLinkPage < maxPage;
+        }
+
+        // Focus Timer Action Methods
         public void ToggleTimer()
         {
             if (IsTimerRunning)
@@ -152,6 +272,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             TimerText = $"{mins:D2}:{secs:D2}";
         }
 
+        // Notes Storage Path Resolution
         public string NotesFilePath
         {
             get
@@ -199,7 +320,6 @@ namespace tmkbCompanion.MVVM.ViewModel
                 }
                 else
                 {
-                    // If file doesn't exist (e.g. new path selected), clear current textbox content
                     NotesText = string.Empty;
                 }
             }
@@ -215,7 +335,6 @@ namespace tmkbCompanion.MVVM.ViewModel
             {
                 await File.WriteAllTextAsync(NotesFilePath, NotesText);
                 
-                // Show success feedback
                 SaveButtonText = "Saved";
                 IsSavedFeedbackActive = true;
 
@@ -245,6 +364,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             }
         }
 
+        // Links Load & Save Methods
         private void LoadLinks()
         {
             try
@@ -253,19 +373,60 @@ namespace tmkbCompanion.MVVM.ViewModel
                 if (File.Exists(path))
                 {
                     string json = File.ReadAllText(path);
-                    var data = System.Text.Json.JsonSerializer.Deserialize<LinkSettingsData>(json);
-                    if (data != null)
+                    
+                    // 1. Try to load new dynamic list format
+                    try
                     {
-                        _link1Title = data.Link1Title;
-                        _link1Url = data.Link1Url;
-                        _link2Title = data.Link2Title;
-                        _link2Url = data.Link2Url;
-                        _link3Title = data.Link3Title;
-                        _link3Url = data.Link3Url;
-                        _link4Title = data.Link4Title;
-                        _link4Url = data.Link4Url;
+                        var data = System.Text.Json.JsonSerializer.Deserialize<LinkSettingsData>(json);
+                        if (data != null && data.Links != null && data.Links.Count > 0)
+                        {
+                            ImportantLinks.Clear();
+                            foreach (var link in data.Links)
+                            {
+                                ImportantLinks.Add(link);
+                            }
+                            UpdatePagedLinks();
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Failed to deserialize dynamic links list: {ex.Message}");
+                    }
+
+                    // 2. Try legacy fallback parsing
+                    try
+                    {
+                        using (var doc = System.Text.Json.JsonDocument.Parse(json))
+                        {
+                            var root = doc.RootElement;
+                            ImportantLinks.Clear();
+                            if (root.TryGetProperty("Link1Title", out var t1) && root.TryGetProperty("Link1Url", out var u1))
+                                ImportantLinks.Add(new ImportantLinkModel { Title = t1.GetString() ?? "", Url = u1.GetString() ?? "" });
+                            if (root.TryGetProperty("Link2Title", out var t2) && root.TryGetProperty("Link2Url", out var u2))
+                                ImportantLinks.Add(new ImportantLinkModel { Title = t2.GetString() ?? "", Url = u2.GetString() ?? "" });
+                            if (root.TryGetProperty("Link3Title", out var t3) && root.TryGetProperty("Link3Url", out var u3))
+                                ImportantLinks.Add(new ImportantLinkModel { Title = t3.GetString() ?? "", Url = u3.GetString() ?? "" });
+                            if (root.TryGetProperty("Link4Title", out var t4) && root.TryGetProperty("Link4Url", out var u4))
+                                ImportantLinks.Add(new ImportantLinkModel { Title = t4.GetString() ?? "", Url = u4.GetString() ?? "" });
+                            
+                            UpdatePagedLinks();
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Failed to parse legacy links: {ex.Message}");
                     }
                 }
+
+                // If file doesn't exist or is empty, seed defaults
+                ImportantLinks.Clear();
+                ImportantLinks.Add(new ImportantLinkModel { Title = "Company Portal", Url = "https://portal.company.com" });
+                ImportantLinks.Add(new ImportantLinkModel { Title = "Documentation", Url = "https://docs.company.com" });
+                ImportantLinks.Add(new ImportantLinkModel { Title = "Task Tracker", Url = "https://tasks.company.com" });
+                ImportantLinks.Add(new ImportantLinkModel { Title = "Team Calendar", Url = "https://calendar.company.com" });
+                UpdatePagedLinks();
             }
             catch (Exception ex)
             {
@@ -278,17 +439,11 @@ namespace tmkbCompanion.MVVM.ViewModel
             try
             {
                 string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LinksFileName);
-                var data = new LinkSettingsData
+                var data = new LinkSettingsData();
+                foreach (var link in ImportantLinks)
                 {
-                    Link1Title = Link1Title,
-                    Link1Url = Link1Url,
-                    Link2Title = Link2Title,
-                    Link2Url = Link2Url,
-                    Link3Title = Link3Title,
-                    Link3Url = Link3Url,
-                    Link4Title = Link4Title,
-                    Link4Url = Link4Url
-                };
+                    data.Links.Add(link);
+                }
                 string json = System.Text.Json.JsonSerializer.Serialize(data, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
             }
@@ -301,27 +456,37 @@ namespace tmkbCompanion.MVVM.ViewModel
         public System.Collections.Generic.List<(string Title, string Url)> GetImportantLinks()
         {
             var list = new System.Collections.Generic.List<(string Title, string Url)>();
-            if (!string.IsNullOrWhiteSpace(Link1Title) || !string.IsNullOrWhiteSpace(Link1Url))
-                list.Add((Link1Title, Link1Url));
-            if (!string.IsNullOrWhiteSpace(Link2Title) || !string.IsNullOrWhiteSpace(Link2Url))
-                list.Add((Link2Title, Link2Url));
-            if (!string.IsNullOrWhiteSpace(Link3Title) || !string.IsNullOrWhiteSpace(Link3Url))
-                list.Add((Link3Title, Link3Url));
-            if (!string.IsNullOrWhiteSpace(Link4Title) || !string.IsNullOrWhiteSpace(Link4Url))
-                list.Add((Link4Title, Link4Url));
+            foreach (var link in ImportantLinks)
+            {
+                if (!string.IsNullOrWhiteSpace(link.Title) || !string.IsNullOrWhiteSpace(link.Url))
+                {
+                    list.Add((link.Title, link.Url));
+                }
+            }
             return list;
+        }
+    }
+
+    public class ImportantLinkModel : ViewModelBase
+    {
+        private string _title = string.Empty;
+        private string _url = string.Empty;
+
+        public string Title
+        {
+            get => _title;
+            set => SetProperty(ref _title, value ?? string.Empty);
+        }
+
+        public string Url
+        {
+            get => _url;
+            set => SetProperty(ref _url, value ?? string.Empty);
         }
     }
 
     public class LinkSettingsData
     {
-        public string Link1Title { get; set; } = "Company Portal";
-        public string Link1Url { get; set; } = "https://portal.company.com";
-        public string Link2Title { get; set; } = "Documentation";
-        public string Link2Url { get; set; } = "https://docs.company.com";
-        public string Link3Title { get; set; } = "Task Tracker";
-        public string Link3Url { get; set; } = "https://tasks.company.com";
-        public string Link4Title { get; set; } = "Team Calendar";
-        public string Link4Url { get; set; } = "https://calendar.company.com";
+        public System.Collections.Generic.List<ImportantLinkModel> Links { get; set; } = new();
     }
 }

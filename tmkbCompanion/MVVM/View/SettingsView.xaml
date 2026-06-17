@@ -289,72 +289,87 @@
 
             <!-- SECTION: Customize Important Links -->
             <StackPanel Margin="0,0,0,32">
-                <TextBlock Text="Important Links Configuration" 
-                           Foreground="{StaticResource TextPrimaryBrush}" 
-                           FontSize="20" 
-                           FontWeight="Bold" 
-                           FontFamily="{StaticResource AppFont}"
-                           Margin="0,0,0,20"/>
+                <Grid Margin="0,0,0,20">
+                    <TextBlock Text="Important Links Configuration" 
+                               Foreground="{StaticResource TextPrimaryBrush}" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               FontFamily="{StaticResource AppFont}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"/>
+                    
+                    <Button Command="{Binding Dashboard.AddLinkCommand}"
+                            Style="{StaticResource FluentButton}"
+                            Width="36" Height="30"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            ToolTip="Add New Link">
+                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF067;" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Button>
+                </Grid>
 
                 <!-- Input cards container -->
                 <Border Style="{StaticResource ThreeDCardStyle}" 
-                        Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="6"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="6"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="6"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="16"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
+                        Padding="14,14,14,2">
+                    <StackPanel>
+                        <!-- Dynamic list of links -->
+                        <ItemsControl ItemsSource="{Binding Dashboard.ImportantLinks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="12"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="12"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Link Title" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,4" FontFamily="{StaticResource AppFont}"/>
+                                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
+                                        </StackPanel>
+                                        
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Link URL" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="2,0,0,4" FontFamily="{StaticResource AppFont}"/>
+                                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
+                                        </StackPanel>
+                                        
+                                        <Button Grid.Column="4"
+                                                VerticalAlignment="Bottom"
+                                                Height="30" Width="32"
+                                                Padding="0"
+                                                Style="{StaticResource FluentButtonSecondary}"
+                                                Command="{Binding DataContext.Dashboard.RemoveLinkCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Delete Link">
+                                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF068;" FontSize="11" Foreground="#ff5252" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                        <!-- Row 0: Link 1 -->
-                        <StackPanel Grid.Row="0" Grid.Column="0">
-                            <TextBlock Text="Link 1 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="0" Grid.Column="2">
-                            <TextBlock Text="Link 1 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link1Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-
-                        <!-- Row 2: Link 2 -->
-                        <StackPanel Grid.Row="2" Grid.Column="0">
-                            <TextBlock Text="Link 2 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Grid.Column="2">
-                            <TextBlock Text="Link 2 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link2Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-
-                        <!-- Row 4: Link 3 -->
-                        <StackPanel Grid.Row="4" Grid.Column="0">
-                            <TextBlock Text="Link 3 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="4" Grid.Column="2">
-                            <TextBlock Text="Link 3 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link3Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-
-                        <!-- Row 6: Link 4 -->
-                        <StackPanel Grid.Row="6" Grid.Column="0">
-                            <TextBlock Text="Link 4 Title" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Title, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="6" Grid.Column="2">
-                            <TextBlock Text="Link 4 URL" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="0,0,0,2" FontFamily="{StaticResource AppFont}"/>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding Dashboard.Link4Url, UpdateSourceTrigger=PropertyChanged}" Height="30" Padding="8,4" VerticalContentAlignment="Center"/>
-                        </StackPanel>
-                    </Grid>
+                        <!-- Placeholder when there are no links -->
+                        <TextBlock Text="No links configured. Click the + button above to add an important link."
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   FontSize="12"
+                                   FontStyle="Italic"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,6,0,14">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Dashboard.ImportantLinks.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
                 </Border>
             </StackPanel>
 

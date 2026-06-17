@@ -1015,7 +1015,8 @@
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
                                               RecognizesAccessKey="True"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              AutomationProperties.Name=""/>
                         </Border>
                         
                         <!-- Bottom Indicator Bar (Hidden by default) -->
