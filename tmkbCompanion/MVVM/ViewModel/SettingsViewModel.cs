@@ -22,6 +22,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         private double _cacheProgress = 0.5;
         private string _cacheUsedText = "Calculating...";
         private string _accentColorHex = "#5b8cff";
+        private string _quickNotesPath = string.Empty;
 
         // Max capacity shown in the progress bar (MB)
         private const double MaxCacheMB = 1024.0;
@@ -80,6 +81,24 @@ namespace tmkbCompanion.MVVM.ViewModel
             }
         }
 
+        public string QuickNotesPath
+        {
+            get => _quickNotesPath;
+            set
+            {
+                if (SetProperty(ref _quickNotesPath, value))
+                {
+                    SaveSettings();
+                    OnPropertyChanged(nameof(DisplayNotesPath));
+                    _dashboard.ReloadNotes();
+                }
+            }
+        }
+
+        public string DisplayNotesPath => string.IsNullOrWhiteSpace(QuickNotesPath)
+            ? "Default (App Directory)"
+            : QuickNotesPath;
+
         public double CacheProgress
         {
             get => _cacheProgress;
@@ -94,6 +113,9 @@ namespace tmkbCompanion.MVVM.ViewModel
 
         public ICommand SetAccentColorCommand { get; }
         public ICommand CleanLogsCommand { get; }
+        public ICommand CheckForUpdatesCommand { get; }
+        public ICommand BrowseNotesFolderCommand { get; }
+        public ICommand ResetNotesFolderCommand { get; }
 
         public SettingsViewModel(DashboardViewModel dashboard, WaterReminderService waterService, ClipboardHistoryViewModel clipboardHistoryVM)
         {
@@ -102,6 +124,9 @@ namespace tmkbCompanion.MVVM.ViewModel
             _clipboardHistoryVM = clipboardHistoryVM;
             SetAccentColorCommand = new RelayCommand(SetAccentColor);
             CleanLogsCommand = new RelayCommand(CleanLogs);
+            CheckForUpdatesCommand = new RelayCommand(CheckForUpdates);
+            BrowseNotesFolderCommand = new RelayCommand(BrowseNotesFolder);
+            ResetNotesFolderCommand = new RelayCommand(() => QuickNotesPath = string.Empty);
             _launchOnStartup = GetStartupRegistryState();
 
             LoadSettings();
@@ -201,6 +226,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                         _showNotifications = data.ShowNotifications;
                         _darkMode = data.DarkMode;
                         _isPetEnabled = data.IsPetEnabled;
+                        _quickNotesPath = data.QuickNotesPath;
                         ApplyAccentColor(data.AccentColorHex);
                     }
                 }
@@ -226,7 +252,8 @@ namespace tmkbCompanion.MVVM.ViewModel
                     AccentColorHex = _accentColorHex,
                     ShowNotifications = ShowNotifications,
                     DarkMode = DarkMode,
-                    IsPetEnabled = IsPetEnabled
+                    IsPetEnabled = IsPetEnabled,
+                    QuickNotesPath = QuickNotesPath
                 };
                 string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
@@ -367,6 +394,30 @@ namespace tmkbCompanion.MVVM.ViewModel
                 CacheProgress = 0.5;
             }
         }
+
+        private void CheckForUpdates()
+        {
+            if (System.Windows.Application.Current.MainWindow?.DataContext is MainViewModel mainVM)
+            {
+                mainVM.UpdateService?.CheckForUpdates(isManualCheck: true);
+            }
+        }
+
+        private void BrowseNotesFolder()
+        {
+            var dialog = new Microsoft.Win32.OpenFolderDialog
+            {
+                Title = "Select Quick Notes Folder",
+                InitialDirectory = string.IsNullOrWhiteSpace(QuickNotesPath) 
+                    ? AppDomain.CurrentDomain.BaseDirectory 
+                    : QuickNotesPath
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                QuickNotesPath = dialog.FolderName;
+            }
+        }
     }
 
     public class AppSettingsData
@@ -375,5 +426,6 @@ namespace tmkbCompanion.MVVM.ViewModel
         public bool ShowNotifications { get; set; } = true;
         public bool DarkMode { get; set; } = true;
         public bool IsPetEnabled { get; set; } = false;
+        public string QuickNotesPath { get; set; } = string.Empty;
     }
 }

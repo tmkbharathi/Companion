@@ -14,8 +14,10 @@ namespace tmkbCompanion.MVVM.ViewModel
         private string _toastMessage = string.Empty;
         private bool _isToastVisible;
         private bool _isSidebarOpen = true;
+        private bool _isUpdateOverlayVisible;
 
         private readonly WaterReminderService _waterService;
+        private readonly IUpdateService _updateService;
 
         public DashboardViewModel DashboardVM { get; }
         public SettingsViewModel SettingsVM { get; }
@@ -90,6 +92,14 @@ namespace tmkbCompanion.MVVM.ViewModel
             set => SetProperty(ref _isSidebarOpen, value);
         }
 
+        public bool IsUpdateOverlayVisible
+        {
+            get => _isUpdateOverlayVisible;
+            set => SetProperty(ref _isUpdateOverlayVisible, value);
+        }
+
+        public IUpdateService UpdateService => _updateService;
+
         public MainViewModel()
         {
             // Initialize sub-view models
@@ -121,6 +131,10 @@ namespace tmkbCompanion.MVVM.ViewModel
 
             // Set current date string
             UpdateCurrentDate();
+
+            // Initialize update service and run silent update check on startup
+            _updateService = new AutoUpdaterService(this);
+            _updateService.CheckForUpdates(isManualCheck: false);
         }
 
         public void ShowDashboard()

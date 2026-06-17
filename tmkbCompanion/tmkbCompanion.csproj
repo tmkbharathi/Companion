@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\Fonts\*.ttf" />
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
   </ItemGroup>
 
 </Project>

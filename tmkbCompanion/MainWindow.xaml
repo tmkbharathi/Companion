@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:tmkbCompanion"
         xmlns:vm="clr-namespace:tmkbCompanion.MVVM.ViewModel"
         xmlns:view="clr-namespace:tmkbCompanion.MVVM.View"
+        xmlns:core="clr-namespace:tmkbCompanion.MVVM.Core"
         mc:Ignorable="d"
         Title="FlowTrack"
         Height="500"
@@ -79,7 +80,7 @@
                                                Text="{TemplateBinding Content}"
                                                TextTrimming="CharacterEllipsis"
                                                VerticalAlignment="Center"
-                                               ToolTip="{TemplateBinding Content}"/>
+                                               core:TextBlockService.ShowToolTipIfTrimmed="True"/>
                                 </Grid>
                             </Grid>
                         </Border>
@@ -223,13 +224,14 @@
                                         </Style>
                                     </Border.Style>
                                     <Grid>
-                                        <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                                   Text="&#xF007;" FontSize="11"
-                                                   Foreground="#001847"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
+                                        <Path Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                                              Fill="#001847"
+                                              Width="11" Height="11"
+                                              Stretch="Uniform"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center">
+                                            <Path.Style>
+                                                <Style TargetType="Path">
                                                     <Setter Property="Visibility" Value="Visible"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ProfileSetupVM.HasProfilePicture}" Value="True">
@@ -237,8 +239,8 @@
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
+                                            </Path.Style>
+                                        </Path>
                                     </Grid>
                                 </Border>
 
@@ -371,6 +373,14 @@
                     </StackPanel>
                 </Grid>
             </Border>
+
+            <!-- ══════════════════════════════════════════
+                 5. UPDATE OVERLAY (DARK BACKDROP)
+                 ══════════════════════════════════════════ -->
+            <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2"
+                  Background="#B30C0E15"
+                  Visibility="{Binding IsUpdateOverlayVisible, Converter={StaticResource BoolToVis}}"
+                  Panel.ZIndex="1050"/>
 
         </Grid>
     </Border>

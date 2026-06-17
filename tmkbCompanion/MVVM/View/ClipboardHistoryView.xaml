@@ -18,25 +18,18 @@
 
         <!-- Header -->
         <Grid Grid.Row="0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                           Text="&#xF0EA;" 
-                           FontSize="24" 
-                           Foreground="{DynamicResource AccentBrush}" 
-                           VerticalAlignment="Center"
-                           Margin="0,0,12,0"/>
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Clipboard History" 
-                               Foreground="{StaticResource TextPrimaryBrush}" 
-                               FontSize="20" 
-                               FontWeight="Bold" 
-                               FontFamily="{StaticResource AppFont}"/>
-                    <TextBlock Text="Store, manage, and retrieve items you copy system-wide" 
-                               Foreground="{StaticResource TextMutedBrush}" 
-                               FontSize="11" 
-                               Opacity="0.7"
-                               FontFamily="{StaticResource AppFont}"/>
-                </StackPanel>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+                <TextBlock Text="Clipboard History" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           FontFamily="{StaticResource AppFont}"/>
+                <TextBlock Text="Store, manage, and retrieve items you copy system-wide" 
+                           Foreground="{StaticResource TextMutedBrush}" 
+                           FontSize="11" 
+                           Opacity="0.7"
+                           FontFamily="{StaticResource AppFont}"
+                           Margin="0,2,0,0"/>
             </StackPanel>
 
             <Button Content="Clear All" 
@@ -118,6 +111,7 @@
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <!-- Copy item back -->
                                         <Button Width="36" Height="36" Margin="0,0,6,0"
+                                                Padding="0"
                                                 ToolTip="Copy back to clipboard"
                                                 Command="{Binding DataContext.CopyItemCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                 CommandParameter="{Binding}"
@@ -131,6 +125,7 @@
 
                                         <!-- Delete item -->
                                         <Button Width="36" Height="36"
+                                                Padding="0"
                                                 ToolTip="Delete from history"
                                                 Command="{Binding DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                 CommandParameter="{Binding}"

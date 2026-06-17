@@ -51,13 +51,15 @@
                            FontSize="20"
                            FontWeight="Bold"
                            FontFamily="{StaticResource AppFont}"
-                           HorizontalAlignment="Center"/>
+                           HorizontalAlignment="Center"
+                           Padding="0,0,0,6"/>
                 <TextBlock Text="Personalize your FlowTrack experience."
                            Foreground="{StaticResource TextMutedBrush}"
                            FontSize="12"
                            Margin="0,3,0,0"
                            FontFamily="{StaticResource AppFont}"
-                           HorizontalAlignment="Center"/>
+                           HorizontalAlignment="Center"
+                           Padding="0,0,0,2"/>
             </StackPanel>
 
             <!-- ═══════════ Row 2: Two-column content ═══════════ -->
@@ -98,23 +100,25 @@
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                       Text="&#xF007;"
-                                       FontSize="44"
-                                       Foreground="#8d909f"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HasProfilePicture}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                            <Grid>
+                                <Path Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                                      Fill="#8d909f"
+                                      Width="44" Height="44"
+                                      Stretch="Uniform"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HasProfilePicture}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                            </Grid>
                         </Border>
 
                         <!-- Camera overlay button -->
@@ -129,12 +133,14 @@
                                             Background="{DynamicResource AccentBrush}"
                                             CornerRadius="15"
                                             SnapsToDevicePixels="True">
-                                        <TextBlock FontFamily="{StaticResource SegoeMDL2}"
-                                                   Text="&#xF030;"
-                                                   FontSize="12"
-                                                   Foreground="#001847"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
+                                        <Grid>
+                                            <Path Data="M 4,4 H 7 L 9,2 H 15 L 17,4 H 20 A 2,2 0 0,1 22,6 V 18 A 2,2 0 0,1 20,20 H 4 A 2,2 0 0,1 2,18 V 6 A 2,2 0 0,1 4,4 Z M 12,7 A 5,5 0 1,1 12,17 A 5,5 0 0,1 12,7 Z M 12,9 A 3,3 0 1,0 12,15 A 3,3 0 0,0 12,9 Z"
+                                                  Fill="#001847"
+                                                  Width="12" Height="12"
+                                                  Stretch="Uniform"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">

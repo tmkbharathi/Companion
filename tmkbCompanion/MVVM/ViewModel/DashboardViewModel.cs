@@ -152,7 +152,41 @@ namespace tmkbCompanion.MVVM.ViewModel
             TimerText = $"{mins:D2}:{secs:D2}";
         }
 
-        private string NotesFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, NotesFileName);
+        public string NotesFilePath
+        {
+            get
+            {
+                try
+                {
+                    string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_settings.json");
+                    if (File.Exists(settingsPath))
+                    {
+                        string json = File.ReadAllText(settingsPath);
+                        using (var doc = System.Text.Json.JsonDocument.Parse(json))
+                        {
+                            if (doc.RootElement.TryGetProperty("QuickNotesPath", out var prop))
+                            {
+                                string customPath = prop.GetString() ?? string.Empty;
+                                if (!string.IsNullOrWhiteSpace(customPath) && Directory.Exists(customPath))
+                                {
+                                    return Path.Combine(customPath, NotesFileName);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to resolve custom notes path: {ex.Message}");
+                }
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, NotesFileName);
+            }
+        }
+
+        public void ReloadNotes()
+        {
+            LoadNotes();
+        }
 
         private void LoadNotes()
         {
@@ -162,6 +196,11 @@ namespace tmkbCompanion.MVVM.ViewModel
                 if (File.Exists(path))
                 {
                     NotesText = File.ReadAllText(path);
+                }
+                else
+                {
+                    // If file doesn't exist (e.g. new path selected), clear current textbox content
+                    NotesText = string.Empty;
                 }
             }
             catch (Exception ex)

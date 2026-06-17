@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Adjust Profile Picture" 
-        Height="460" Width="360"
-        MinHeight="380"
+        Height="550" Width="360"
+        MinHeight="480"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -58,7 +58,7 @@
                                    FontSize="18" 
                                    FontWeight="Bold" 
                                    FontFamily="{StaticResource AppFont}"/>
-                        <TextBlock Text="Preview how the image fits inside a circle" 
+                        <TextBlock Text="Drag to pan, scroll wheel to zoom" 
                                    Foreground="{StaticResource TextMutedBrush}" 
                                    FontSize="12" 
                                    Margin="0,4,0,0"
@@ -104,25 +104,57 @@
                     </Button>
                 </Grid>
 
-                <!-- ── Row 2: Circular Preview ── -->
+                <!-- ── Row 2: WhatsApp-style Crop Preview ── -->
                 <StackPanel Grid.Row="2" HorizontalAlignment="Center">
-                    <Border Width="150" Height="150" 
-                            BorderBrush="{DynamicResource AccentBrush}" 
-                            BorderThickness="3" 
-                            CornerRadius="75"
+                    <Border Width="240" Height="240" 
+                            BorderBrush="{StaticResource BorderBrush}" 
+                            BorderThickness="1.5" 
                             Background="#0c0e15"
+                            ClipToBounds="True"
+                            CornerRadius="8"
                             HorizontalAlignment="Center">
                         <Border.Effect>
-                            <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="20" ShadowDepth="0" Opacity="0.35"/>
+                            <DropShadowEffect Color="#000000" BlurRadius="20" ShadowDepth="4" Opacity="0.5"/>
                         </Border.Effect>
-                        <Border CornerRadius="72" Margin="3" ClipToBounds="True">
-                            <Border.Background>
-                                <ImageBrush x:Name="PreviewBrush" Stretch="UniformToFill"/>
-                            </Border.Background>
-                        </Border>
+                        <Grid x:Name="ImageGrid" 
+                              Width="240" Height="240"
+                              MouseLeftButtonDown="ImageGrid_MouseLeftButtonDown"
+                              MouseLeftButtonUp="ImageGrid_MouseLeftButtonUp"
+                              MouseMove="ImageGrid_MouseMove"
+                              MouseWheel="ImageGrid_MouseWheel"
+                              Background="Transparent"
+                              ClipToBounds="True">
+                            
+                            <!-- Image underneath -->
+                            <Image x:Name="PreviewImage" Stretch="Fill" RenderTransformOrigin="0.5,0.5">
+                                <Image.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform x:Name="ImageScale" ScaleX="1.0" ScaleY="1.0"/>
+                                        <TranslateTransform x:Name="ImageTranslate" X="0" Y="0"/>
+                                    </TransformGroup>
+                                </Image.RenderTransform>
+                            </Image>
+
+                            <!-- WhatsApp-style semi-transparent overlay with a circular cutout -->
+                            <Path Fill="#a00c0e15" 
+                                  Stroke="{DynamicResource AccentBrush}" 
+                                  StrokeThickness="1.5"
+                                  IsHitTestVisible="False">
+                                <Path.Data>
+                                    <CombinedGeometry GeometryCombineMode="Exclude">
+                                        <CombinedGeometry.Geometry1>
+                                            <RectangleGeometry Rect="0,0,240,240"/>
+                                        </CombinedGeometry.Geometry1>
+                                        <CombinedGeometry.Geometry2>
+                                            <EllipseGeometry Center="120,120" RadiusX="120" RadiusY="120"/>
+                                        </CombinedGeometry.Geometry2>
+                                    </CombinedGeometry>
+                                </Path.Data>
+                            </Path>
+                        </Grid>
                     </Border>
 
-                    <TextBlock Text="Circular Preview" 
+                    <TextBlock Text="Circular Preview Area" 
                                Foreground="{StaticResource TextMutedBrush}" 
                                FontSize="11" 
                                HorizontalAlignment="Center" 
@@ -133,9 +165,9 @@
                 <!-- ── Row 4: Action Buttons ── -->
                 <StackPanel Grid.Row="4" Margin="0,0,0,4">
 
-                    <!-- Primary: Crop & Center -->
+                    <!-- Primary: Crop -->
                     <Button Style="{StaticResource FluentButton}"
-                            Content="Crop &amp; Center"
+                            Content="Crop"
                             Click="Crop_Click"
                             Height="40"
                             Margin="0,0,0,10"/>

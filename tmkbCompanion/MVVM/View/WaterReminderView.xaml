@@ -11,12 +11,8 @@
         <Grid.RowDefinitions>
             <!-- Title / Greeting -->
             <RowDefinition Height="Auto"/>
-            <!-- Main Grid containing Left and Right Cards -->
+            <!-- TabControl containing Tracking and History -->
             <RowDefinition Height="*"/>
-            <!-- Spacer -->
-            <RowDefinition Height="10"/>
-            <!-- History Section -->
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- ════════════════════════════════ -->
@@ -37,271 +33,277 @@
         </StackPanel>
 
         <!-- ════════════════════════════════ -->
-        <!--  Main Content Columns            -->
+        <!--  Main TabControl                 -->
         <!-- ════════════════════════════════ -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <!-- Left: Intake Progress & Log buttons -->
-                <ColumnDefinition Width="1.3*"/>
-                <!-- Gap -->
-                <ColumnDefinition Width="12"/>
-                <!-- Right: Dashboard Stats & Timers -->
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
+        <TabControl Grid.Row="1" Style="{StaticResource FluentTabControl}">
+            
+            <!-- TAB 1: Tracking -->
+            <TabItem Header="Tracking">
+                <Grid Margin="0,4,0,0">
+                    <Grid.ColumnDefinitions>
+                        <!-- Left: Intake Progress & Log buttons -->
+                        <ColumnDefinition Width="1.3*"/>
+                        <!-- Gap -->
+                        <ColumnDefinition Width="12"/>
+                        <!-- Right: Dashboard Stats & Timers -->
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
 
-            <!-- Left Column Card: Hydration Progress & Log -->
-            <Border Grid.Column="0" Style="{StaticResource ThreeDCardStyle}" Padding="14">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Section Title & Info -->
-                        <RowDefinition Height="Auto"/> <!-- Progress Bar -->
-                        <RowDefinition Height="*"/>    <!-- Log Controls -->
-                    </Grid.RowDefinitions>
-
-                    <!-- Section Title & Info -->
-                    <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF043;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                            <TextBlock Text="Daily Intake Progress" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
-                        </StackPanel>
+                    <!-- Left Column Card: Hydration Progress & Log -->
+                    <Border Grid.Column="0" Style="{StaticResource ThreeDCardStyle}" Padding="14">
                         <Grid>
-                            <TextBlock FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
-                                <Run Text="{Binding TodayIntake, Mode=OneWay}"/>
-                                <Run Text=" / " Foreground="{StaticResource TextMutedBrush}"/>
-                                <Run Text="{Binding DailyGoal, Mode=OneWay}"/>
-                                <Run Text=" ml" FontSize="11" Foreground="{StaticResource TextMutedBrush}"/>
-                            </TextBlock>
-                            <TextBlock Text="{Binding DisplayPercentage}" Foreground="{DynamicResource AccentBrush}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        </Grid>
-                    </StackPanel>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/> <!-- Section Title & Info -->
+                                <RowDefinition Height="Auto"/> <!-- Progress Bar -->
+                                <RowDefinition Height="*"/>    <!-- Log Controls -->
+                            </Grid.RowDefinitions>
 
-                    <!-- Progress Bar -->
-                    <Grid Grid.Row="1" Margin="0,0,0,12">
-                        <ProgressBar Style="{StaticResource FluentProgressBar}" Value="{Binding ProgressPercentage, Mode=OneWay}" Height="12"/>
-                    </Grid>
-
-                    <!-- Log Controls & Stats -->
-                    <DockPanel Grid.Row="2">
-                        <!-- Bottom Stats Line -->
-                        <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF06D;" FontSize="11" Foreground="#ffb874" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <TextBlock Text="Streak: " FontSize="10" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding CurrentStreak, StringFormat='{}{0} Days'}" Foreground="#ffb874" FontSize="11" FontWeight="Bold" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF017;" FontSize="11" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                <TextBlock Text="Last: " FontSize="10" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding LastDrinkTime}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Logging Inputs -->
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Quick Add Intake" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextMutedBrush}" Margin="2,0,0,6"/>
-                            <UniformGrid Columns="3" Rows="1" Margin="0,0,0,8">
-                                <Button Style="{StaticResource FluentButtonSecondary}" Content="+100" Command="{Binding AddWaterCommand}" CommandParameter="100" Margin="0,0,4,0" Height="28" Padding="0" FontSize="11"/>
-                                <Button Style="{StaticResource FluentButtonSecondary}" Content="+250" Command="{Binding AddWaterCommand}" CommandParameter="250" Margin="2,0,2,0" Height="28" Padding="0" FontSize="11"/>
-                                <Button Style="{StaticResource FluentButtonSecondary}" Content="+500" Command="{Binding AddWaterCommand}" CommandParameter="500" Margin="4,0,0,0" Height="28" Padding="0" FontSize="11"/>
-                            </UniformGrid>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="45"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox Style="{StaticResource FluentTextBox}" 
-                                         Text="{Binding CustomDrinkAmount, UpdateSourceTrigger=PropertyChanged}" 
-                                         Padding="8,4" 
-                                         FontSize="11" 
-                                         Height="28" 
-                                         VerticalContentAlignment="Center"/>
-                                <TextBlock Text="ml" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{StaticResource TextMutedBrush}" FontSize="11" IsHitTestVisible="False"/>
-                                <Button Grid.Column="1" 
-                                        Style="{StaticResource FluentButton}" 
-                                        Command="{Binding AddWaterCommand}" 
-                                        Content="Add" 
-                                        Height="28" 
-                                        FontSize="11"
-                                        Padding="0" 
-                                        Margin="6,0,0,0"/>
-                            </Grid>
-                        </StackPanel>
-                    </DockPanel>
-                </Grid>
-            </Border>
-
-            <!-- Right Column Card: Timer & Settings -->
-            <Border Grid.Column="2" Style="{StaticResource ThreeDCardStyle}" Padding="14">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Section Title -->
-                        <RowDefinition Height="Auto"/> <!-- Settings Rows -->
-                        <RowDefinition Height="*"/>    <!-- Timer Controls -->
-                    </Grid.RowDefinitions>
-
-                    <!-- Section Title -->
-                    <StackPanel Grid.Row="0" Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF017;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                            <TextBlock Text="Reminder Controls" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!-- Settings Rows -->
-                    <StackPanel Grid.Row="1">
-                        <Grid Margin="0,2,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="1.2*"/>
-                            </Grid.ColumnDefinitions>
-                            
-                            <!-- Daily Target Target -->
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Target (ml)" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="2,0,0,2"/>
+                            <!-- Section Title & Info -->
+                            <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF043;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                    <TextBlock Text="Daily Intake Progress" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
+                                </StackPanel>
                                 <Grid>
-                                    <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding DailyGoal, UpdateSourceTrigger=LostFocus}" Height="28" Padding="6,2" VerticalContentAlignment="Center" FontSize="11"/>
-                                    <TextBlock Text="ml" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,6,0" Foreground="{StaticResource TextMutedBrush}" FontSize="11" IsHitTestVisible="False"/>
+                                    <TextBlock FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
+                                        <Run Text="{Binding TodayIntake, Mode=OneWay}"/>
+                                        <Run Text=" / " Foreground="{StaticResource TextMutedBrush}"/>
+                                        <Run Text="{Binding DailyGoal, Mode=OneWay}"/>
+                                        <Run Text=" ml" FontSize="11" Foreground="{StaticResource TextMutedBrush}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding DisplayPercentage}" Foreground="{DynamicResource AccentBrush}" FontSize="15" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                 </Grid>
                             </StackPanel>
 
-                            <!-- Interval selection -->
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Interval" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="2,0,0,2"/>
-                                <ComboBox SelectedIndex="{Binding SelectedIntervalIndex}" Height="28" Padding="6,2" VerticalContentAlignment="Center" Background="#0c0e15" Foreground="{StaticResource TextPrimaryBrush}" BorderBrush="{StaticResource BorderBrush}" FontSize="11">
-                                    <ComboBoxItem Content="15 min"/>
-                                    <ComboBoxItem Content="30 min"/>
-                                    <ComboBoxItem Content="1 hour"/>
-                                    <ComboBoxItem Content="Custom"/>
-                                </ComboBox>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Custom Interval Input -->
-                        <Grid Visibility="{Binding SelectedIntervalIndex, Converter={StaticResource BoolToVis}, ConverterParameter=3}" Margin="0,2,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding CustomIntervalMinutes, UpdateSourceTrigger=PropertyChanged}" Height="26" Padding="6,2" VerticalContentAlignment="Center" FontSize="11"/>
-                            <TextBlock Grid.Column="1" Text="minutes" VerticalAlignment="Center" Margin="6,0,2,0" Foreground="{StaticResource TextMutedBrush}" FontSize="11"/>
-                        </Grid>
-
-                        <!-- Audio Alert Switch -->
-                        <CheckBox Style="{StaticResource FluentToggleSwitch}" IsChecked="{Binding AudioAlertEnabled}" Content="Audio Alert" FontSize="11" Margin="2,4,0,2"/>
-                    </StackPanel>
-
-                    <!-- Timer Controls -->
-                    <Grid Grid.Row="2" Margin="0,6,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Countdown Display -->
-                        <TextBlock Grid.Row="0" Text="{Binding CountdownText}" Foreground="{DynamicResource AccentBrush}" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource AppFont}">
-                            <TextBlock.Effect>
-                                <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
-
-                        <!-- Buttons Grid -->
-                        <UniformGrid Grid.Row="1" Columns="2" Height="28">
-                            <Grid Margin="0,0,2,0">
-                                <Button Style="{StaticResource FluentButton}" 
-                                        Command="{Binding StartTimerCommand}" 
-                                        Visibility="{Binding IsTimerRunning, Converter={StaticResource BoolToVis}, ConverterParameter=False}" 
-                                        Content="Start" FontSize="11" Padding="0"/>
-                                <Button Style="{StaticResource FluentButtonSecondary}" 
-                                        Command="{Binding PauseTimerCommand}" 
-                                        Visibility="{Binding IsTimerRunning, Converter={StaticResource BoolToVis}}" 
-                                        Content="Pause" FontSize="11" Padding="0"/>
+                            <!-- Progress Bar -->
+                            <Grid Grid.Row="1" Margin="0,0,0,12">
+                                <ProgressBar Style="{StaticResource FluentProgressBar}" Value="{Binding ProgressPercentage, Mode=OneWay}" Height="12"/>
                             </Grid>
+
+                            <!-- Log Controls & Stats -->
+                            <DockPanel Grid.Row="2">
+                                <!-- Bottom Stats Line -->
+                                <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF06D;" FontSize="11" Foreground="#ffb874" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Streak: " FontSize="10" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding CurrentStreak, StringFormat='{}{0} Days'}" Foreground="#ffb874" FontSize="11" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF017;" FontSize="11" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Last: " FontSize="10" Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding LastDrinkTime}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Logging Inputs -->
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Quick Add Intake" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextMutedBrush}" Margin="2,0,0,6"/>
+                                    <UniformGrid Columns="3" Rows="1" Margin="0,0,0,8">
+                                        <Button Style="{StaticResource FluentButtonSecondary}" Content="+100" Command="{Binding AddWaterCommand}" CommandParameter="100" Margin="0,0,4,0" Height="28" Padding="0" FontSize="11"/>
+                                        <Button Style="{StaticResource FluentButtonSecondary}" Content="+250" Command="{Binding AddWaterCommand}" CommandParameter="250" Margin="2,0,2,0" Height="28" Padding="0" FontSize="11"/>
+                                        <Button Style="{StaticResource FluentButtonSecondary}" Content="+500" Command="{Binding AddWaterCommand}" CommandParameter="500" Margin="4,0,0,0" Height="28" Padding="0" FontSize="11"/>
+                                    </UniformGrid>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="45"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Style="{StaticResource FluentTextBox}" 
+                                                 Text="{Binding CustomDrinkAmount, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Padding="8,4" 
+                                                 FontSize="11" 
+                                                 Height="28" 
+                                                 VerticalContentAlignment="Center"/>
+                                        <TextBlock Text="ml" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{StaticResource TextMutedBrush}" FontSize="11" IsHitTestVisible="False"/>
+                                        <Button Grid.Column="1" 
+                                                Style="{StaticResource FluentButton}" 
+                                                Command="{Binding AddWaterCommand}" 
+                                                Content="Add" 
+                                                Height="28" 
+                                                FontSize="11"
+                                                Padding="0" 
+                                                Margin="6,0,0,0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </DockPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Right Column Card: Timer & Settings -->
+                    <Border Grid.Column="2" Style="{StaticResource ThreeDCardStyle}" Padding="14">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/> <!-- Section Title -->
+                                <RowDefinition Height="Auto"/> <!-- Settings Rows -->
+                                <RowDefinition Height="*"/>    <!-- Timer Controls -->
+                            </Grid.RowDefinitions>
+
+                            <!-- Section Title -->
+                            <StackPanel Grid.Row="0" Margin="0,0,0,8">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF017;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                    <TextBlock Text="Reminder Controls" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Settings Rows -->
+                            <StackPanel Grid.Row="1">
+                                <Grid Margin="0,2,0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="1.2*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Daily Target Target -->
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Target (ml)" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="2,0,0,2"/>
+                                        <Grid>
+                                            <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding DailyGoal, UpdateSourceTrigger=LostFocus}" Height="28" Padding="6,2" VerticalContentAlignment="Center" FontSize="11"/>
+                                            <TextBlock Text="ml" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,6,0" Foreground="{StaticResource TextMutedBrush}" FontSize="11" IsHitTestVisible="False"/>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <!-- Interval selection -->
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Interval" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="2,0,0,2"/>
+                                        <ComboBox Style="{StaticResource FluentComboBox}" SelectedIndex="{Binding SelectedIntervalIndex}" Height="28" Padding="6,2" VerticalContentAlignment="Center" FontSize="11">
+                                            <ComboBoxItem Content="15 min"/>
+                                            <ComboBoxItem Content="30 min"/>
+                                            <ComboBoxItem Content="1 hour"/>
+                                            <ComboBoxItem Content="Custom"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Custom Interval Input -->
+                                <Grid Visibility="{Binding SelectedIntervalIndex, Converter={StaticResource BoolToVis}, ConverterParameter=3}" Margin="0,2,0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Style="{StaticResource FluentTextBox}" Text="{Binding CustomIntervalMinutes, UpdateSourceTrigger=PropertyChanged}" Height="26" Padding="6,2" VerticalContentAlignment="Center" FontSize="11"/>
+                                    <TextBlock Grid.Column="1" Text="minutes" VerticalAlignment="Center" Margin="6,0,2,0" Foreground="{StaticResource TextMutedBrush}" FontSize="11"/>
+                                </Grid>
+
+                                <!-- Audio Alert Switch -->
+                                <CheckBox Style="{StaticResource FluentToggleSwitch}" IsChecked="{Binding AudioAlertEnabled}" Content="Audio Alert" FontSize="11" Margin="2,4,0,2"/>
+                            </StackPanel>
+
+                            <!-- Timer Controls -->
+                            <Grid Grid.Row="2" Margin="0,6,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Countdown Display -->
+                                <TextBlock Grid.Row="0" Text="{Binding CountdownText}" Foreground="{DynamicResource AccentBrush}" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource AppFont}">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+
+                                <!-- Buttons Grid -->
+                                <UniformGrid Grid.Row="1" Columns="2" Height="28">
+                                    <Grid Margin="0,0,2,0">
+                                        <Button Style="{StaticResource FluentButton}" 
+                                                Command="{Binding StartTimerCommand}" 
+                                                Visibility="{Binding IsTimerRunning, Converter={StaticResource BoolToVis}, ConverterParameter=False}" 
+                                                Content="Start" FontSize="11" Padding="0"/>
+                                        <Button Style="{StaticResource FluentButtonSecondary}" 
+                                                Command="{Binding PauseTimerCommand}" 
+                                                Visibility="{Binding IsTimerRunning, Converter={StaticResource BoolToVis}}" 
+                                                Content="Pause" FontSize="11" Padding="0"/>
+                                    </Grid>
+                                    <Button Style="{StaticResource FluentButtonSecondary}" 
+                                            Command="{Binding StopTimerCommand}" 
+                                            Content="Stop" FontSize="11" Padding="0" Margin="2,0,0,0"/>
+                                </UniformGrid>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: History -->
+            <TabItem Header="History">
+                <Border Style="{StaticResource ThreeDCardStyle}" Padding="14" Margin="0,4,0,0" VerticalAlignment="Stretch">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF1DA;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <TextBlock Text="Hydration History Logs" Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
+                            </StackPanel>
                             <Button Style="{StaticResource FluentButtonSecondary}" 
-                                    Command="{Binding StopTimerCommand}" 
-                                    Content="Stop" FontSize="11" Padding="0" Margin="2,0,0,0"/>
-                        </UniformGrid>
-                    </Grid>
-                </Grid>
-            </Border>
-        </Grid>
+                                    Command="{Binding ExportCsvCommand}" 
+                                    HorizontalAlignment="Right" 
+                                    Height="28" 
+                                    Padding="10,0" 
+                                    FontSize="11">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF019;" FontSize="10" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Export CSV" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
 
-        <!-- ════════════════════════════════ -->
-        <!--  History Log DataGrid            -->
-        <!-- ════════════════════════════════ -->
-        <Border Grid.Row="3" Style="{StaticResource ThreeDCardStyle}" Padding="12">
-            <StackPanel>
-                <Grid Margin="0,0,0,6">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF1DA;" FontSize="14" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                        <TextBlock Text="Hydration History Logs" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12" FontWeight="Bold" FontFamily="{StaticResource AppFont}"/>
+                        <!-- History DataGrid (expanded height since it occupies the entire tab height) -->
+                        <DataGrid ItemsSource="{Binding HistoryList}" 
+                                  AutoGenerateColumns="False" 
+                                  Background="#0c0e15" 
+                                  BorderBrush="{StaticResource BorderBrush}" 
+                                  RowBackground="#151925" 
+                                  AlternatingRowBackground="#1a1e2b" 
+                                  Foreground="{StaticResource TextPrimaryBrush}" 
+                                  GridLinesVisibility="Horizontal" 
+                                  HorizontalGridLinesBrush="#2a3142" 
+                                  HeadersVisibility="Column" 
+                                  IsReadOnly="True" 
+                                  Height="250" 
+                                  VerticalScrollBarVisibility="Auto">
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#1c2230"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                    <Setter Property="Padding" Value="8,4"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Padding" Value="8,4"/>
+                                    <Setter Property="FontSize" Value="10"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="DataGridCell">
+                                                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                                    <ContentPresenter VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.CellStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="1.5*"/>
+                                <DataGridTextColumn Header="Daily Target (ml)" Binding="{Binding Target}" Width="1.2*"/>
+                                <DataGridTextColumn Header="Consumed (ml)" Binding="{Binding Consumed}" Width="1.3*"/>
+                                <DataGridTextColumn Header="Completion (%)" Binding="{Binding Percentage, StringFormat='{}{0}%'}" Width="1*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </StackPanel>
-                    <Button Style="{StaticResource FluentButtonSecondary}" 
-                            Command="{Binding ExportCsvCommand}" 
-                            HorizontalAlignment="Right" 
-                            Height="24" 
-                            Padding="8,0" 
-                            FontSize="11">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="{StaticResource SegoeMDL2}" Text="&#xF019;" FontSize="10" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Export CSV" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </Grid>
-
-                <!-- History DataGrid -->
-                <DataGrid ItemsSource="{Binding HistoryList}" 
-                          AutoGenerateColumns="False" 
-                          Background="#0c0e15" 
-                          BorderBrush="{StaticResource BorderBrush}" 
-                          RowBackground="#151925" 
-                          AlternatingRowBackground="#1a1e2b" 
-                          Foreground="{StaticResource TextPrimaryBrush}" 
-                          GridLinesVisibility="Horizontal" 
-                          HorizontalGridLinesBrush="#2a3142" 
-                          HeadersVisibility="Column" 
-                          IsReadOnly="True" 
-                          Height="85" 
-                          VerticalScrollBarVisibility="Auto">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#1c2230"/>
-                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-                            <Setter Property="Padding" Value="8,4"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-                            <Setter Property="FontSize" Value="11"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="8,4"/>
-                            <Setter Property="FontSize" Value="10"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.CellStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="1.5*"/>
-                        <DataGridTextColumn Header="Daily Target (ml)" Binding="{Binding Target}" Width="1.2*"/>
-                        <DataGridTextColumn Header="Consumed (ml)" Binding="{Binding Consumed}" Width="1.3*"/>
-                        <DataGridTextColumn Header="Completion (%)" Binding="{Binding Percentage, StringFormat='{}{0}%'}" Width="1*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
-        </Border>
+                </Border>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

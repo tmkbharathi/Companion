@@ -13,20 +13,13 @@
             <!-- SECTION: General Settings -->
             <StackPanel Margin="0,0,0,32">
                 <Grid Margin="0,0,0,20">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                                   Text="&#xF085;" 
-                                   FontSize="24" 
-                                   Foreground="{DynamicResource AccentBrush}" 
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,12,0"/>
-                        <TextBlock Text="General Settings" 
-                                   Foreground="{StaticResource TextPrimaryBrush}" 
-                                   FontSize="20" 
-                                   FontWeight="Bold" 
-                                   FontFamily="{StaticResource AppFont}"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
+                    <TextBlock Text="General Settings" 
+                               Foreground="{StaticResource TextPrimaryBrush}" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               FontFamily="{StaticResource AppFont}"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"/>
 
                     <Button Content="Edit Profile Setup"
                             Command="{Binding DataContext.ShowProfileSetupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
@@ -92,7 +85,8 @@
 
                 <!-- Card 3: Pet Companion -->
                 <Border Style="{StaticResource ThreeDCardStyle}" 
-                        Padding="10">
+                        Padding="10"
+                        Margin="0,0,0,12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -114,24 +108,44 @@
                         <CheckBox Grid.Column="2" Style="{StaticResource FluentToggleSwitch}" IsChecked="{Binding IsPetEnabled}"/>
                     </Grid>
                 </Border>
+
+                <!-- Card 4: Quick Notes Path -->
+                <Border Style="{StaticResource ThreeDCardStyle}" 
+                        Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Icon -->
+                        <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
+                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF07C;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <!-- Details -->
+                        <StackPanel Grid.Column="1" Margin="16,0,16,0" VerticalAlignment="Center">
+                            <TextBlock Text="Quick Notes Storage Location" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
+                            <TextBlock Text="{Binding DisplayNotesPath}" Foreground="{StaticResource TextMutedBrush}" FontSize="13" Opacity="0.8" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <!-- Actions -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Style="{StaticResource FluentButtonSecondary}" Command="{Binding ResetNotesFolderCommand}" Content="Reset" Width="65" Height="30" Margin="0,0,8,0" FontSize="11" Padding="0"/>
+                            <Button Style="{StaticResource FluentButton}" Command="{Binding BrowseNotesFolderCommand}" Content="Browse" Width="75" Height="30" FontSize="11" Padding="0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </StackPanel>
 
             <!-- SECTION: Appearance -->
             <StackPanel Margin="0,0,0,32">
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                               Text="&#xF1FC;" 
-                               FontSize="24" 
-                               Foreground="{DynamicResource AccentBrush}" 
-                               VerticalAlignment="Center"
-                               Margin="0,0,12,0"/>
-                    <TextBlock Text="Appearance" 
-                               Foreground="{StaticResource TextPrimaryBrush}" 
-                               FontSize="20" 
-                               FontWeight="Bold" 
-                               FontFamily="{StaticResource AppFont}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                <TextBlock Text="Appearance" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           FontFamily="{StaticResource AppFont}"
+                           Margin="0,0,0,20"/>
 
                 <!-- Card 1: Dark Mode (Disabled) -->
                 <Border Style="{StaticResource ThreeDCardStyle}" 
@@ -233,22 +247,54 @@
                 </Border>
             </StackPanel>
 
+            <!-- SECTION: Updates -->
+            <StackPanel Margin="0,0,0,32">
+                <TextBlock Text="App Updates" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           FontFamily="{StaticResource AppFont}"
+                           Margin="0,0,0,20"/>
+
+                <!-- Update Card -->
+                <Border Style="{StaticResource ThreeDCardStyle}" 
+                        Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Icon -->
+                        <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
+                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xE896;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <!-- Details -->
+                        <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Check for Updates" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
+                            <TextBlock Text="Check if there is a newer version of FlowTrack available" Foreground="{StaticResource TextMutedBrush}" FontSize="13" Opacity="0.8" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <!-- Button -->
+                        <Button Grid.Column="2" 
+                                Style="{StaticResource FluentButton}"
+                                Command="{Binding CheckForUpdatesCommand}"
+                                Content="Check"
+                                Width="100" Height="32"
+                                VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
             <!-- SECTION: Customize Important Links -->
             <StackPanel Margin="0,0,0,32">
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
-                               Text="&#xF0C1;" 
-                               FontSize="24" 
-                               Foreground="{DynamicResource AccentBrush}" 
-                               VerticalAlignment="Center"
-                               Margin="0,0,12,0"/>
-                    <TextBlock Text="Important Links Configuration" 
-                               Foreground="{StaticResource TextPrimaryBrush}" 
-                               FontSize="20" 
-                               FontWeight="Bold" 
-                               FontFamily="{StaticResource AppFont}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                <TextBlock Text="Important Links Configuration" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           FontFamily="{StaticResource AppFont}"
+                           Margin="0,0,0,20"/>
 
                 <!-- Input cards container -->
                 <Border Style="{StaticResource ThreeDCardStyle}" 
