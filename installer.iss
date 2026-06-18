@@ -1,6 +1,6 @@
 [Setup]
 AppName=tmkbCompanion
-AppVersion=1.1.2
+AppVersion=1.1.3
 DefaultDirName={pf}\tmkbCompanion
 DefaultGroupName=tmkbCompanion
 OutputBaseFilename=tmkbCompanion-setup
@@ -24,4 +24,5 @@ Name: "{group}\\tmkbCompanion"; Filename: "{app}\\tmkbCompanion.exe"
 
 [Run]
 Filename: "{app}\\tmkbCompanion.exe"; Description: "{cm:LaunchProgram,tmkbCompanion}"; Flags: nowait postinstall
+
 
