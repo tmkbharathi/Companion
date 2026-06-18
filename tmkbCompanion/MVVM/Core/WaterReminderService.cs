@@ -47,6 +47,7 @@ namespace tmkbCompanion.MVVM.Core
     public class WaterReminderService : IDisposable
     {
         private readonly DispatcherTimer _reminderTimer;
+        private readonly DispatcherTimer _midnightWatcher;
         private WaterSettings _settings = new WaterSettings();
         private List<WaterHistoryItem> _history = new List<WaterHistoryItem>();
         private DateTime _lastMidnightCheck = DateTime.Today;
@@ -81,12 +82,12 @@ namespace tmkbCompanion.MVVM.Core
             }
 
             // Watch for midnight rollover
-            var midnightWatcher = new DispatcherTimer
+            _midnightWatcher = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(30)
             };
-            midnightWatcher.Tick += MidnightWatcher_Tick;
-            midnightWatcher.Start();
+            _midnightWatcher.Tick += MidnightWatcher_Tick;
+            _midnightWatcher.Start();
 
             // Perform initial date validation on startup
             CheckMidnightReset();
@@ -431,6 +432,7 @@ namespace tmkbCompanion.MVVM.Core
         public void Dispose()
         {
             _reminderTimer.Stop();
+            _midnightWatcher.Stop();
         }
     }
 }

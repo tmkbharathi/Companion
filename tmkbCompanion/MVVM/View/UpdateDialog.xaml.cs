@@ -12,7 +12,7 @@ namespace tmkbCompanion.MVVM.View
     public partial class UpdateDialog : Window
     {
         private readonly UpdateInfo _updateInfo;
-        private readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         public UpdateDialog(UpdateInfo updateInfo)
         {

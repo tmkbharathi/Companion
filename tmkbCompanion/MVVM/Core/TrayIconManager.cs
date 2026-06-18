@@ -201,6 +201,10 @@ namespace tmkbCompanion.MVVM.Core
         public void Dispose()
         {
             _notifyIcon.Visible = false;
+            var currentIcon = _notifyIcon.Icon;
+            _notifyIcon.Icon = null;
+            currentIcon?.Dispose();
+            
             _notifyIcon.Dispose();
             if (_currentIconHandle != IntPtr.Zero)
             {
