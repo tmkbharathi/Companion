@@ -20,6 +20,7 @@ namespace tmkbCompanion.MVVM.Core
         public event Action? ToggleTimerRequested;
         public event Action? OpenRequested;
         public event Action<bool>? TogglePetRequested;
+        public event Action? RunScriptRequested;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern bool DestroyIcon(IntPtr handle);
@@ -49,6 +50,10 @@ namespace tmkbCompanion.MVVM.Core
 
             _linksMenuItem = new ToolStripMenuItem("Important Links");
             contextMenuStrip.Items.Add(_linksMenuItem);
+
+            var runScriptMenuItem = new ToolStripMenuItem("Run Custom Script");
+            runScriptMenuItem.Click += (s, e) => RunScriptRequested?.Invoke();
+            contextMenuStrip.Items.Add(runScriptMenuItem);
 
             contextMenuStrip.Items.Add(new ToolStripSeparator());
 

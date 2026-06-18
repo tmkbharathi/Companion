@@ -36,6 +36,7 @@ namespace tmkbCompanion
             {
                 _viewModel.SettingsVM.IsPetEnabled = isEnabled;
             };
+            _trayIconManager.RunScriptRequested += TrayIconManager_RunScriptRequested;
 
             // Wire view model events
             _viewModel.DashboardVM.TimerStateChanged += DashboardVM_TimerStateChanged;
@@ -146,6 +147,35 @@ namespace tmkbCompanion
             if (_viewModel.SettingsVM.IsPetEnabled)
             {
                 _petWindow?.Show();
+            }
+        }
+
+        private async void TrayIconManager_RunScriptRequested()
+        {
+            if (_viewModel.RunScriptVM.IsRunning)
+            {
+                _trayIconManager.ShowNotification("Script Runner", "A custom script is already running.");
+                return;
+            }
+
+            string script = _viewModel.RunScriptVM.ScriptContent;
+            if (string.IsNullOrWhiteSpace(script))
+            {
+                _trayIconManager.ShowNotification("Script Runner", "No custom script is configured. Open the app to set one up.");
+                return;
+            }
+
+            _trayIconManager.ShowNotification("Script Runner", $"Running script using {_viewModel.RunScriptVM.TerminalType}...");
+            
+            try
+            {
+                await _viewModel.RunScriptVM.RunScriptAsync();
+                string status = _viewModel.RunScriptVM.StatusText;
+                _trayIconManager.ShowNotification("Script Runner", $"Execution finished: {status}");
+            }
+            catch (Exception ex)
+            {
+                _trayIconManager.ShowNotification("Script Runner", $"Failed to execute script: {ex.Message}");
             }
         }
 

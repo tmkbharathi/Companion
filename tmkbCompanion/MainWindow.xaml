@@ -35,6 +35,9 @@
         <DataTemplate DataType="{x:Type vm:ClipboardHistoryViewModel}">
             <view:ClipboardHistoryView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RunScriptViewModel}">
+            <view:RunScriptView/>
+        </DataTemplate>
 
         <!-- Sidebar Navigation RadioButton Style -->
         <Style x:Key="SidebarMenuItem" TargetType="RadioButton">
@@ -314,6 +317,10 @@
                                      Tag="&#xF0EA;"
                                      Command="{Binding ShowClipboardCommand}"
                                      Content="Clipboard History"/>
+                        <RadioButton Style="{StaticResource SidebarMenuItem}"
+                                     Tag="&#xF120;"
+                                     Command="{Binding ShowRunScriptCommand}"
+                                     Content="Run Script"/>
                         <RadioButton Style="{StaticResource SidebarMenuItem}"
                                      Tag="&#xF013;"
                                      Command="{Binding ShowSettingsCommand}"

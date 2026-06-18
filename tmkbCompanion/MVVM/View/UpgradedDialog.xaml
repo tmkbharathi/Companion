@@ -147,9 +147,10 @@
                         </TextBlock.Effect>
                     </TextBlock>
 
-                    <Border Background="{DynamicResource AccentBrush}" Opacity="0.15" CornerRadius="8" Padding="12,6" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" x:Name="NewVersionBorder"/>
-                    <!-- Overlaid text block so background is translucent but text is opaque -->
-                    <Border CornerRadius="8" Padding="12,6" Margin="-52,0,0,0">
+                    <Border CornerRadius="8" Padding="12,6" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1">
+                        <Border.Background>
+                            <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.15"/>
+                        </Border.Background>
                         <TextBlock x:Name="NewVersionText" Text="v1.1.2" Foreground="{DynamicResource AccentBrush}" FontSize="12" FontWeight="Bold" FontFamily="{StaticResource AppFont}">
                             <TextBlock.Effect>
                                 <DropShadowEffect Color="{DynamicResource AccentColor}" ShadowDepth="0" BlurRadius="6" Opacity="0.4"/>

@@ -102,6 +102,45 @@ namespace tmkbCompanion.MVVM.ViewModel
             set => SetProperty(ref _lastLaunchedVersion, value);
         }
 
+        private string _terminalType = "PowerShell";
+        public string TerminalType
+        {
+            get => _terminalType;
+            set
+            {
+                if (SetProperty(ref _terminalType, value))
+                {
+                    SaveSettings();
+                }
+            }
+        }
+
+        private string _scriptContent = string.Empty;
+        public string ScriptContent
+        {
+            get => _scriptContent;
+            set
+            {
+                if (SetProperty(ref _scriptContent, value))
+                {
+                    SaveSettings();
+                }
+            }
+        }
+
+        private bool _runInExternalWindow = false;
+        public bool RunInExternalWindow
+        {
+            get => _runInExternalWindow;
+            set
+            {
+                if (SetProperty(ref _runInExternalWindow, value))
+                {
+                    SaveSettings();
+                }
+            }
+        }
+
         public string DisplayNotesPath => string.IsNullOrWhiteSpace(QuickNotesPath)
             ? "Default (App Directory)"
             : QuickNotesPath;
@@ -235,6 +274,9 @@ namespace tmkbCompanion.MVVM.ViewModel
                         _isPetEnabled = data.IsPetEnabled;
                         _quickNotesPath = data.QuickNotesPath;
                         _lastLaunchedVersion = data.LastLaunchedVersion ?? string.Empty;
+                        _terminalType = data.TerminalType ?? "PowerShell";
+                        _scriptContent = data.ScriptContent ?? string.Empty;
+                        _runInExternalWindow = data.RunInExternalWindow;
                         ApplyAccentColor(data.AccentColorHex);
                     }
                 }
@@ -262,7 +304,10 @@ namespace tmkbCompanion.MVVM.ViewModel
                     DarkMode = DarkMode,
                     IsPetEnabled = IsPetEnabled,
                     QuickNotesPath = QuickNotesPath,
-                    LastLaunchedVersion = LastLaunchedVersion
+                    LastLaunchedVersion = LastLaunchedVersion,
+                    TerminalType = TerminalType,
+                    ScriptContent = ScriptContent,
+                    RunInExternalWindow = RunInExternalWindow
                 };
                 string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
@@ -437,5 +482,8 @@ namespace tmkbCompanion.MVVM.ViewModel
         public bool IsPetEnabled { get; set; } = false;
         public string QuickNotesPath { get; set; } = string.Empty;
         public string LastLaunchedVersion { get; set; } = string.Empty;
+        public string TerminalType { get; set; } = "PowerShell";
+        public string ScriptContent { get; set; } = string.Empty;
+        public bool RunInExternalWindow { get; set; } = false;
     }
 }

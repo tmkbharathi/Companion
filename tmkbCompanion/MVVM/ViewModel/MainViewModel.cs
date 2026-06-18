@@ -24,6 +24,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         public ProfileSetupViewModel ProfileSetupVM { get; }
         public WaterReminderViewModel WaterReminderVM { get; }
         public ClipboardHistoryViewModel ClipboardHistoryVM { get; }
+        public RunScriptViewModel RunScriptVM { get; }
 
         public object CurrentView
         {
@@ -84,6 +85,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         public ICommand ShowProfileSetupCommand { get; }
         public ICommand ShowWaterReminderCommand { get; }
         public ICommand ShowClipboardCommand { get; }
+        public ICommand ShowRunScriptCommand { get; }
         public ICommand ToggleSidebarCommand { get; }
 
         public bool IsSidebarOpen
@@ -109,6 +111,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             SettingsVM = new SettingsViewModel(DashboardVM, _waterService, ClipboardHistoryVM);
             ProfileSetupVM = new ProfileSetupViewModel(this);
             WaterReminderVM = new WaterReminderViewModel(_waterService);
+            RunScriptVM = new RunScriptViewModel(SettingsVM);
 
             // Set default view
             string settingsPath = System.IO.Path.Combine(AppPaths.BaseDataDirectory, "profile_settings.json");
@@ -127,6 +130,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             ShowProfileSetupCommand = new RelayCommand(ShowProfileSetup);
             ShowWaterReminderCommand = new RelayCommand(ShowWaterReminder);
             ShowClipboardCommand = new RelayCommand(ShowClipboard);
+            ShowRunScriptCommand = new RelayCommand(ShowRunScript);
             ToggleSidebarCommand = new RelayCommand(() => IsSidebarOpen = !IsSidebarOpen);
 
             // Set current date string
@@ -160,6 +164,11 @@ namespace tmkbCompanion.MVVM.ViewModel
         public void ShowClipboard()
         {
             CurrentView = ClipboardHistoryVM;
+        }
+
+        public void ShowRunScript()
+        {
+            CurrentView = RunScriptVM;
         }
 
         private void UpdateCurrentDate()
