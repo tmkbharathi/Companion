@@ -9,7 +9,7 @@ namespace tmkbCompanion.MVVM.Core
     public class AutoUpdaterService : IUpdateService
     {
         private readonly MainViewModel _mainViewModel;
-        private readonly string _updateXmlUrl = "https://raw.githubusercontent.com/tmkbharathi/Companion/main/update.xml";
+        private readonly string _updateXmlUrl = "https://raw.githubusercontent.com/tmkbharathi/Companion/master/update.xml";
         private bool _isManualCheck;
 
         public AutoUpdaterService(MainViewModel mainViewModel)

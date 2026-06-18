@@ -22,6 +22,44 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Update Version in Files (from tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart('v')
+          Write-Output "Updating version to $version from tag $tag"
+
+          # 1. Update tmkbCompanion.csproj
+          $csprojPath = "tmkbCompanion/tmkbCompanion.csproj"
+          $csprojContent = Get-Content $csprojPath -Raw
+          $csprojContent = $csprojContent -replace '<Version>[^<]+</Version>', "<Version>$version</Version>"
+          Set-Content $csprojPath $csprojContent
+
+          # 2. Update installer.iss
+          $issPath = "installer.iss"
+          $issContent = Get-Content $issPath -Raw
+          $issContent = $issContent -replace 'SetupIconFile=.*[\r\n]', "SetupIconFile=tmkbCompanion\Resources\Icons\favicon.ico`r`n"
+          $issContent = $issContent -replace 'AppVersion=[^\r\n]+', "AppVersion=$version"
+          Set-Content $issPath $issContent
+
+          # 3. Update update.xml
+          $xmlPath = "update.xml"
+          $xmlContent = Get-Content $xmlPath -Raw
+          $xmlContent = $xmlContent -replace '<version>[^<]+</version>', "<version>$version</version>"
+          Set-Content $xmlPath $xmlContent
+
+      - name: Commit version updates
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add tmkbCompanion/tmkbCompanion.csproj installer.iss update.xml
+          git commit -m "Auto-update version files to ${{ github.ref_name }} [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:master
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v5
