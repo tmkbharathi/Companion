@@ -1,0 +1,219 @@
+<Window x:Class="tmkbCompanion.MVVM.View.UpgradedDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Update Successful" 
+        Height="360" Width="440"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded"
+        MouseDown="Window_MouseDown">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Theme/ThemeResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border Background="#151925" 
+            BorderBrush="{StaticResource BorderBrush}" 
+            BorderThickness="1.5" 
+            CornerRadius="20">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" BlurRadius="35" ShadowDepth="8" Opacity="0.6"/>
+        </Border.Effect>
+
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- ── Row 0: Animated Success checkmark & Confetti ── -->
+            <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="140">
+                <!-- Background glow -->
+                <Ellipse Width="100" Height="100" Fill="{DynamicResource AccentBrush}" Opacity="0.1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Ellipse.Effect>
+                        <BlurEffect Radius="30"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+
+                <!-- Confetti particles (animated in code-behind / XAML storyboards) -->
+                <!-- Confetti 1 -->
+                <Rectangle Width="8" Height="8" Fill="#FFC107" RadiusX="2" RadiusY="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform x:Name="c1" X="0" Y="0"/>
+                            <RotateTransform x:Name="cr1" Angle="0"/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <!-- Confetti 2 -->
+                <Ellipse Width="6" Height="6" Fill="#FF5252" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="c2" X="0" Y="0"/>
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+                <!-- Confetti 3 -->
+                <Rectangle Width="6" Height="12" Fill="#4CAF50" RadiusX="1" RadiusY="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform x:Name="c3" X="0" Y="0"/>
+                            <RotateTransform x:Name="cr3" Angle="0"/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <!-- Confetti 4 -->
+                <Ellipse Width="8" Height="8" Fill="#E040FB" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="c4" X="0" Y="0"/>
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+                <!-- Confetti 5 -->
+                <Rectangle Width="10" Height="6" Fill="#00E676" RadiusX="2" RadiusY="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Rectangle.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform x:Name="c5" X="0" Y="0"/>
+                            <RotateTransform x:Name="cr5" Angle="0"/>
+                        </TransformGroup>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+
+                <!-- Main Success Checkmark Ring -->
+                <Grid x:Name="SuccessRing" RenderTransformOrigin="0.5,0.5" Width="70" Height="70" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Grid.RenderTransform>
+                        <ScaleTransform ScaleX="0" ScaleY="0"/>
+                    </Grid.RenderTransform>
+                    
+                    <Ellipse Stroke="{DynamicResource AccentBrush}" StrokeThickness="4" Fill="#1c2230">
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="{DynamicResource AccentColor}" ShadowDepth="0" BlurRadius="12" Opacity="0.5"/>
+                        </Ellipse.Effect>
+                    </Ellipse>
+
+                    <!-- Vector Checkmark -->
+                    <Path Data="M 22 36 L 31 45 L 48 26" 
+                          Stroke="{DynamicResource AccentBrush}" 
+                          StrokeThickness="5" 
+                          StrokeStartLineCap="Round" 
+                          StrokeEndLineCap="Round" 
+                          StrokeLineJoin="Round"
+                          Width="70" Height="70"
+                          Stretch="None" 
+                          HorizontalAlignment="Center" 
+                          VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+
+            <!-- ── Row 1: Upgrade Text and Badges ── -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,20" HorizontalAlignment="Center">
+                <TextBlock Text="FlowTrack Upgraded!" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           FontSize="20" 
+                           FontWeight="Bold" 
+                           HorizontalAlignment="Center"
+                           FontFamily="{StaticResource AppFont}"/>
+                
+                <TextBlock Text="Your application has been successfully updated." 
+                           Foreground="{StaticResource TextMutedBrush}" 
+                           FontSize="12" 
+                           Margin="0,4,0,16"
+                           HorizontalAlignment="Center"
+                           FontFamily="{StaticResource AppFont}"/>
+
+                <!-- Version Badges: [vOld] -> [vNew] -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Border Background="#222837" CornerRadius="8" Padding="12,6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <TextBlock x:Name="OldVersionText" Text="v1.1.1" Foreground="{StaticResource TextMutedBrush}" FontSize="12" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
+                    </Border>
+                    
+                    <!-- Glowing arrow symbol -->
+                    <TextBlock FontFamily="{StaticResource SegoeMDL2}" 
+                               Text="&#xF061;" 
+                               FontSize="14" 
+                               Foreground="{DynamicResource AccentBrush}" 
+                               VerticalAlignment="Center" 
+                               Margin="12,0">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="{DynamicResource AccentColor}" ShadowDepth="0" BlurRadius="8" Opacity="0.5"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <Border Background="{DynamicResource AccentBrush}" Opacity="0.15" CornerRadius="8" Padding="12,6" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" x:Name="NewVersionBorder"/>
+                    <!-- Overlaid text block so background is translucent but text is opaque -->
+                    <Border CornerRadius="8" Padding="12,6" Margin="-52,0,0,0">
+                        <TextBlock x:Name="NewVersionText" Text="v1.1.2" Foreground="{DynamicResource AccentBrush}" FontSize="12" FontWeight="Bold" FontFamily="{StaticResource AppFont}">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="{DynamicResource AccentColor}" ShadowDepth="0" BlurRadius="6" Opacity="0.4"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- ── Row 2: Let's Go Button ── -->
+            <Button Grid.Row="2"
+                    Style="{StaticResource FluentButton}"
+                    Content="Let's Go!"
+                    Click="Close_Click"
+                    Width="160" Height="40"
+                    HorizontalAlignment="Center"/>
+        </Grid>
+    </Border>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <!-- Ring Elastic Scale Up -->
+                    <DoubleAnimation Storyboard.TargetName="SuccessRing"
+                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                     From="0" To="1" Duration="0:0:0.8">
+                        <DoubleAnimation.EasingFunction>
+                            <ElasticEase Oscillations="1" Springiness="4" EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="SuccessRing"
+                                     Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                     From="0" To="1" Duration="0:0:0.8">
+                        <DoubleAnimation.EasingFunction>
+                            <ElasticEase Oscillations="1" Springiness="4" EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <!-- Confetti Burst Translations -->
+                    <!-- Confetti 1 (Yellow) -->
+                    <DoubleAnimation Storyboard.TargetName="c1" Storyboard.TargetProperty="X" From="0" To="-60" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="c1" Storyboard.TargetProperty="Y" From="0" To="-45" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="cr1" Storyboard.TargetProperty="Angle" From="0" To="180" BeginTime="0:0:0.2" Duration="0:0:0.6"/>
+                    
+                    <!-- Confetti 2 (Red) -->
+                    <DoubleAnimation Storyboard.TargetName="c2" Storyboard.TargetProperty="X" From="0" To="-40" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="c2" Storyboard.TargetProperty="Y" From="0" To="40" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    
+                    <!-- Confetti 3 (Green) -->
+                    <DoubleAnimation Storyboard.TargetName="c3" Storyboard.TargetProperty="X" From="0" To="65" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="c3" Storyboard.TargetProperty="Y" From="0" To="-50" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="cr3" Storyboard.TargetProperty="Angle" From="0" To="-120" BeginTime="0:0:0.2" Duration="0:0:0.6"/>
+                    
+                    <!-- Confetti 4 (Purple) -->
+                    <DoubleAnimation Storyboard.TargetName="c4" Storyboard.TargetProperty="X" From="0" To="50" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="c4" Storyboard.TargetProperty="Y" From="0" To="35" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+
+                    <!-- Confetti 5 (Bright Green) -->
+                    <DoubleAnimation Storyboard.TargetName="c5" Storyboard.TargetProperty="X" From="0" To="10" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="c5" Storyboard.TargetProperty="Y" From="0" To="-65" BeginTime="0:0:0.2" Duration="0:0:0.6"><DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation>
+                    <DoubleAnimation Storyboard.TargetName="cr5" Storyboard.TargetProperty="Angle" From="0" To="300" BeginTime="0:0:0.2" Duration="0:0:0.6"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+</Window>

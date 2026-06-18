@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="App Update" 
-        Height="280" Width="380"
+        Height="300" Width="440"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -115,6 +115,7 @@
                                Foreground="{StaticResource TextPrimaryBrush}" 
                                FontSize="14" 
                                FontWeight="SemiBold" 
+                               TextWrapping="Wrap"
                                FontFamily="{StaticResource AppFont}"/>
                     <TextBlock Text="Installing the latest version provides you with new features, bug fixes, and security enhancements." 
                                Foreground="{StaticResource TextMutedBrush}" 
@@ -134,12 +135,14 @@
                             Style="{StaticResource FluentButtonSecondary}"
                             Content="Update Later"
                             Click="Cancel_Click"
-                            Width="110" Height="36"
+                            MinWidth="130" Height="36"
+                            Padding="12,4"
                             Margin="0,0,10,0"/>
                     <Button Style="{StaticResource FluentButton}"
                             Content="Update Now"
                             Click="UpdateNow_Click"
-                            Width="110" Height="36"/>
+                            MinWidth="130" Height="36"
+                            Padding="12,4"/>
                 </StackPanel>
 
                 <!-- Progress Container (Initially Collapsed) -->

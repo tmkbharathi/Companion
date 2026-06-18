@@ -95,6 +95,13 @@ namespace tmkbCompanion.MVVM.ViewModel
             }
         }
 
+        private string _lastLaunchedVersion = string.Empty;
+        public string LastLaunchedVersion
+        {
+            get => _lastLaunchedVersion;
+            set => SetProperty(ref _lastLaunchedVersion, value);
+        }
+
         public string DisplayNotesPath => string.IsNullOrWhiteSpace(QuickNotesPath)
             ? "Default (App Directory)"
             : QuickNotesPath;
@@ -227,6 +234,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                         _darkMode = data.DarkMode;
                         _isPetEnabled = data.IsPetEnabled;
                         _quickNotesPath = data.QuickNotesPath;
+                        _lastLaunchedVersion = data.LastLaunchedVersion ?? string.Empty;
                         ApplyAccentColor(data.AccentColorHex);
                     }
                 }
@@ -242,7 +250,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             }
         }
 
-        private void SaveSettings()
+        public void SaveSettings()
         {
             try
             {
@@ -253,7 +261,8 @@ namespace tmkbCompanion.MVVM.ViewModel
                     ShowNotifications = ShowNotifications,
                     DarkMode = DarkMode,
                     IsPetEnabled = IsPetEnabled,
-                    QuickNotesPath = QuickNotesPath
+                    QuickNotesPath = QuickNotesPath,
+                    LastLaunchedVersion = LastLaunchedVersion
                 };
                 string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
@@ -427,5 +436,6 @@ namespace tmkbCompanion.MVVM.ViewModel
         public bool DarkMode { get; set; } = true;
         public bool IsPetEnabled { get; set; } = false;
         public string QuickNotesPath { get; set; } = string.Empty;
+        public string LastLaunchedVersion { get; set; } = string.Empty;
     }
 }

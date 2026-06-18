@@ -23,5 +23,5 @@ Source: "tmkbCompanion\\bin\\Release\\net8.0-windows10.0.19041.0\\win-x64\\publi
 Name: "{group}\\tmkbCompanion"; Filename: "{app}\\tmkbCompanion.exe"
 
 [Run]
-Filename: "{app}\\tmkbCompanion.exe"; Description: "{cm:LaunchProgram,tmkbCompanion}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\\tmkbCompanion.exe"; Description: "{cm:LaunchProgram,tmkbCompanion}"; Flags: nowait postinstall
 

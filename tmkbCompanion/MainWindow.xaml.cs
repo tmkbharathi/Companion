@@ -70,7 +70,11 @@ namespace tmkbCompanion
             _viewModel.SettingsVM.PropertyChanged += SettingsVM_PropertyChanged;
             
             // Defer initial visibility check until the window is loaded to prevent setting Owner before showing
-            this.Loaded += (s, e) => UpdatePetWindowVisibility();
+            this.Loaded += (s, e) =>
+            {
+                UpdatePetWindowVisibility();
+                CheckForUpgradeGreeting();
+            };
         }
 
         // ── Sidebar animation ──────────────────────────────────────────────
@@ -399,6 +403,37 @@ namespace tmkbCompanion
                 }
             }
             return IntPtr.Zero;
+        }
+
+        private void CheckForUpgradeGreeting()
+        {
+            try
+            {
+                string currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.1.2";
+                string lastVersion = _viewModel.SettingsVM.LastLaunchedVersion;
+
+                // Only show greeting if the app has run before (lastVersion is not empty) and it is different from the current version (meaning we just updated)
+                if (!string.IsNullOrEmpty(lastVersion) && lastVersion != currentVersion)
+                {
+                    var greetingDialog = new UpgradedDialog(lastVersion, currentVersion)
+                    {
+                        Owner = this,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    };
+                    greetingDialog.ShowDialog();
+                }
+
+                // Update the last launched version in settings so it doesn't show again until the next upgrade
+                if (lastVersion != currentVersion)
+                {
+                    _viewModel.SettingsVM.LastLaunchedVersion = currentVersion;
+                    _viewModel.SettingsVM.SaveSettings();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to check for upgrade greeting: {ex.Message}");
+            }
         }
     }
 
