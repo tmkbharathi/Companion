@@ -279,7 +279,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             {
                 try
                 {
-                    string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_settings.json");
+                    string settingsPath = Path.Combine(AppPaths.BaseDataDirectory, "app_settings.json");
                     if (File.Exists(settingsPath))
                     {
                         string json = File.ReadAllText(settingsPath);
@@ -300,7 +300,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                 {
                     Debug.WriteLine($"Failed to resolve custom notes path: {ex.Message}");
                 }
-                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, NotesFileName);
+                return Path.Combine(AppPaths.BaseDataDirectory, NotesFileName);
             }
         }
 
@@ -369,7 +369,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LinksFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, LinksFileName);
                 if (File.Exists(path))
                 {
                     string json = File.ReadAllText(path);
@@ -438,7 +438,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LinksFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, LinksFileName);
                 var data = new LinkSettingsData();
                 foreach (var link in ImportantLinks)
                 {

@@ -216,7 +216,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, SettingsFileName);
                 if (File.Exists(path))
                 {
                     string json = File.ReadAllText(path);
@@ -246,7 +246,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, SettingsFileName);
                 var data = new AppSettingsData
                 {
                     AccentColorHex = _accentColorHex,
@@ -268,7 +268,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string baseDir = AppPaths.BaseDataDirectory;
 
                 // Clean clipboard history
                 _clipboardHistoryVM.ClearHistory();
@@ -341,7 +341,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string baseDir = AppPaths.BaseDataDirectory;
                 long totalBytes = 0;
 
                 // JSON settings + data files
@@ -409,7 +409,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             {
                 Title = "Select Quick Notes Folder",
                 InitialDirectory = string.IsNullOrWhiteSpace(QuickNotesPath) 
-                    ? AppDomain.CurrentDomain.BaseDirectory 
+                    ? AppPaths.BaseDataDirectory 
                     : QuickNotesPath
             };
 

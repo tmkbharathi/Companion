@@ -111,7 +111,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             WaterReminderVM = new WaterReminderViewModel(_waterService);
 
             // Set default view
-            string settingsPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profile_settings.json");
+            string settingsPath = System.IO.Path.Combine(AppPaths.BaseDataDirectory, "profile_settings.json");
             if (System.IO.File.Exists(settingsPath))
             {
                 _currentView = DashboardVM;

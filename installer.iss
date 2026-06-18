@@ -11,6 +11,7 @@ PrivilegesRequired=admin
 ArchitecturesInstallIn64BitMode=x64
 WizardStyle=modern
 AppCopyright=Copyright (c) 2026
+SetupIconFile=tmkbCompanion\Resources\Icons\favicon.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

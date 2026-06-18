@@ -8,10 +8,12 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Version>1.1.2</Version>
+    <ApplicationIcon>Resources\Icons\favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Resource Include="Resources\Fonts\*.ttf" />
+    <Resource Include="Resources\Icons\*.*" />
     <PackageReference Include="Autoupdater.NET.Official" Version="1.9.2" />
   </ItemGroup>
 

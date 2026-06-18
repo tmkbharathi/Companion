@@ -199,7 +199,7 @@ namespace tmkbCompanion.MVVM.View
 
                 CroppedBitmap croppedBitmap = new CroppedBitmap(frame, new Int32Rect(x, y, minDim, minDim));
 
-                string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfileData");
+                string appDataPath = Path.Combine(AppPaths.BaseDataDirectory, "ProfileData");
                 if (!Directory.Exists(appDataPath))
                 {
                     Directory.CreateDirectory(appDataPath);
@@ -238,7 +238,7 @@ namespace tmkbCompanion.MVVM.View
         {
             try
             {
-                string appDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ProfileData");
+                string appDataPath = Path.Combine(AppPaths.BaseDataDirectory, "ProfileData");
                 if (!Directory.Exists(appDataPath))
                 {
                     Directory.CreateDirectory(appDataPath);

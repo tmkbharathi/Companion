@@ -128,7 +128,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profile_settings.json");
+                string settingsPath = Path.Combine(AppPaths.BaseDataDirectory, "profile_settings.json");
                 string oldProfilePic = string.Empty;
                 if (File.Exists(settingsPath))
                 {
@@ -205,7 +205,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         {
             try
             {
-                string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profile_settings.json");
+                string settingsPath = Path.Combine(AppPaths.BaseDataDirectory, "profile_settings.json");
                 if (File.Exists(settingsPath))
                 {
                     string jsonString = File.ReadAllText(settingsPath);

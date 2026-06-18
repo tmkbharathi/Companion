@@ -96,7 +96,7 @@ namespace tmkbCompanion.MVVM.Core
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, SettingsFileName);
                 if (File.Exists(path))
                 {
                     string json = File.ReadAllText(path);
@@ -117,7 +117,7 @@ namespace tmkbCompanion.MVVM.Core
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, SettingsFileName);
                 string json = JsonSerializer.Serialize(_settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
                 SettingsChanged?.Invoke();
@@ -132,7 +132,7 @@ namespace tmkbCompanion.MVVM.Core
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HistoryFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, HistoryFileName);
                 if (File.Exists(path))
                 {
                     string json = File.ReadAllText(path);
@@ -153,7 +153,7 @@ namespace tmkbCompanion.MVVM.Core
         {
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HistoryFileName);
+                string path = Path.Combine(AppPaths.BaseDataDirectory, HistoryFileName);
                 string json = JsonSerializer.Serialize(_history, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
                 HistoryChanged?.Invoke();

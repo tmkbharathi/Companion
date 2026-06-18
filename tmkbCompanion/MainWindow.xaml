@@ -9,6 +9,7 @@
         xmlns:core="clr-namespace:tmkbCompanion.MVVM.Core"
         mc:Ignorable="d"
         Title="FlowTrack"
+        Icon="Resources/Icons/favicon.ico"
         Height="500"
         Width="800"
         ResizeMode="NoResize"

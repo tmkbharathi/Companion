@@ -87,45 +87,19 @@ namespace tmkbCompanion.MVVM.Core
         {
             try
             {
-                var color = Color.FromArgb(wpfColor.A, wpfColor.R, wpfColor.G, wpfColor.B);
-                
-                using (var bitmap = new Bitmap(16, 16))
-                using (var g = Graphics.FromImage(bitmap))
+                var iconUri = new Uri("pack://application:,,,/Resources/Icons/favicon.ico");
+                var streamInfo = Application.GetResourceStream(iconUri);
+                if (streamInfo != null)
                 {
-                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    
-                    // Draw outer round ellipse
-                    using (var brush = new SolidBrush(color))
-                    {
-                        g.FillEllipse(brush, 0, 0, 15, 15);
-                    }
-
-                    // Draw character 'F' in white inside the icon
-                    using (var font = new System.Drawing.Font(new System.Drawing.FontFamily("Segoe UI"), 9, System.Drawing.FontStyle.Bold))
-                    using (var brush = new SolidBrush(Color.White))
-                    {
-                        g.DrawString("F", font, brush, 3, 0);
-                    }
-
-                    IntPtr hIcon = bitmap.GetHicon();
-                    var newIcon = Icon.FromHandle(hIcon);
-
+                    var newIcon = new Icon(streamInfo.Stream);
                     var oldIcon = _notifyIcon.Icon;
                     _notifyIcon.Icon = newIcon;
-
-                    // Clean up the previous icon handle to avoid memory leaks
-                    if (_currentIconHandle != IntPtr.Zero)
-                    {
-                        DestroyIcon(_currentIconHandle);
-                    }
-                    _currentIconHandle = hIcon;
-
                     oldIcon?.Dispose();
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to generate tray icon: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Failed to load tray icon: {ex.Message}");
             }
         }
 

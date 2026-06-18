@@ -31,7 +31,7 @@ namespace tmkbCompanion.MVVM.ViewModel
             LoadHistory();
         }
 
-        private string HistoryFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, HistoryFileName);
+        private string HistoryFilePath => Path.Combine(AppPaths.BaseDataDirectory, HistoryFileName);
 
         public void AddClipboardItem(string text)
         {
