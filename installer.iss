@@ -24,3 +24,4 @@ Name: "{group}\\tmkbCompanion"; Filename: "{app}\\tmkbCompanion.exe"
 
 [Run]
 Filename: "{app}\\tmkbCompanion.exe"; Description: "{cm:LaunchProgram,tmkbCompanion}"; Flags: nowait postinstall skipifsilent
+
