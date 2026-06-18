@@ -33,7 +33,29 @@ namespace tmkbCompanion.MVVM.View
             set => SetValue(IsClickedReactionActiveProperty, value);
         }
 
+        public static readonly DependencyProperty IsSuccessReactionActiveProperty =
+            DependencyProperty.Register(nameof(IsSuccessReactionActive), typeof(bool), typeof(PetCompanionView), new PropertyMetadata(false));
+
+        public bool IsSuccessReactionActive
+        {
+            get => (bool)GetValue(IsSuccessReactionActiveProperty);
+            set => SetValue(IsSuccessReactionActiveProperty, value);
+        }
+
+        public static readonly DependencyProperty IsFailureReactionActiveProperty =
+            DependencyProperty.Register(nameof(IsFailureReactionActive), typeof(bool), typeof(PetCompanionView), new PropertyMetadata(false));
+
+        public bool IsFailureReactionActive
+        {
+            get => (bool)GetValue(IsFailureReactionActiveProperty);
+            set => SetValue(IsFailureReactionActiveProperty, value);
+        }
+
         private System.Windows.Threading.DispatcherTimer? _reactionTimer;
+        private System.Windows.Threading.DispatcherTimer? _successReactionTimer;
+        private System.Windows.Threading.DispatcherTimer? _failureReactionTimer;
+        private System.Windows.Threading.DispatcherTimer? _drumrollTimer;
+        private bool _drumrollLeftState;
 
         public void TriggerClickReaction()
         {
@@ -58,11 +80,85 @@ namespace tmkbCompanion.MVVM.View
             _reactionTimer.Start();
         }
 
+        public void TriggerSuccessReaction()
+        {
+            _successReactionTimer?.Stop();
+            _drumrollTimer?.Stop();
+            _reactionTimer?.Stop();
+
+            IsClickedReactionActive = false;
+            IsSuccessReactionActive = true;
+
+            _drumrollLeftState = true;
+            IsLeftPawPressed = true;
+            IsRightPawPressed = false;
+
+            _drumrollTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(100)
+            };
+            _drumrollTimer.Tick += (s, ev) =>
+            {
+                _drumrollLeftState = !_drumrollLeftState;
+                IsLeftPawPressed = _drumrollLeftState;
+                IsRightPawPressed = !_drumrollLeftState;
+            };
+            _drumrollTimer.Start();
+
+            _successReactionTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1500)
+            };
+            _successReactionTimer.Tick += (s, ev) =>
+            {
+                IsSuccessReactionActive = false;
+                IsLeftPawPressed = false;
+                IsRightPawPressed = false;
+                _drumrollTimer.Stop();
+                _successReactionTimer.Stop();
+            };
+            _successReactionTimer.Start();
+        }
+
+        public void TriggerFailureReaction()
+        {
+            _successReactionTimer?.Stop();
+            _drumrollTimer?.Stop();
+            _reactionTimer?.Stop();
+            _failureReactionTimer?.Stop();
+
+            IsClickedReactionActive = false;
+            IsSuccessReactionActive = false;
+            IsFailureReactionActive = true;
+
+            // Make paws go flat
+            IsLeftPawPressed = false;
+            IsRightPawPressed = false;
+
+            _failureReactionTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1500)
+            };
+            _failureReactionTimer.Tick += (s, ev) =>
+            {
+                IsFailureReactionActive = false;
+                _failureReactionTimer.Stop();
+            };
+            _failureReactionTimer.Start();
+        }
+
         public PetCompanionView()
         {
             InitializeComponent();
             this.Loaded += (s, e) => StartEyeTracking();
-            this.Unloaded += (s, e) => StopEyeTracking();
+            this.Unloaded += (s, e) =>
+            {
+                StopEyeTracking();
+                _reactionTimer?.Stop();
+                _successReactionTimer?.Stop();
+                _failureReactionTimer?.Stop();
+                _drumrollTimer?.Stop();
+            };
         }
 
         private System.Windows.Threading.DispatcherTimer? _eyeTrackingTimer;
@@ -97,7 +193,7 @@ namespace tmkbCompanion.MVVM.View
 
         private void EyeTrackingTimer_Tick(object? sender, EventArgs e)
         {
-            if (IsClickedReactionActive)
+            if (IsClickedReactionActive || IsSuccessReactionActive || IsFailureReactionActive)
             {
                 if (LeftEyeTransform != null)
                 {

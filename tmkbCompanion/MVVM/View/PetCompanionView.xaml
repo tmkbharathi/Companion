@@ -36,6 +36,12 @@
                             <DataTrigger Binding="{Binding IsClickedReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsFailureReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Ellipse.Style>
@@ -49,6 +55,12 @@
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsClickedReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsFailureReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -65,6 +77,9 @@
                             <DataTrigger Binding="{Binding IsClickedReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Path.Style>
@@ -75,6 +90,35 @@
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsClickedReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+            
+            <!-- X Eyes -->
+            <Path x:Name="LeftEyeX" Data="M 39,44 L 45,50 M 45,44 L 39,50" Stroke="#2a3142" StrokeThickness="2" Fill="Transparent">
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsFailureReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+            <Path x:Name="RightEyeX" Data="M 69,44 L 75,50 M 75,44 L 69,50" Stroke="#2a3142" StrokeThickness="2" Fill="Transparent">
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsFailureReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -91,6 +135,9 @@
                             <DataTrigger Binding="{Binding IsClickedReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Opacity" Value="1.0"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Opacity" Value="1.0"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Ellipse.Style>
@@ -101,6 +148,9 @@
                         <Setter Property="Opacity" Value="0.6"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsClickedReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Opacity" Value="1.0"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Opacity" Value="1.0"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -124,6 +174,58 @@
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15"/>
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:0.6" Duration="0:0:0.4"/>
                                             <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)" From="0" To="-25" Duration="0:0:1.0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+
+            <!-- Floating Success Checkmark Icon -->
+            <Path x:Name="SuccessCheckmarkIcon" Data="M 3,10 L 8,15 L 18,4" 
+                  Stroke="#10b981" StrokeThickness="3.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                  Fill="Transparent" Canvas.Left="50" Canvas.Top="10" Width="20" Height="20" Stretch="Uniform" Opacity="0">
+                <Path.RenderTransform>
+                    <TranslateTransform x:Name="SuccessCheckmarkTranslate" Y="0"/>
+                </Path.RenderTransform>
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:1.0" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)" From="0" To="-30" Duration="0:0:1.4"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+
+            <!-- Floating Failure X Icon -->
+            <Path x:Name="FailureXIcon" Data="M 3,3 L 17,17 M 17,3 L 3,17" 
+                  Stroke="#ef4444" StrokeThickness="3.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                  Fill="Transparent" Canvas.Left="50" Canvas.Top="10" Width="20" Height="20" Stretch="Uniform" Opacity="0">
+                <Path.RenderTransform>
+                    <TranslateTransform x:Name="FailureXTranslate" Y="0"/>
+                </Path.RenderTransform>
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsFailureReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:1.0" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)" From="0" To="-30" Duration="0:0:1.4"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>

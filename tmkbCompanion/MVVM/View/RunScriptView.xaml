@@ -31,6 +31,7 @@
                            Foreground="{StaticResource TextMutedBrush}"
                            FontSize="13"
                            Margin="0,4,0,0"
+                           TextWrapping="Wrap"
                            FontFamily="{StaticResource AppFont}"/>
             </StackPanel>
 

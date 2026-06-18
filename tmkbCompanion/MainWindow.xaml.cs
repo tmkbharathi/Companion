@@ -47,6 +47,8 @@ namespace tmkbCompanion
             {
                 _trayIconManager.ShowNotification(title, msg);
             };
+            _viewModel.RunScriptVM.ScriptExecutedSuccessfully += RunScriptVM_ScriptExecutedSuccessfully;
+            _viewModel.RunScriptVM.ScriptExecutionFailed += RunScriptVM_ScriptExecutionFailed;
 
             // Set initial states
             _trayIconManager.UpdateTimerState(_viewModel.DashboardVM.IsTimerRunning);
@@ -179,6 +181,28 @@ namespace tmkbCompanion
             }
         }
 
+        private void RunScriptVM_ScriptExecutedSuccessfully(object? sender, EventArgs e)
+        {
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_viewModel.SettingsVM.IsPetEnabled && _petWindow != null)
+                {
+                    _petWindow.TriggerSuccessReaction();
+                }
+            }));
+        }
+
+        private void RunScriptVM_ScriptExecutionFailed(object? sender, EventArgs e)
+        {
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_viewModel.SettingsVM.IsPetEnabled && _petWindow != null)
+                {
+                    _petWindow.TriggerFailureReaction();
+                }
+            }));
+        }
+
         private void DashboardVM_TimerStateChanged(bool isRunning)
         {
             _trayIconManager.UpdateTimerState(isRunning);
@@ -237,6 +261,8 @@ namespace tmkbCompanion
                     windowClipboardSource.RemoveHook(ClipboardWndProc);
                 }
 
+                _viewModel.RunScriptVM.ScriptExecutedSuccessfully -= RunScriptVM_ScriptExecutedSuccessfully;
+                _viewModel.RunScriptVM.ScriptExecutionFailed -= RunScriptVM_ScriptExecutionFailed;
                 _petWindow?.Close();
                 _trayIconManager.Dispose();
                 _viewModel.WaterReminderVM.Service.Dispose();

@@ -16,6 +16,9 @@ namespace tmkbCompanion.MVVM.ViewModel
         private string _statusText = "Idle";
         private Process? _activeProcess;
 
+        public event EventHandler? ScriptExecutedSuccessfully;
+        public event EventHandler? ScriptExecutionFailed;
+
         public SettingsViewModel SettingsVM => _settingsVM;
 
         public string TerminalType
@@ -216,11 +219,29 @@ namespace tmkbCompanion.MVVM.ViewModel
                         int exitCode = _activeProcess.ExitCode;
                         UpdateStatusAndIsRunning(exitCode == 0 ? "Success" : $"Failed (Exit Code {exitCode})", false);
                         AppendOutput($"[{DateTime.Now:HH:mm:ss}] Execution finished with exit code {exitCode}.");
+                        if (exitCode == 0)
+                        {
+                            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                ScriptExecutedSuccessfully?.Invoke(this, EventArgs.Empty);
+                            }));
+                        }
+                        else
+                        {
+                            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                ScriptExecutionFailed?.Invoke(this, EventArgs.Empty);
+                            }));
+                        }
                     }
                     else
                     {
                         UpdateStatusAndIsRunning("Running in external window", false);
                         AppendOutput($"[{DateTime.Now:HH:mm:ss}] External window opened.");
+                        System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            ScriptExecutedSuccessfully?.Invoke(this, EventArgs.Empty);
+                        }));
                     }
                 });
             }
@@ -228,6 +249,10 @@ namespace tmkbCompanion.MVVM.ViewModel
             {
                 AppendOutput($"[EXCEPTION] {ex.Message}");
                 UpdateStatusAndIsRunning("Exception occurred", false);
+                _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ScriptExecutionFailed?.Invoke(this, EventArgs.Empty);
+                }));
             }
             finally
             {

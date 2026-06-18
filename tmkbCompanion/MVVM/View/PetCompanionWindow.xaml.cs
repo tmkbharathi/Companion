@@ -30,6 +30,16 @@ namespace tmkbCompanion.MVVM.View
             _showMenuAction = showMenuAction;
         }
 
+        public void TriggerSuccessReaction()
+        {
+            PetView.TriggerSuccessReaction();
+        }
+
+        public void TriggerFailureReaction()
+        {
+            PetView.TriggerFailureReaction();
+        }
+
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
