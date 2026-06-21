@@ -102,6 +102,19 @@ namespace tmkbCompanion.MVVM.ViewModel
             set => SetProperty(ref _lastLaunchedVersion, value);
         }
 
+        private bool _doNotShowUpdateAgain = false;
+        public bool DoNotShowUpdateAgain
+        {
+            get => _doNotShowUpdateAgain;
+            set
+            {
+                if (SetProperty(ref _doNotShowUpdateAgain, value))
+                {
+                    SaveSettings();
+                }
+            }
+        }
+
         private string _terminalType = "PowerShell";
         public string TerminalType
         {
@@ -277,6 +290,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                         _terminalType = data.TerminalType ?? "PowerShell";
                         _scriptContent = data.ScriptContent ?? string.Empty;
                         _runInExternalWindow = data.RunInExternalWindow;
+                        _doNotShowUpdateAgain = data.DoNotShowUpdateAgain;
                         ApplyAccentColor(data.AccentColorHex);
                     }
                 }
@@ -307,7 +321,8 @@ namespace tmkbCompanion.MVVM.ViewModel
                     LastLaunchedVersion = LastLaunchedVersion,
                     TerminalType = TerminalType,
                     ScriptContent = ScriptContent,
-                    RunInExternalWindow = RunInExternalWindow
+                    RunInExternalWindow = RunInExternalWindow,
+                    DoNotShowUpdateAgain = DoNotShowUpdateAgain
                 };
                 string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(path, json);
@@ -485,5 +500,6 @@ namespace tmkbCompanion.MVVM.ViewModel
         public string TerminalType { get; set; } = "PowerShell";
         public string ScriptContent { get; set; } = string.Empty;
         public bool RunInExternalWindow { get; set; } = false;
+        public bool DoNotShowUpdateAgain { get; set; } = false;
     }
 }

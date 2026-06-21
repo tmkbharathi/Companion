@@ -136,9 +136,8 @@ namespace tmkbCompanion.MVVM.ViewModel
             // Set current date string
             UpdateCurrentDate();
 
-            // Initialize update service and run silent update check on startup
+            // Initialize update service
             _updateService = new AutoUpdaterService(this);
-            _updateService.CheckForUpdates(isManualCheck: false);
         }
 
         public void ShowDashboard()

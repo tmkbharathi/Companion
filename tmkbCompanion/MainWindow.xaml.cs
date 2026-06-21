@@ -47,6 +47,7 @@ namespace tmkbCompanion
             {
                 _trayIconManager.ShowNotification(title, msg);
             };
+            _viewModel.WaterReminderVM.Service.DrinkLogged += WaterReminderService_DrinkLogged;
             _viewModel.RunScriptVM.ScriptExecutedSuccessfully += RunScriptVM_ScriptExecutedSuccessfully;
             _viewModel.RunScriptVM.ScriptExecutionFailed += RunScriptVM_ScriptExecutionFailed;
 
@@ -73,10 +74,16 @@ namespace tmkbCompanion
             _viewModel.SettingsVM.PropertyChanged += SettingsVM_PropertyChanged;
             
             // Defer initial visibility check until the window is loaded to prevent setting Owner before showing
-            this.Loaded += (s, e) =>
+            this.Loaded += async (s, e) =>
             {
                 UpdatePetWindowVisibility();
-                CheckForUpgradeGreeting();
+                await CheckForUpgradeGreetingAsync();
+
+                // Run silent update check after greeting has finished and if not skipped
+                if (!_viewModel.SettingsVM.DoNotShowUpdateAgain)
+                {
+                    _viewModel.UpdateService.CheckForUpdates(isManualCheck: false);
+                }
             };
         }
 
@@ -203,9 +210,27 @@ namespace tmkbCompanion
             }));
         }
 
+        private void WaterReminderService_DrinkLogged(int amount)
+        {
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_viewModel.SettingsVM.IsPetEnabled && _petWindow != null)
+                {
+                    _petWindow.TriggerDrinkWaterReaction();
+                }
+            }));
+        }
+
         private void DashboardVM_TimerStateChanged(bool isRunning)
         {
             _trayIconManager.UpdateTimerState(isRunning);
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_petWindow != null)
+                {
+                    _petWindow.IsWorkingActive = isRunning;
+                }
+            }));
         }
 
         private void DashboardVM_TimerFinished()
@@ -263,6 +288,7 @@ namespace tmkbCompanion
 
                 _viewModel.RunScriptVM.ScriptExecutedSuccessfully -= RunScriptVM_ScriptExecutedSuccessfully;
                 _viewModel.RunScriptVM.ScriptExecutionFailed -= RunScriptVM_ScriptExecutionFailed;
+                _viewModel.WaterReminderVM.Service.DrinkLogged -= WaterReminderService_DrinkLogged;
                 _petWindow?.Close();
                 _trayIconManager.Dispose();
                 _viewModel.WaterReminderVM.Service.Dispose();
@@ -286,6 +312,7 @@ namespace tmkbCompanion
                 if (_petWindow == null)
                 {
                     _petWindow = new PetCompanionWindow(() => _trayIconManager.ShowContextMenu());
+                    _petWindow.IsWorkingActive = _viewModel.DashboardVM.IsTimerRunning;
                     _petWindow.Show();
                 }
                 StartGlobalKeyboardHook();
@@ -389,11 +416,23 @@ namespace tmkbCompanion
         /// </summary>
         protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Escape && PopupManager.HasOpenPopups)
+            if (e.Key == Key.Escape)
             {
-                PopupManager.CloseTop();
-                e.Handled = true;
-                return;
+                if (UpgradeGreetingOverlay.Visibility == Visibility.Visible)
+                {
+                    if (UpgradeGreetingContent.Content is UpgradedDialog dialog)
+                    {
+                        dialog.Dismiss();
+                        e.Handled = true;
+                        return;
+                    }
+                }
+                if (PopupManager.HasOpenPopups)
+                {
+                    PopupManager.CloseTop();
+                    e.Handled = true;
+                    return;
+                }
             }
             base.OnKeyDown(e);
         }
@@ -461,7 +500,7 @@ namespace tmkbCompanion
             return IntPtr.Zero;
         }
 
-        private void CheckForUpgradeGreeting()
+        private async System.Threading.Tasks.Task CheckForUpgradeGreetingAsync()
         {
             try
             {
@@ -471,18 +510,28 @@ namespace tmkbCompanion
                 // Only show greeting if the app has run before (lastVersion is not empty) and it is different from the current version (meaning we just updated)
                 if (!string.IsNullOrEmpty(lastVersion) && lastVersion != currentVersion)
                 {
-                    var greetingDialog = new UpgradedDialog(lastVersion, currentVersion)
+                    var tcs = new System.Threading.Tasks.TaskCompletionSource<bool>();
+
+                    var greetingView = new UpgradedDialog(lastVersion, currentVersion);
+                    greetingView.Closed += (s, e) =>
                     {
-                        Owner = this,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        UpgradeGreetingOverlay.Visibility = Visibility.Collapsed;
+                        UpgradeGreetingContent.Content = null;
+                        tcs.SetResult(true);
                     };
-                    greetingDialog.ShowDialog();
+
+                    UpgradeGreetingContent.Content = greetingView;
+                    UpgradeGreetingOverlay.Visibility = Visibility.Visible;
+
+                    // Wait for the overlay to close
+                    await tcs.Task;
                 }
 
                 // Update the last launched version in settings so it doesn't show again until the next upgrade
                 if (lastVersion != currentVersion)
                 {
                     _viewModel.SettingsVM.LastLaunchedVersion = currentVersion;
+                    _viewModel.SettingsVM.DoNotShowUpdateAgain = false;
                     _viewModel.SettingsVM.SaveSettings();
                 }
             }

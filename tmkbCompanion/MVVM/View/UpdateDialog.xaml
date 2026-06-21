@@ -12,7 +12,8 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
-        MouseDown="Window_MouseDown">
+        MouseDown="Window_MouseDown"
+        ShowInTaskbar="False">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -128,7 +129,17 @@
             </Grid>
 
             <!-- ── Row 2: Action Buttons OR Progress Bar ── -->
-            <Grid Grid.Row="2">
+            <StackPanel Grid.Row="2">
+                <!-- Do not show again checkbox -->
+                <CheckBox x:Name="DoNotShowAgainCheckBox"
+                          Content="Do not show again"
+                          Foreground="{StaticResource TextMutedBrush}"
+                          FontSize="11"
+                          Margin="0,0,0,12"
+                          HorizontalAlignment="Left"
+                          Visibility="Collapsed"
+                          FontFamily="{StaticResource AppFont}"/>
+
                 <!-- Action Buttons Container -->
                 <StackPanel x:Name="ButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="LaterButton"
@@ -166,7 +177,7 @@
                                  Value="0" 
                                  Maximum="100"/>
                 </StackPanel>
-            </Grid>
+            </StackPanel>
         </Grid>
     </Border>
 </Window>

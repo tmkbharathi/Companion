@@ -42,6 +42,9 @@
                             <DataTrigger Binding="{Binding IsFailureReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Ellipse.Style>
@@ -63,6 +66,9 @@
                             <DataTrigger Binding="{Binding IsFailureReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Ellipse.Style>
@@ -80,6 +86,9 @@
                             <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Path.Style>
@@ -93,6 +102,9 @@
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -125,6 +137,31 @@
                     </Style>
                 </Path.Style>
             </Path>
+
+            <!-- Focused Computer Glasses -->
+            <Canvas x:Name="FocusedGlasses">
+                <!-- Left lens frame -->
+                <Ellipse Canvas.Left="36" Canvas.Top="40" Width="18" Height="16" Stroke="#3b82f6" StrokeThickness="1.5" Fill="Transparent"/>
+                <!-- Right lens frame -->
+                <Ellipse Canvas.Left="66" Canvas.Top="40" Width="18" Height="16" Stroke="#3b82f6" StrokeThickness="1.5" Fill="Transparent"/>
+                <!-- Bridge -->
+                <Path Data="M 54,48 L 66,48" Stroke="#3b82f6" StrokeThickness="1.5" Fill="Transparent"/>
+                <!-- Temples (Sides) -->
+                <Path Data="M 36,46 Q 30,44 26,45" Stroke="#3b82f6" StrokeThickness="1.5" Fill="Transparent"/>
+                <Path Data="M 84,46 Q 90,44 94,45" Stroke="#3b82f6" StrokeThickness="1.5" Fill="Transparent"/>
+                
+                <Canvas.Style>
+                    <Style TargetType="Canvas">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsWorkingActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Opacity" Value="0.8"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Canvas.Style>
+            </Canvas>
             
             <!-- Blush Cheeks -->
             <Ellipse Canvas.Left="34" Canvas.Top="50" Width="8" Height="4" Fill="#FFA0B0">
@@ -136,6 +173,9 @@
                                 <Setter Property="Opacity" Value="1.0"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Opacity" Value="1.0"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Opacity" Value="1.0"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -151,6 +191,9 @@
                                 <Setter Property="Opacity" Value="1.0"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsSuccessReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Opacity" Value="1.0"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                 <Setter Property="Opacity" Value="1.0"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -234,6 +277,77 @@
                     </Style>
                 </Path.Style>
             </Path>
+
+            <!-- Floating Water Droplet Icon -->
+            <Path x:Name="WaterDropletIcon" Data="M 12,2 Q 6,10 6,14 A 6,6 0 1,0 18,14 Q 18,10 12,2 Z" 
+                  Fill="#38bdf8" Canvas.Left="50" Canvas.Top="10" Width="20" Height="20" Stretch="Uniform" Opacity="0">
+                <Path.RenderTransform>
+                    <TranslateTransform x:Name="WaterDropletTranslate" Y="0"/>
+                </Path.RenderTransform>
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:1.4" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.Y)" From="0" To="-35" Duration="0:0:1.8"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
+
+            <!-- Water Cup Visuals -->
+            <Canvas x:Name="WaterCup" Canvas.Left="10" Canvas.Top="53" Width="18" Height="24" Opacity="0">
+                <!-- Straw -->
+                <Path Data="M 9,12 L 14,-3 L 8,-5" Stroke="#ef4444" StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent"/>
+                <!-- Water inside glass -->
+                <Path Data="M 2.5,8 L 4.0,21 C 4.0,22 14.0,22 14.0,21 L 15.5,8 Z" Fill="#38bdf8">
+                    <Path.RenderTransform>
+                        <ScaleTransform x:Name="WaterLevelScale" CenterY="21" ScaleY="1"/>
+                    </Path.RenderTransform>
+                    <Path.Style>
+                        <Style TargetType="Path">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" From="1.0" To="0.15" Duration="0:0:1.3" BeginTime="0:0:0.3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Path.Style>
+                </Path>
+                <!-- Outer glass cup -->
+                <Path Data="M 1,2 L 3,22 C 3,23.5 15,23.5 15,22 L 17,2" Stroke="#a5f3fc" StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="#30a5f3fc"/>
+                
+                <Canvas.Style>
+                    <Style TargetType="Canvas">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" BeginTime="0:0:1.8" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Canvas.Style>
+            </Canvas>
             
             <!-- Snout / Mouth -->
             <Path Data="M 57,51 Q 60,54 63,51 Q 66,54 69,51" Stroke="#2a3142" StrokeThickness="1.5" Fill="Transparent"/>
@@ -299,6 +413,13 @@
                                 <Setter Property="RenderTransform">
                                     <Setter.Value>
                                         <TranslateTransform Y="7"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsDrinkReactionActive, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform X="-13" Y="2"/>
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger>

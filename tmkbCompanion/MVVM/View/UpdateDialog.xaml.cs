@@ -34,6 +34,12 @@ namespace tmkbCompanion.MVVM.View
                 LaterButton.Visibility = Visibility.Collapsed;
                 CloseButton.Visibility = Visibility.Collapsed;
             }
+
+            // Show do-not-show-again checkbox only on app launch and if not mandatory
+            if (_updateInfo.IsAppLaunch && !_updateInfo.IsMandatory)
+            {
+                DoNotShowAgainCheckBox.Visibility = Visibility.Visible;
+            }
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -51,6 +57,13 @@ namespace tmkbCompanion.MVVM.View
             }
             else
             {
+                if (DoNotShowAgainCheckBox.Visibility == Visibility.Visible && DoNotShowAgainCheckBox.IsChecked == true)
+                {
+                    if (System.Windows.Application.Current.MainWindow?.DataContext is tmkbCompanion.MVVM.ViewModel.MainViewModel mainVM)
+                    {
+                        mainVM.SettingsVM.DoNotShowUpdateAgain = true;
+                    }
+                }
                 DialogResult = false;
                 Close();
             }
@@ -62,6 +75,7 @@ namespace tmkbCompanion.MVVM.View
             ButtonsPanel.Visibility = Visibility.Collapsed;
             ProgressPanel.Visibility = Visibility.Visible;
             CloseButton.Visibility = Visibility.Collapsed; // Hide X button during download
+            DoNotShowAgainCheckBox.Visibility = Visibility.Collapsed; // Hide checkbox during download
 
             string tempFile = Path.Combine(Path.GetTempPath(), "tmkbCompanion-setup.exe");
 

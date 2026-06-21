@@ -16,7 +16,8 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False">
 
     <Window.Resources>
         <!-- View Model → View mappings -->
@@ -389,6 +390,19 @@
                   Background="#B30C0E15"
                   Visibility="{Binding IsUpdateOverlayVisible, Converter={StaticResource BoolToVis}}"
                   Panel.ZIndex="1050"/>
+
+            <!-- ══════════════════════════════════════════
+                 6. UPGRADE GREETING OVERLAY (DARK BACKDROP)
+                 ══════════════════════════════════════════ -->
+            <Grid x:Name="UpgradeGreetingOverlay"
+                  Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2"
+                  Background="#B30C0E15"
+                  Visibility="Collapsed"
+                  Panel.ZIndex="1060">
+                <ContentControl x:Name="UpgradeGreetingContent"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+            </Grid>
 
         </Grid>
     </Border>

@@ -51,11 +51,40 @@ namespace tmkbCompanion.MVVM.View
             set => SetValue(IsFailureReactionActiveProperty, value);
         }
 
+        public static readonly DependencyProperty IsDrinkReactionActiveProperty =
+            DependencyProperty.Register(nameof(IsDrinkReactionActive), typeof(bool), typeof(PetCompanionView), new PropertyMetadata(false));
+
+        public bool IsDrinkReactionActive
+        {
+            get => (bool)GetValue(IsDrinkReactionActiveProperty);
+            set => SetValue(IsDrinkReactionActiveProperty, value);
+        }
+
+        public static readonly DependencyProperty IsWorkingActiveProperty =
+            DependencyProperty.Register(nameof(IsWorkingActive), typeof(bool), typeof(PetCompanionView), new PropertyMetadata(false, OnIsWorkingActiveChanged));
+
+        public bool IsWorkingActive
+        {
+            get => (bool)GetValue(IsWorkingActiveProperty);
+            set => SetValue(IsWorkingActiveProperty, value);
+        }
+
+        private static void OnIsWorkingActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is PetCompanionView view)
+            {
+                view.UpdateTypingState();
+            }
+        }
+
         private System.Windows.Threading.DispatcherTimer? _reactionTimer;
         private System.Windows.Threading.DispatcherTimer? _successReactionTimer;
         private System.Windows.Threading.DispatcherTimer? _failureReactionTimer;
+        private System.Windows.Threading.DispatcherTimer? _drinkReactionTimer;
+        private System.Windows.Threading.DispatcherTimer? _typingTimer;
         private System.Windows.Threading.DispatcherTimer? _drumrollTimer;
         private bool _drumrollLeftState;
+        private bool _typingLeftState;
 
         public void TriggerClickReaction()
         {
@@ -126,10 +155,12 @@ namespace tmkbCompanion.MVVM.View
             _drumrollTimer?.Stop();
             _reactionTimer?.Stop();
             _failureReactionTimer?.Stop();
+            _drinkReactionTimer?.Stop();
 
             IsClickedReactionActive = false;
             IsSuccessReactionActive = false;
             IsFailureReactionActive = true;
+            IsDrinkReactionActive = false;
 
             // Make paws go flat
             IsLeftPawPressed = false;
@@ -147,6 +178,95 @@ namespace tmkbCompanion.MVVM.View
             _failureReactionTimer.Start();
         }
 
+        public void TriggerDrinkWaterReaction()
+        {
+            _successReactionTimer?.Stop();
+            _drumrollTimer?.Stop();
+            _reactionTimer?.Stop();
+            _failureReactionTimer?.Stop();
+            _drinkReactionTimer?.Stop();
+
+            IsClickedReactionActive = false;
+            IsSuccessReactionActive = false;
+            IsFailureReactionActive = false;
+            IsDrinkReactionActive = true;
+
+            IsLeftPawPressed = false;
+            IsRightPawPressed = false;
+
+            try
+            {
+                System.Media.SystemSounds.Asterisk.Play();
+            }
+            catch
+            {
+                // Fallback
+            }
+
+            _drinkReactionTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(2200)
+            };
+            _drinkReactionTimer.Tick += (s, ev) =>
+            {
+                IsDrinkReactionActive = false;
+                _drinkReactionTimer.Stop();
+            };
+            _drinkReactionTimer.Start();
+        }
+
+        private void UpdateTypingState()
+        {
+            if (IsWorkingActive)
+            {
+                if (_typingTimer == null)
+                {
+                    _typingTimer = new System.Windows.Threading.DispatcherTimer
+                    {
+                        Interval = TimeSpan.FromMilliseconds(400)
+                    };
+                    _typingTimer.Tick += TypingTimer_Tick;
+                }
+                _typingTimer.Start();
+            }
+            else
+            {
+                _typingTimer?.Stop();
+                if (!IsClickedReactionActive && !IsSuccessReactionActive && !IsFailureReactionActive && !IsDrinkReactionActive)
+                {
+                    IsLeftPawPressed = false;
+                    IsRightPawPressed = false;
+                }
+            }
+        }
+
+        private void TypingTimer_Tick(object? sender, EventArgs e)
+        {
+            if (IsClickedReactionActive || IsSuccessReactionActive || IsFailureReactionActive || IsDrinkReactionActive)
+            {
+                return;
+            }
+
+            _typingLeftState = !_typingLeftState;
+            IsLeftPawPressed = _typingLeftState;
+            IsRightPawPressed = !_typingLeftState;
+
+            var releaseTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(100)
+            };
+            releaseTimer.Tick += (s, ev) =>
+            {
+                if (!IsClickedReactionActive && !IsSuccessReactionActive && !IsFailureReactionActive && !IsDrinkReactionActive)
+                {
+                    IsLeftPawPressed = false;
+                    IsRightPawPressed = false;
+                }
+                releaseTimer.Stop();
+            };
+            releaseTimer.Start();
+        }
+
         public PetCompanionView()
         {
             InitializeComponent();
@@ -158,6 +278,8 @@ namespace tmkbCompanion.MVVM.View
                 _successReactionTimer?.Stop();
                 _failureReactionTimer?.Stop();
                 _drumrollTimer?.Stop();
+                _drinkReactionTimer?.Stop();
+                _typingTimer?.Stop();
             };
         }
 

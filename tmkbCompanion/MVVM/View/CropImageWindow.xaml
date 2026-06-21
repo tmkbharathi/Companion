@@ -13,7 +13,8 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Loaded="Window_Loaded"
-        MouseDown="Window_MouseDown">
+        MouseDown="Window_MouseDown"
+        ShowInTaskbar="False">
 
     <Window.Resources>
         <ResourceDictionary>

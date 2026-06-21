@@ -5,8 +5,10 @@ using tmkbCompanion.MVVM.Core;
 
 namespace tmkbCompanion.MVVM.View
 {
-    public partial class UpgradedDialog : Window
+    public partial class UpgradedDialog : System.Windows.Controls.UserControl
     {
+        public event EventHandler? Closed;
+
         public UpgradedDialog(string oldVersion, string newVersion)
         {
             InitializeComponent();
@@ -16,20 +18,17 @@ namespace tmkbCompanion.MVVM.View
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Register with PopupManager to close on ESC
-            PopupManager.Push(this);
+            // No registration with PopupManager as this is now a UserControl overlay.
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        public void Dismiss()
         {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
+            Closed?.Invoke(this, EventArgs.Empty);
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            Close();
+            Dismiss();
         }
     }
 }

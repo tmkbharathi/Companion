@@ -59,6 +59,7 @@ namespace tmkbCompanion.MVVM.Core
         public event Action? HistoryChanged;
         public event Action<int>? TimerTick;
         public event Action<string, string>? FallbackNotificationRequested;
+        public event Action<int>? DrinkLogged;
 
         public WaterSettings Settings => _settings;
         public List<WaterHistoryItem> History => _history;
@@ -284,6 +285,8 @@ namespace tmkbCompanion.MVVM.Core
             // Immediately save settings and update history for today
             SaveSettings();
             LogCurrentDayToHistory();
+
+            DrinkLogged?.Invoke(amount);
         }
 
         public void StartTimer()
@@ -427,6 +430,14 @@ namespace tmkbCompanion.MVVM.Core
         {
             _history.Clear();
             SaveHistory();
+
+            _settings.TodayIntake = 0;
+            _settings.RemindersSent = 0;
+            _settings.DrinksLogged = 0;
+            _settings.LastDrinkTime = "Never";
+            _settings.CurrentStreak = 0;
+            _settings.LastLoggedDate = string.Empty;
+            SaveSettings();
         }
 
         public void Dispose()

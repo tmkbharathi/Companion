@@ -60,7 +60,8 @@ namespace tmkbCompanion.MVVM.Core
                         Version = args.CurrentVersion.ToString(),
                         DownloadUrl = args.DownloadURL,
                         ChangelogUrl = args.ChangelogURL,
-                        IsMandatory = args.Mandatory?.Value ?? false
+                        IsMandatory = args.Mandatory?.Value ?? false,
+                        IsAppLaunch = !_isManualCheck
                     };
 
                     var dialog = new UpdateDialog(updateInfo);
@@ -92,5 +93,6 @@ namespace tmkbCompanion.MVVM.Core
         public string DownloadUrl { get; set; } = string.Empty;
         public string ChangelogUrl { get; set; } = string.Empty;
         public bool IsMandatory { get; set; }
+        public bool IsAppLaunch { get; set; }
     }
 }

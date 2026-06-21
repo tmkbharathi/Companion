@@ -18,6 +18,12 @@ namespace tmkbCompanion.MVVM.View
             set => PetView.IsRightPawPressed = value;
         }
 
+        public bool IsWorkingActive
+        {
+            get => PetView.IsWorkingActive;
+            set => PetView.IsWorkingActive = value;
+        }
+
         private readonly Action? _showMenuAction;
 
         public PetCompanionWindow()
@@ -38,6 +44,11 @@ namespace tmkbCompanion.MVVM.View
         public void TriggerFailureReaction()
         {
             PetView.TriggerFailureReaction();
+        }
+
+        public void TriggerDrinkWaterReaction()
+        {
+            PetView.TriggerDrinkWaterReaction();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
