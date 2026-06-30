@@ -87,26 +87,37 @@
                 <Border Style="{StaticResource ThreeDCardStyle}" 
                         Padding="10"
                         Margin="0,0,0,12">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Icon -->
-                        <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
-                        <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF1B0;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <!-- Icon -->
+                            <Border Grid.Column="0" Background="{DynamicResource AccentBrush}" Opacity="0.1" CornerRadius="8" Width="48" Height="48"/>
+                            <TextBlock Grid.Column="0" FontFamily="{StaticResource SegoeMDL2}" Text="&#xF1B0;" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-                        <!-- Details -->
-                        <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Pet Companion" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
-                            <TextBlock Text="Show a cute interactive cat that reacts to your typing" Foreground="{StaticResource TextMutedBrush}" FontSize="13" Opacity="0.8" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}"/>
+                            <!-- Details -->
+                            <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Pet Companion" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}"/>
+                                <TextBlock Text="Show a cute interactive cat that reacts to your typing" Foreground="{StaticResource TextMutedBrush}" FontSize="13" Opacity="0.8" Margin="0,2,0,0" FontFamily="{StaticResource AppFont}"/>
+                            </StackPanel>
+
+                            <!-- Toggle -->
+                            <CheckBox Grid.Column="2" Style="{StaticResource FluentToggleSwitch}" IsChecked="{Binding IsPetEnabled}"/>
+                        </Grid>
+
+                        <!-- Pet Type Selector (Visible when pet is enabled) -->
+                        <StackPanel Visibility="{Binding IsPetEnabled, Converter={StaticResource BoolToVis}}" Margin="64,12,0,4">
+                            <TextBlock Text="Render Mode" Foreground="{StaticResource TextPrimaryBrush}" FontSize="14" FontWeight="SemiBold" FontFamily="{StaticResource AppFont}" Margin="0,0,0,8"/>
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton Content="2D (Vector Bongo Cat)" IsChecked="{Binding Is2DPet}" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource AppFont}" FontSize="13" Margin="0,0,24,0"/>
+                                <RadioButton Content="3D (Godot Engine)" IsChecked="{Binding Is3DPet}" Foreground="{StaticResource TextPrimaryBrush}" FontFamily="{StaticResource AppFont}" FontSize="13"/>
+                            </StackPanel>
                         </StackPanel>
-
-                        <!-- Toggle -->
-                        <CheckBox Grid.Column="2" Style="{StaticResource FluentToggleSwitch}" IsChecked="{Binding IsPetEnabled}"/>
-                    </Grid>
+                    </StackPanel>
                 </Border>
 
                 <!-- Card 4: Quick Notes Path -->

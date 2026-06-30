@@ -19,6 +19,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         private bool _showNotifications = true;
         private bool _darkMode = true;
         private bool _isPetEnabled;
+        private string _petType = "2D";
         private double _cacheProgress = 0.5;
         private string _cacheUsedText = "Calculating...";
         private string _accentColorHex = "#5b8cff";
@@ -77,6 +78,44 @@ namespace tmkbCompanion.MVVM.ViewModel
                 if (SetProperty(ref _isPetEnabled, value))
                 {
                     SaveSettings();
+                }
+            }
+        }
+
+        public string PetType
+        {
+            get => _petType;
+            set
+            {
+                if (SetProperty(ref _petType, value))
+                {
+                    SaveSettings();
+                    OnPropertyChanged(nameof(Is2DPet));
+                    OnPropertyChanged(nameof(Is3DPet));
+                }
+            }
+        }
+
+        public bool Is2DPet
+        {
+            get => PetType == "2D";
+            set
+            {
+                if (value)
+                {
+                    PetType = "2D";
+                }
+            }
+        }
+
+        public bool Is3DPet
+        {
+            get => PetType == "3D";
+            set
+            {
+                if (value)
+                {
+                    PetType = "3D";
                 }
             }
         }
@@ -285,6 +324,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                         _showNotifications = data.ShowNotifications;
                         _darkMode = data.DarkMode;
                         _isPetEnabled = data.IsPetEnabled;
+                        _petType = data.PetType ?? "2D";
                         _quickNotesPath = data.QuickNotesPath;
                         _lastLaunchedVersion = data.LastLaunchedVersion ?? string.Empty;
                         _terminalType = data.TerminalType ?? "PowerShell";
@@ -317,6 +357,7 @@ namespace tmkbCompanion.MVVM.ViewModel
                     ShowNotifications = ShowNotifications,
                     DarkMode = DarkMode,
                     IsPetEnabled = IsPetEnabled,
+                    PetType = PetType,
                     QuickNotesPath = QuickNotesPath,
                     LastLaunchedVersion = LastLaunchedVersion,
                     TerminalType = TerminalType,
@@ -495,6 +536,7 @@ namespace tmkbCompanion.MVVM.ViewModel
         public bool ShowNotifications { get; set; } = true;
         public bool DarkMode { get; set; } = true;
         public bool IsPetEnabled { get; set; } = false;
+        public string PetType { get; set; } = "2D";
         public string QuickNotesPath { get; set; } = string.Empty;
         public string LastLaunchedVersion { get; set; } = string.Empty;
         public string TerminalType { get; set; } = "PowerShell";

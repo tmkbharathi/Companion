@@ -306,6 +306,7 @@ namespace tmkbCompanion
                 _viewModel.RunScriptVM.ScriptExecutionFailed -= RunScriptVM_ScriptExecutionFailed;
                 _viewModel.WaterReminderVM.Service.DrinkLogged -= WaterReminderService_DrinkLogged;
                 _petWindow?.Close();
+                Close3DPet();
                 _trayIconManager.Dispose();
                 _viewModel.WaterReminderVM.Service.Dispose();
                 base.OnClosing(e);
@@ -314,7 +315,8 @@ namespace tmkbCompanion
 
         private void SettingsVM_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SettingsViewModel.IsPetEnabled))
+            if (e.PropertyName == nameof(SettingsViewModel.IsPetEnabled) ||
+                e.PropertyName == nameof(SettingsViewModel.PetType))
             {
                 UpdatePetWindowVisibility();
                 _trayIconManager.UpdatePetState(_viewModel.SettingsVM.IsPetEnabled);
@@ -323,7 +325,7 @@ namespace tmkbCompanion
 
         private void UpdatePetWindowVisibility()
         {
-            if (_viewModel.SettingsVM.IsPetEnabled)
+            if (_viewModel.SettingsVM.IsPetEnabled && _viewModel.SettingsVM.PetType == "2D")
             {
                 if (_petWindow == null)
                 {
@@ -332,6 +334,7 @@ namespace tmkbCompanion
                     _petWindow.Show();
                 }
                 StartGlobalKeyboardHook();
+                Close3DPet();
             }
             else
             {
@@ -341,6 +344,76 @@ namespace tmkbCompanion
                     _petWindow.Close();
                     _petWindow = null;
                 }
+
+                if (_viewModel.SettingsVM.IsPetEnabled && _viewModel.SettingsVM.PetType == "3D")
+                {
+                    Launch3DPet();
+                }
+                else
+                {
+                    Close3DPet();
+                }
+            }
+        }
+
+        private System.Diagnostics.Process? _godotPetProcess;
+
+        private void Launch3DPet()
+        {
+            if (_godotPetProcess != null && !_godotPetProcess.HasExited)
+            {
+                return; // Already running
+            }
+
+            try
+            {
+                string appDir = AppDomain.CurrentDomain.BaseDirectory;
+                string exePath = System.IO.Path.Combine(appDir, "GodotPet", "godot_pet.exe");
+
+                if (!System.IO.File.Exists(exePath))
+                {
+                    // Fallback to project source build directory if running in debug mode
+                    string projectDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(appDir, @"..\..\..\..\GodotPet\build\godot_pet.exe"));
+                    if (System.IO.File.Exists(projectDir))
+                    {
+                        exePath = projectDir;
+                    }
+                }
+
+                if (System.IO.File.Exists(exePath))
+                {
+                    var startInfo = new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = exePath,
+                        UseShellExecute = true,
+                        WorkingDirectory = System.IO.Path.GetDirectoryName(exePath)
+                    };
+                    _godotPetProcess = System.Diagnostics.Process.Start(startInfo);
+                }
+                else
+                {
+                    _viewModel.ShowInAppToast("3D Pet Not Found", "Please build the Godot 3D Pet project first under the 'GodotPet' folder.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to start Godot 3D pet: {ex.Message}");
+            }
+        }
+
+        private void Close3DPet()
+        {
+            try
+            {
+                if (_godotPetProcess != null && !_godotPetProcess.HasExited)
+                {
+                    _godotPetProcess.Kill();
+                    _godotPetProcess = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to close Godot 3D pet: {ex.Message}");
             }
         }
 
