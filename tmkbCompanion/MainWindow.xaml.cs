@@ -392,13 +392,87 @@ namespace tmkbCompanion
                 }
                 else
                 {
-                    _viewModel.ShowInAppToast("3D Pet Not Found", "Please build the Godot 3D Pet project first under the 'GodotPet' folder.");
+                    // Search for Godot editor executable to run the project directly
+                    string? godotEditorExe = null;
+                    string[] searchDirs = {
+                        System.IO.Path.Combine(appDir, "GodotPet"),
+                        System.IO.Path.GetFullPath(System.IO.Path.Combine(appDir, @"..\..\..\..\GodotPet")),
+                        System.IO.Path.GetFullPath(System.IO.Path.Combine(appDir, @"..\..\..\.."))
+                    };
+
+                    foreach (var dir in searchDirs)
+                    {
+                        if (System.IO.Directory.Exists(dir))
+                        {
+                            var files = System.IO.Directory.GetFiles(dir, "Godot*.exe");
+                            if (files.Length > 0)
+                            {
+                                godotEditorExe = files[0];
+                                break;
+                            }
+                            files = System.IO.Directory.GetFiles(dir, "godot*.exe");
+                            if (files.Length > 0)
+                            {
+                                godotEditorExe = files[0];
+                                break;
+                            }
+                        }
+                    }
+
+                    // Fallback to system PATH search
+                    if (godotEditorExe == null)
+                    {
+                        godotEditorExe = FindGodotInPath();
+                    }
+
+                    if (godotEditorExe != null)
+                    {
+                        string godotProjectDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(appDir, @"..\..\..\..\GodotPet"));
+                        if (!System.IO.Directory.Exists(godotProjectDir))
+                        {
+                            godotProjectDir = System.IO.Path.Combine(appDir, "GodotPet");
+                        }
+
+                        var startInfo = new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = godotEditorExe,
+                            Arguments = $"--path \"{godotProjectDir}\"",
+                            UseShellExecute = true,
+                            WorkingDirectory = godotProjectDir
+                        };
+                        _godotPetProcess = System.Diagnostics.Process.Start(startInfo);
+                    }
+                    else
+                    {
+                        _viewModel.ShowInAppToast("3D Pet Not Found", "Please build to 'GodotPet/build/godot_pet.exe' or place your Godot editor .exe in the 'GodotPet' folder.");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Failed to start Godot 3D pet: {ex.Message}");
             }
+        }
+
+        private string? FindGodotInPath()
+        {
+            var pathEnv = Environment.GetEnvironmentVariable("PATH");
+            if (string.IsNullOrEmpty(pathEnv)) return null;
+
+            var paths = pathEnv.Split(System.IO.Path.PathSeparator);
+            foreach (var path in paths)
+            {
+                try
+                {
+                    var fullPath = System.IO.Path.Combine(path, "godot.exe");
+                    if (System.IO.File.Exists(fullPath)) return fullPath;
+
+                    fullPath = System.IO.Path.Combine(path, "godot");
+                    if (System.IO.File.Exists(fullPath)) return fullPath;
+                }
+                catch { }
+            }
+            return null;
         }
 
         private void Close3DPet()
