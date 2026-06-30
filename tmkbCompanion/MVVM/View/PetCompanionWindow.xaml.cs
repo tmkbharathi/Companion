@@ -29,6 +29,14 @@ namespace tmkbCompanion.MVVM.View
         public PetCompanionWindow()
         {
             InitializeComponent();
+
+            // Set initial position to bottom-right corner of the primary screen's work area
+            this.Loaded += (s, e) =>
+            {
+                var workArea = SystemParameters.WorkArea;
+                this.Left = workArea.Left + workArea.Width - this.Width - 20;
+                this.Top = workArea.Top + workArea.Height - this.Height - 20;
+            };
         }
 
         public PetCompanionWindow(Action showMenuAction) : this()

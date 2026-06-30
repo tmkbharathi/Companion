@@ -27,6 +27,16 @@ namespace tmkbCompanion
             _viewModel = new MainViewModel();
             DataContext = _viewModel;
 
+            // Prevent window flicker if pet is enabled and no upgrade greeting is pending
+            string currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.1.2";
+            string lastVersion = _viewModel.SettingsVM.LastLaunchedVersion;
+            bool isUpgradeGreetingPending = !string.IsNullOrEmpty(lastVersion) && lastVersion != currentVersion;
+
+            if (_viewModel.SettingsVM.IsPetEnabled && !isUpgradeGreetingPending)
+            {
+                this.Opacity = 0;
+            }
+
             _trayIconManager = new TrayIconManager(this);
 
             // Wire tray events
@@ -78,6 +88,12 @@ namespace tmkbCompanion
             {
                 UpdatePetWindowVisibility();
                 await CheckForUpgradeGreetingAsync();
+
+                if (_viewModel.SettingsVM.IsPetEnabled)
+                {
+                    this.Hide();
+                    this.Opacity = 1;
+                }
 
                 // Run silent update check after greeting has finished and if not skipped
                 if (!_viewModel.SettingsVM.DoNotShowUpdateAgain)
@@ -456,7 +472,7 @@ namespace tmkbCompanion
             this.Hide();
         }
 
-        // ── Win32 Clipboard Listener ────────────────────────────────────────
+        // ── Win32 Clipboard Listener & Window Activation ───────────────────
 
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -466,6 +482,10 @@ namespace tmkbCompanion
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
 
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern uint RegisterWindowMessage(string lpString);
+
+        private static readonly uint ShowWindowMessage = RegisterWindowMessage("FlowTrack_Show_Instance_Message");
         private const int WM_CLIPBOARDUPDATE = 0x031D;
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -482,6 +502,25 @@ namespace tmkbCompanion
 
         private IntPtr ClipboardWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            if (msg == ShowWindowMessage && ShowWindowMessage != 0)
+            {
+                this.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    this.Show();
+                    if (this.WindowState == WindowState.Minimized)
+                    {
+                        this.WindowState = WindowState.Normal;
+                    }
+                    this.Activate();
+                    if (_viewModel.SettingsVM.IsPetEnabled && _petWindow != null)
+                    {
+                        _petWindow.Show();
+                    }
+                }));
+                handled = true;
+                return IntPtr.Zero;
+            }
+
             if (msg == WM_CLIPBOARDUPDATE)
             {
                 try
